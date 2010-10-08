@@ -1,7 +1,8 @@
 Introduction
 ============
 
-'Parse to Plone' is my lxml/soup parser.
+'Parse to Plone' is my lxml/soup parser to get content from static HTML files
+into Plone.
 
 Install
 -------
