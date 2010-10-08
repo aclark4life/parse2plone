@@ -7,7 +7,8 @@ into Plone.
 Install
 -------
 
-You can install 'Parse to Plone' with the ``zc.recipe.egg`` recipe like so:
+You can install 'Parse to Plone' with the ``zc.recipe.egg`` Buildout recipe
+like so. In your buildout.cfg:
 
 - Add an ``import`` section::
 
@@ -31,3 +32,4 @@ Run
 You can run 'Parse to Plone' like so::
 
     $ bin/plone run bin/import /path/to/files
+
