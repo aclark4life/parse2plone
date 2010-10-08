@@ -8,7 +8,7 @@ Install
 
 You can install 'Parse to Plone' with the ``zc.recipe.egg`` recipe like so:
 
-- Add an ``import`` part::
+- Add an ``import`` section::
 
     [import]
     recipe = zc.recipe.egg
@@ -16,14 +16,13 @@ You can install 'Parse to Plone' with the ``zc.recipe.egg`` recipe like so:
         parse2plone
 
 
-- Add the ``import`` part to the list of parts::
+- Add the ``import`` section to the list of parts::
 
     [buildout]
     …
     parts =
         …
         import
-
 
 Run
 ---
