@@ -47,3 +47,4 @@ class Recipe(object):
 
 def main(app):
     print app.objectIds()
+
