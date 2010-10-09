@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 """Recipe parse2plone"""
 
+import fnmatch
+
+from lxml.html import parse
+from os import path, walk
 from pkg_resources import working_set
-from sys import executable
+from sys import argv, executable
 from zc.buildout.easy_install import scripts as create_scripts
 
 
@@ -46,5 +50,13 @@ class Recipe(object):
 
 
 def main(app):
-    print app.objectIds()
+    dir = argv[1]
+    htmlfiles = []
+    for fspath, subdirs, files in walk(dir):
+        for file in fnmatch.filter(files, '*.html'):
+            htmlfiles.append(path.join(fspath, file))
 
+    for file in htmlfiles:
+        obj = parse(file) 
+        for element in obj.iter():
+            print element
