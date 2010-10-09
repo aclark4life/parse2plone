@@ -25,7 +25,7 @@ You can install ``Parse to Plone`` in your buildout.cfg like so.
 Run
 ---
 
-You can run 'Parse to Plone' like so::
+You can run ``Parse to Plone`` like so::
 
     $ bin/plone run bin/import /path/to/files
 
