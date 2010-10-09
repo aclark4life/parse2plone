@@ -14,8 +14,7 @@ like so. In your buildout.cfg:
 
     [import]
     recipe = zc.recipe.egg
-    eggs = 
-        parse2plone
+    eggs = parse2plone
 
 
 - Add the ``import`` section to the list of parts::
