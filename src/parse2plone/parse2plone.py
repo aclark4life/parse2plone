@@ -3,7 +3,7 @@
 
 from pkg_resources import working_set
 from sys import executable
-from zc.buildout.easy_install import scripts
+from zc.buildout.easy_install import scripts as create_scripts
 
 
 class Recipe(object):
@@ -17,8 +17,9 @@ class Recipe(object):
 
         bindir = self.buildout['buildout']['bin-directory']
 
-        # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
-        scripts(
+        create_scripts(
+
+            # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
             # A sequence of distribution requirements.
             [('import', 'parse2plone', 'main')],
 
@@ -31,6 +32,8 @@ class Recipe(object):
             # The destination directory.
             bindir,
 
+            # http://pypi.python.org/pypi/zc.buildout#the-scripts-function-providing-script-arguments
+            # The value passed is a source string to be placed between the parentheses in the call
             arguments='app')
 
         # Return files that were created by the recipe. The buildout
