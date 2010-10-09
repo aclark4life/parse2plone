@@ -45,5 +45,5 @@ class Recipe(object):
         pass
 
 
-def main():
+def main(app):
     print app.objectIds()
