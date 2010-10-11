@@ -78,10 +78,16 @@ def get_files(dir):
             results.append(os_path.join(path, file))
     return results
 
+def path_to_list(file):
+    return file.split('/')
+
+def list_to_path(file):
+    return '/'.join(file)
+
 def ignore_parts(files, ignore):
     results = []
     for file in files:
-        parts = file.split('/')
+        parts = path_to_list(file)
         parts = parts[int(ignore):]
         results.append(parts)
     return results
@@ -90,7 +96,7 @@ def fix_files(files, ignore):
     results = []
     files = ignore_parts(files, ignore)
     for file in files:
-        results.append('/' + '/'.join(file))
+        results.append(list_to_path(file))
     return results
 
 def main(app):
