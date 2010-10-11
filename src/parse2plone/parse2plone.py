@@ -12,7 +12,9 @@ from optparse import OptionParser
 from os import path as os_path
 from os import walk
 from pkg_resources import working_set
-from sys import argv, executable
+from sys import argv, exc_info, executable
+from transaction import commit
+from zExceptions import BadRequest
 from zc.buildout.easy_install import scripts as create_scripts
 
 
@@ -99,12 +101,20 @@ def fix_files(files, ignore):
         results.append(list_to_path(file))
     return results
 
-def check_exists(files):
+def check_exists(site, files):
     results = []
     for file in files:
         parts = path_to_list(file)
         for i in range(len(parts)):
-            print list_to_path(parts[:i+1])
+            newobj = list_to_path(parts[:i+1])
+            if not newobj.endswith('html'):
+                try:
+                    site.invokeFactory('Folder', newobj)
+                    commit()
+                except KeyError:
+                    print exc_info()[1]
+                except BadRequest:
+                    print exc_info()[1]
 
 def main(app):
     parser = parse_options()
@@ -113,4 +123,4 @@ def main(app):
     dir = argv[1]
     files = get_files(dir)
     files = fix_files(files, options.ignore)
-    check_exists(files)
+    check_exists(site, files)
