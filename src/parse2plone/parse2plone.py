@@ -81,9 +81,9 @@ def get_files(dir):
 def ignore_parts(files, ignore):
     results = []
     for file in files:
-        elements = file.split('/')
-        elements = elements[int(ignore):]
-        results.append(elements)
+        parts = file.split('/')
+        parts = parts[int(ignore):]
+        results.append(parts)
     return results
 
 def fix_files(files, ignore):
