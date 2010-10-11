@@ -101,7 +101,7 @@ def fix_files(files, ignore):
         results.append(list_to_path(file))
     return results
 
-def check_exists(site, files):
+def add_files(site, files):
     results = []
     for file in files:
         parts = path_to_list(file)
@@ -123,4 +123,5 @@ def main(app):
     dir = argv[1]
     files = get_files(dir)
     files = fix_files(files, options.ignore)
-    check_exists(site, files)
+    add_files(site, files)
+
