@@ -99,6 +99,13 @@ def fix_files(files, ignore):
         results.append(list_to_path(file))
     return results
 
+def check_exists(files):
+    results = []
+    for file in files:
+        parts = path_to_list(file)
+        for i in range(len(parts)):
+            print list_to_path(parts[:i+1])
+
 def main(app):
     parser = parse_options()
     options, args = parser.parse_args()
@@ -106,5 +113,4 @@ def main(app):
     dir = argv[1]
     files = get_files(dir)
     files = fix_files(files, options.ignore)
-    print files
-
+    check_exists(files)
