@@ -101,20 +101,32 @@ def fix_files(files, ignore):
         results.append(list_to_path(file))
     return results
 
-def add_files(site, files):
+def check_exists(parent, obj):
+    if obj in parent:
+        return True
+    else:
+        return False
+
+def add_folders(site, files):
     results = []
     for file in files:
         parts = path_to_list(file)
+        parent = site
         for i in range(len(parts)):
             newobj = list_to_path(parts[:i+1])
-            if not newobj.endswith('html'):
-                try:
-                    site.invokeFactory('Folder', newobj)
-                    commit()
-                except KeyError:
-                    print exc_info()[1]
-                except BadRequest:
-                    print exc_info()[1]
+            if check_exists(parent, newobj):
+                print '%s exists' % newobj
+            else:
+                print '%s does not exist' % newobj
+
+#            if not newobj.endswith('html'):
+#                try:
+#                    site.invokeFactory('Folder', newobj)
+#                    commit()
+#                except KeyError:
+#                    print exc_info()[1]
+#                except BadRequest:
+#                    print exc_info()[1]
 
 def main(app):
     parser = parse_options()
@@ -123,5 +135,7 @@ def main(app):
     dir = argv[1]
     files = get_files(dir)
     files = fix_files(files, options.ignore)
-    add_files(site, files)
+    add_folders(site, files)
+
+
 
