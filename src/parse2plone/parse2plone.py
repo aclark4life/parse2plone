@@ -3,8 +3,14 @@
 
 import fnmatch
 
+from AccessControl.SecurityManagement import newSecurityManager
+from AccessControl.SpecialUsers import system
+from Testing.makerequest import makerequest 
+
 from lxml.html import parse
-from os import path, walk
+from optparse import OptionParser
+from os import path as os_path
+from os import walk
 from pkg_resources import working_set
 from sys import argv, executable
 from zc.buildout.easy_install import scripts as create_scripts
@@ -49,14 +55,42 @@ class Recipe(object):
         pass
 
 
-def main(app):
-    dir = argv[1]
-    htmlfiles = []
-    for fspath, subdirs, files in walk(dir):
-        for file in fnmatch.filter(files, '*.html'):
-            htmlfiles.append(path.join(fspath, file))
+line = """
+================================================================================
+"""
 
-    for file in htmlfiles:
-        obj = parse(file) 
-        for element in obj.iter():
-            print element
+def parse_options():
+    parser = OptionParser()
+    parser.add_option("-i", "--ignore", dest="ignore",
+                      help="Number of dirs to ignore")
+    return parser
+
+def setup_app(app):
+    app=makerequest(app) 
+    newSecurityManager(None, system)
+    site=app.Plone
+    return site
+
+def get_files(dir):
+    results = []
+    for path, subdirs, files in walk(dir):
+        for file in fnmatch.filter(files, '*.html'):
+            results.append(os_path.join(path, file))
+    return results
+
+def fix_files(files, ignore):
+    results = []
+    for file in files:
+        elements = file.split('/')
+        elements = elements[int(ignore):]
+        results.append(elements)
+    return results
+
+def main(app):
+    parser = parse_options()
+    options, args = parser.parse_args()
+    site = setup_app(app)
+    dir = argv[1]
+    files = get_files(dir)
+    files = fix_files(files, options.ignore)
+    print files
