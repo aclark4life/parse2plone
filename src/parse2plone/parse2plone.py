@@ -168,9 +168,10 @@ class Parse2Plone(object):
                 if self.check_exists(parent, obj):
                     self.logger.info( '%s exists inside %s' % (obj, parent))
                 else:
-                    self.logger.info( '%s does not exist inside %s' % (obj, parent))
-                    folder = self.create_folder(parent, obj)
-                    self.set_title(folder, obj)
+                    if not obj.endswith('html'):
+                        self.logger.info( '%s does not exist inside %s' % (obj, parent))
+                        folder = self.create_folder(parent, obj)
+                        self.set_title(folder, obj)
         return 'Imported %s files' % count
 
 
