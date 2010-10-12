@@ -114,10 +114,16 @@ def get_parent(parent, prefix):
     else:
         return parent
 
+def set_title(obj, title):
+    obj.setTitle(title.title())
+    obj.reindexObject()
+    commit()
+
 def create_folder(parent, obj):
     print 'creating %s inside %s' % (obj, parent)
     parent.invokeFactory('Folder', obj)
     commit()
+    return parent[obj]
 
 def add_files(site, files):
     results = []
@@ -129,13 +135,12 @@ def add_files(site, files):
             prefix  = path_to_list(path)[:-1]
             obj     = path_to_list(path)[-1:][0]
             parent  = get_parent(parent, list_to_path(prefix))
-            print parent, path, prefix, obj
-
             if check_exists(parent, obj):
                 print '%s exists inside %s' % (obj, parent)
             else:
                 print '%s does not exist inside %s' % (obj, parent)
-                create_folder(parent, obj)
+                folder = create_folder(parent, obj)
+                set_title(folder, obj)
 
 def main(app):
     parser = parse_options()
@@ -145,3 +150,4 @@ def main(app):
     files = get_files(dir)
     files = prep_files(files, options.ignore)
     add_files(site, files)
+
