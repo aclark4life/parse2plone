@@ -76,7 +76,19 @@ line = """
 
 class Parse2Plone(object):
 
-    logger = self.add_logger()
+    logger = logging.getLogger("parse2plone")
+    logger.setLevel(logging.INFO)
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    # "application" code
+#    logger.debug("debug message")
+#    logger.info("info message")
+#    logger.warn("warn message")
+#    logger.error("error message")
+#    logger.critical("critical message")
 
     def path_to_list(self, file):
         return file.split('/')
@@ -142,22 +154,6 @@ class Parse2Plone(object):
         commit()
         return parent[obj]
 
-    def add_logger():
-        logger = logging.getLogger("parse2plone")
-        logger.setLevel(logging.INFO)
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.INFO)
-        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-        ch.setFormatter(formatter)
-        logger.addHandler(ch)
-        # "application" code
-#        logger.debug("debug message")
-#        logger.info("info message")
-#        logger.warn("warn message")
-#        logger.error("error message")
-#        logger.critical("critical message")
-        return logger
-
     def add_files(self, site, files):
         results = []
         count = 0
@@ -188,3 +184,4 @@ def main(app):
     files = p2p.get_files(dir)
     files = p2p.prep_files(files, options.ignore)
     results = p2p.add_files(site, files)
+    print results
