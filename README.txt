@@ -63,3 +63,8 @@ You should run::
 
 This will import ``index.html`` and ``about/index.html``.
 
+Help
+----
+
+Questions/comments/concerns? Email: aclark@aclark.net
+
