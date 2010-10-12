@@ -76,28 +76,7 @@ line = """
 
 class Parse2Plone(object):
 
-    logger = logging.getLogger("parse2plone")
-    logger.setLevel(logging.INFO)
-
-    # create console handler and set level to info
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
-
-    # create formatter
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-
-    # add formatter to ch
-    ch.setFormatter(formatter)
-
-    # add ch to logger
-    logger.addHandler(ch)
-
-    # "application" code
-#    logger.debug("debug message")
-#    logger.info("info message")
-#    logger.warn("warn message")
-#    logger.error("error message")
-#    logger.critical("critical message")
+    logger = self.add_logger()
 
     def path_to_list(self, file):
         return file.split('/')
@@ -162,6 +141,22 @@ class Parse2Plone(object):
         parent.invokeFactory('Folder', obj)
         commit()
         return parent[obj]
+
+    def add_logger():
+        logger = logging.getLogger("parse2plone")
+        logger.setLevel(logging.INFO)
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.INFO)
+        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        ch.setFormatter(formatter)
+        logger.addHandler(ch)
+        # "application" code
+#        logger.debug("debug message")
+#        logger.info("info message")
+#        logger.warn("warn message")
+#        logger.error("error message")
+#        logger.critical("critical message")
+        return logger
 
     def add_files(self, site, files):
         results = []
