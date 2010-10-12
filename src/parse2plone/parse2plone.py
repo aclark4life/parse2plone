@@ -155,7 +155,6 @@ class Parse2Plone(object):
         return parent[obj]
 
     def add_files(self, site, files):
-        results = []
         count = 0
         for file in files:
             count += 1
