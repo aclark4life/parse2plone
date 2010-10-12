@@ -5,7 +5,7 @@ import fnmatch
 
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SpecialUsers import system
-from Testing.makerequest import makerequest 
+from Testing.makerequest import makerequest
 
 from lxml.html import parse
 from optparse import OptionParser
@@ -44,8 +44,9 @@ class Recipe(object):
             # The destination directory.
             bindir,
 
-            # http://pypi.python.org/pypi/zc.buildout#the-scripts-function-providing-script-arguments
-            # The value passed is a source string to be placed between the parentheses in the call
+            # http://goo.gl/qm3f
+            # The value passed is a source string to be placed between the
+            # parentheses in the call
             arguments='app')
 
         # Return files that were created by the recipe. The buildout
@@ -58,96 +59,103 @@ class Recipe(object):
 
 
 line = """
-================================================================================
+===============================================================================
 """
 
-def parse_options():
-    parser = OptionParser()
-    parser.add_option("-i", "--ignore", dest="ignore",
-                      help="Number of dirs to ignore")
-    return parser
 
-def setup_app(app):
-    app=makerequest(app) 
-    newSecurityManager(None, system)
-    site=app.Plone
-    return site
+class Parse2Plone(object):
 
-def get_files(dir):
-    results = []
-    for path, subdirs, files in walk(dir):
-        for file in fnmatch.filter(files, '*.html'):
-            results.append(os_path.join(path, file))
-    return results
+    def path_to_list(file):
+        return file.split('/')
 
-def path_to_list(file):
-    return file.split('/')
+    def list_to_path(file):
+        return '/'.join(file)
 
-def list_to_path(file):
-    return '/'.join(file)
+    def parse_options():
+        parser = OptionParser()
+        parser.add_option("-i", "--ignore", dest="ignore",
+                          help="Number of dirs to ignore")
+        return parser
 
-def ignore_parts(files, ignore):
-    results = []
-    for file in files:
-        parts = path_to_list(file)
-        parts = parts[int(ignore):]
-        results.append(parts)
-    return results
+    def check_exists(parent, obj):
+        if obj in parent:
+            return True
+        else:
+            return False
 
-def prep_files(files, ignore):
-    results = []
-    files = ignore_parts(files, ignore)
-    for file in files:
-        results.append(list_to_path(file))
-    return results
+    def set_title(obj, title):
+        obj.setTitle(title.title())
+        obj.reindexObject()
+        commit()
 
-def check_exists(parent, obj):
-    if obj in parent:
-        return True
-    else:
-        return False
+    def setup_app(app):
+        app = makerequest(app)
+        newSecurityManager(None, system)
+        site = app.Plone
+        return site
 
-def get_parent(parent, prefix):
-    if prefix is not '':
-        print 'get parent with %s and %s' % (parent, prefix)
-        return parent.restrictedTraverse(prefix)
-    else:
-        return parent
+    def get_files(dir):
+        results = []
+        for path, subdirs, files in walk(dir):
+            for file in fnmatch.filter(files, '*.html'):
+                results.append(os_path.join(path, file))
+        return results
 
-def set_title(obj, title):
-    obj.setTitle(title.title())
-    obj.reindexObject()
-    commit()
+    def ignore_parts(files, ignore):
+        results = []
+        for file in files:
+            parts = path_to_list(file)
+            parts = parts[int(ignore):]
+            results.append(parts)
+        return results
 
-def create_folder(parent, obj):
-    print 'creating %s inside %s' % (obj, parent)
-    parent.invokeFactory('Folder', obj)
-    commit()
-    return parent[obj]
+    def prep_files(files, ignore):
+        results = []
+        files = ignore_parts(files, ignore)
+        for file in files:
+            results.append(list_to_path(file))
+        return results
 
-def add_files(site, files):
-    results = []
-    for file in files:
-        parts = path_to_list(file)
-        parent = site
-        for i in range(len(parts)):
-            path    = list_to_path(parts[:i+1])
-            prefix  = path_to_list(path)[:-1]
-            obj     = path_to_list(path)[-1:][0]
-            parent  = get_parent(parent, list_to_path(prefix))
-            if check_exists(parent, obj):
-                print '%s exists inside %s' % (obj, parent)
-            else:
-                print '%s does not exist inside %s' % (obj, parent)
-                folder = create_folder(parent, obj)
-                set_title(folder, obj)
+    def get_parent(parent, prefix):
+        if prefix is not '':
+            print 'get parent with %s and %s' % (parent, prefix)
+            return parent.restrictedTraverse(prefix)
+        else:
+            return parent
+
+    def create_folder(parent, obj):
+        print 'creating %s inside %s' % (obj, parent)
+        parent.invokeFactory('Folder', obj)
+        commit()
+        return parent[obj]
+
+    def add_files(site, files):
+        results = []
+        count = 0
+        for file in files:
+            count += 1
+            parts = path_to_list(file)
+            parent = site
+            for i in range(len(parts)):
+                path = list_to_path(parts[:i + 1])
+                prefix = path_to_list(path)[:-1]
+                obj = path_to_list(path)[-1:][0]
+                parent = get_parent(parent, list_to_path(prefix))
+                if check_exists(parent, obj):
+                    print '%s exists inside %s' % (obj, parent)
+                else:
+                    print '%s does not exist inside %s' % (obj, parent)
+                    folder = create_folder(parent, obj)
+                    set_title(folder, obj)
+        return 'Imported %s files' % count
+
 
 def main(app):
-    parser = parse_options()
+    p2p = Parse2Plone()
+    parser = p2p.parse_options()
     options, args = parser.parse_args()
-    site = setup_app(app)
     dir = argv[1]
-    files = get_files(dir)
-    files = prep_files(files, options.ignore)
-    add_files(site, files)
-
+    site = p2p.setup_app(app)
+    files = p2p.get_files(dir)
+    files = p2p.prep_files(files, options.ignore)
+    results = p2p.add_files(site, files)
