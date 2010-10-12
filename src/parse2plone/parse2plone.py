@@ -65,88 +65,88 @@ line = """
 
 class Parse2Plone(object):
 
-    def path_to_list(file):
+    def path_to_list(self, file):
         return file.split('/')
 
-    def list_to_path(file):
+    def list_to_path(self, file):
         return '/'.join(file)
 
-    def parse_options():
+    def parse_options(self):
         parser = OptionParser()
         parser.add_option("-i", "--ignore", dest="ignore",
                           help="Number of dirs to ignore")
         return parser
 
-    def check_exists(parent, obj):
+    def check_exists(self, parent, obj):
         if obj in parent:
             return True
         else:
             return False
 
-    def set_title(obj, title):
+    def set_title(self, obj, title):
         obj.setTitle(title.title())
         obj.reindexObject()
         commit()
 
-    def setup_app(app):
+    def setup_app(self, app):
         app = makerequest(app)
         newSecurityManager(None, system)
         site = app.Plone
         return site
 
-    def get_files(dir):
+    def get_files(self, dir):
         results = []
         for path, subdirs, files in walk(dir):
             for file in fnmatch.filter(files, '*.html'):
                 results.append(os_path.join(path, file))
         return results
 
-    def ignore_parts(files, ignore):
+    def ignore_parts(self, files, ignore):
         results = []
         for file in files:
-            parts = path_to_list(file)
+            parts = self.path_to_list(file)
             parts = parts[int(ignore):]
             results.append(parts)
         return results
 
-    def prep_files(files, ignore):
+    def prep_files(self, files, ignore):
         results = []
-        files = ignore_parts(files, ignore)
+        files = self.ignore_parts(files, ignore)
         for file in files:
-            results.append(list_to_path(file))
+            results.append(self.list_to_path(file))
         return results
 
-    def get_parent(parent, prefix):
+    def get_parent(self, parent, prefix):
         if prefix is not '':
             print 'get parent with %s and %s' % (parent, prefix)
             return parent.restrictedTraverse(prefix)
         else:
             return parent
 
-    def create_folder(parent, obj):
+    def create_folder(self, parent, obj):
         print 'creating %s inside %s' % (obj, parent)
         parent.invokeFactory('Folder', obj)
         commit()
         return parent[obj]
 
-    def add_files(site, files):
+    def add_files(self, site, files):
         results = []
         count = 0
         for file in files:
             count += 1
-            parts = path_to_list(file)
+            parts = self.path_to_list(file)
             parent = site
             for i in range(len(parts)):
-                path = list_to_path(parts[:i + 1])
-                prefix = path_to_list(path)[:-1]
-                obj = path_to_list(path)[-1:][0]
-                parent = get_parent(parent, list_to_path(prefix))
-                if check_exists(parent, obj):
+                path = self.list_to_path(parts[:i + 1])
+                prefix = self.path_to_list(path)[:-1]
+                obj = self.path_to_list(path)[-1:][0]
+                parent = self.get_parent(parent, self.list_to_path(prefix))
+                if self.check_exists(parent, obj):
                     print '%s exists inside %s' % (obj, parent)
                 else:
                     print '%s does not exist inside %s' % (obj, parent)
-                    folder = create_folder(parent, obj)
-                    set_title(folder, obj)
+                    folder = self.create_folder(parent, obj)
+                    self.set_title(folder, obj)
         return 'Imported %s files' % count
 
 
