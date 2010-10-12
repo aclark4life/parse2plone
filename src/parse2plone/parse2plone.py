@@ -153,9 +153,8 @@ class Parse2Plone(object):
 
     def create_folder(self, parent, obj):
         self.logger.info( 'creating %s inside %s' % (obj, parent))
-        if not obj[0] not in self.illegal_chars:
-            parent.invokeFactory('Folder', obj)
-            commit()
+        parent.invokeFactory('Folder', obj)
+        commit()
         return parent[obj]
 
     def add_files(self, site, files):
@@ -168,14 +167,18 @@ class Parse2Plone(object):
                 path = self.list_to_path(parts[:i + 1])
                 prefix = self.path_to_list(path)[:-1]
                 obj = self.path_to_list(path)[-1:][0]
-                parent = self.get_parent(parent, self.list_to_path(prefix))
-                if self.check_exists(parent, obj):
-                    self.logger.info( '%s exists inside %s' % (obj, parent))
+
+                if obj[0] not in self.illegal_chars:
+                    parent = self.get_parent(parent, self.list_to_path(prefix))
+                    if self.check_exists(parent, obj):
+                        self.logger.info( '%s exists inside %s' % (obj, parent))
+                    else:
+                        if not obj.endswith('html'):
+                            self.logger.info( '%s does not exist inside %s' % (obj, parent))
+                            folder = self.create_folder(parent, obj)
+                            self.set_title(folder, obj)
                 else:
-                    if not obj.endswith('html'):
-                        self.logger.info( '%s does not exist inside %s' % (obj, parent))
-                        folder = self.create_folder(parent, obj)
-                        self.set_title(folder, obj)
+                    break
         return 'Imported %s files' % count
 
 
