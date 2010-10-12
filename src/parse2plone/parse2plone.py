@@ -94,7 +94,7 @@ def ignore_parts(files, ignore):
         results.append(parts)
     return results
 
-def fix_files(files, ignore):
+def prep_files(files, ignore):
     results = []
     files = ignore_parts(files, ignore)
     for file in files:
@@ -143,5 +143,5 @@ def main(app):
     site = setup_app(app)
     dir = argv[1]
     files = get_files(dir)
-    files = fix_files(files, options.ignore)
+    files = prep_files(files, options.ignore)
     add_files(site, files)
