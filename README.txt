@@ -1,7 +1,7 @@
 Introduction
 ============
 
-``Parse to Plone`` is my lxml/soup parser (in the form of a Buildout recipe) to 
+``Parse to Plone`` is an lxml/soup parser (in the form of a Buildout recipe) to 
 get content from static HTML files into Plone.
 
 Install
