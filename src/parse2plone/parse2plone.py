@@ -12,7 +12,7 @@
 
 """Recipe parse2plone"""
 
-import fnmatch
+import fnmatch, logging
 
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SpecialUsers import system
@@ -76,6 +76,29 @@ line = """
 
 class Parse2Plone(object):
 
+    logger = logging.getLogger("parse2plone")
+    logger.setLevel(logging.INFO)
+
+    # create console handler and set level to info
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+
+    # create formatter
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+    # add formatter to ch
+    ch.setFormatter(formatter)
+
+    # add ch to logger
+    logger.addHandler(ch)
+
+    # "application" code
+#    logger.debug("debug message")
+#    logger.info("info message")
+#    logger.warn("warn message")
+#    logger.error("error message")
+#    logger.critical("critical message")
+
     def path_to_list(self, file):
         return file.split('/')
 
@@ -129,13 +152,13 @@ class Parse2Plone(object):
 
     def get_parent(self, parent, prefix):
         if prefix is not '':
-            print 'get parent with %s and %s' % (parent, prefix)
+            self.logger.info( 'get parent with %s and %s' % (parent, prefix))
             return parent.restrictedTraverse(prefix)
         else:
             return parent
 
     def create_folder(self, parent, obj):
-        print 'creating %s inside %s' % (obj, parent)
+        self.logger.info( 'creating %s inside %s' % (obj, parent))
         parent.invokeFactory('Folder', obj)
         commit()
         return parent[obj]
@@ -153,9 +176,9 @@ class Parse2Plone(object):
                 obj = self.path_to_list(path)[-1:][0]
                 parent = self.get_parent(parent, self.list_to_path(prefix))
                 if self.check_exists(parent, obj):
-                    print '%s exists inside %s' % (obj, parent)
+                    self.logger.info( '%s exists inside %s' % (obj, parent))
                 else:
-                    print '%s does not exist inside %s' % (obj, parent)
+                    self.logger.info( '%s does not exist inside %s' % (obj, parent))
                     folder = self.create_folder(parent, obj)
                     self.set_title(folder, obj)
         return 'Imported %s files' % count
