@@ -90,6 +90,8 @@ class Parse2Plone(object):
 #    logger.error("error message")
 #    logger.critical("critical message")
 
+    illegal_chars = ('_',)
+
     def path_to_list(self, file):
         return file.split('/')
 
@@ -130,7 +132,8 @@ class Parse2Plone(object):
         results = []
         for file in files:
             parts = self.path_to_list(file)
-            parts = parts[int(ignore):]
+            if not ignore == '':
+                parts = parts[int(ignore):]
             results.append(parts)
         return results
 
@@ -150,8 +153,9 @@ class Parse2Plone(object):
 
     def create_folder(self, parent, obj):
         self.logger.info( 'creating %s inside %s' % (obj, parent))
-        parent.invokeFactory('Folder', obj)
-        commit()
+        if not obj[0] not in self.illegal_chars:
+            parent.invokeFactory('Folder', obj)
+            commit()
         return parent[obj]
 
     def add_files(self, site, files):
