@@ -107,26 +107,35 @@ def check_exists(parent, obj):
     else:
         return False
 
-def add_folders(site, files):
+def get_parent(parent, prefix):
+    if prefix is not '':
+        print 'get parent with %s and %s' % (parent, prefix)
+        return parent.restrictedTraverse(prefix)
+    else:
+        return parent
+
+def create_folder(parent, obj):
+    print 'creating %s inside %s' % (obj, parent)
+    parent.invokeFactory('Folder', obj)
+    commit()
+
+def add_files(site, files):
     results = []
     for file in files:
         parts = path_to_list(file)
         parent = site
         for i in range(len(parts)):
-            newobj = list_to_path(parts[:i+1])
-            if check_exists(parent, newobj):
-                print '%s exists' % newobj
-            else:
-                print '%s does not exist' % newobj
+            path    = list_to_path(parts[:i+1])
+            prefix  = path_to_list(path)[:-1]
+            obj     = path_to_list(path)[-1:][0]
+            parent  = get_parent(parent, list_to_path(prefix))
+            print parent, path, prefix, obj
 
-#            if not newobj.endswith('html'):
-#                try:
-#                    site.invokeFactory('Folder', newobj)
-#                    commit()
-#                except KeyError:
-#                    print exc_info()[1]
-#                except BadRequest:
-#                    print exc_info()[1]
+            if check_exists(parent, obj):
+                print '%s exists inside %s' % (obj, parent)
+            else:
+                print '%s does not exist inside %s' % (obj, parent)
+                create_folder(parent, obj)
 
 def main(app):
     parser = parse_options()
@@ -135,7 +144,4 @@ def main(app):
     dir = argv[1]
     files = get_files(dir)
     files = fix_files(files, options.ignore)
-    add_folders(site, files)
-
-
-
+    add_files(site, files)
