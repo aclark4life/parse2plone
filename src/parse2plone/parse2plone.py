@@ -3,7 +3,8 @@
 ###############################################################################
 #                                                                             #
 # Usage:                                                                      #
-# $ bin/plone run bin/import /path/to/files                                   #
+#                                                                             #
+#     $ bin/plone run bin/import /path/to/files                               #
 #                                                                             #
 # See top level README.txt for more information                               #
 #                                                                             #
