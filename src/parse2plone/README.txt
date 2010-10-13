@@ -7,7 +7,7 @@ easily get content from static HTML files into Plone.
 Install
 -------
 
-You can install ``Parse to Plone`` to your buildout.cfg file like so.
+You can install ``Parse to Plone`` by editing your buildout.cfg file like so.
 
 - Add an ``import`` section::
 
