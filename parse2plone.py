@@ -6,7 +6,7 @@
 #                                                                             #
 #     $ bin/plone run bin/import /path/to/files                               #
 #                                                                             #
-# See top level README.txt for more information                               #
+# See README.txt for more information                                         #
 #                                                                             #
 ###############################################################################
 
