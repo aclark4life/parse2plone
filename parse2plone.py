@@ -12,7 +12,8 @@
 
 """Recipe parse2plone"""
 
-import fnmatch, logging
+import fnmatch
+import logging
 
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SpecialUsers import system
@@ -80,7 +81,8 @@ class Parse2Plone(object):
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
     handler.setLevel(logging.INFO)
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     # "application" code
@@ -92,13 +94,19 @@ class Parse2Plone(object):
 
     illegal_chars = ('_',)
     html_file_ext = ('html',)
-    image_file_ext = ('jpg',)
+    image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
 
     def path_to_list(self, file):
         return file.split('/')
 
     def list_to_path(self, file):
         return '/'.join(file)
+
+    def is_folder(self, obj):
+        if len(obj.split('.')) == 1:
+            return True
+        else:
+            return False
 
     def is_html(self, obj):
         result = False
@@ -140,7 +148,7 @@ class Parse2Plone(object):
     def get_files(self, dir):
         results = []
         for path, subdirs, files in walk(dir):
-            for file in fnmatch.filter(files, '*.html'):
+            for file in fnmatch.filter(files, '*'):
                 results.append(os_path.join(path, file))
         return results
 
@@ -168,22 +176,36 @@ class Parse2Plone(object):
             return parent
 
     def create_folder(self, parent, obj):
-        self.logger.info( 'creating %s inside %s' % (obj, parent))
+        self.logger.info( "creating folder '%s' inside parent folder '%s'" % (obj, 
+            self.list_to_path(parent.getPhysicalPath())))
         parent.invokeFactory('Folder', obj)
         commit()
         return parent[obj]
 
     def create_page(self, parent, obj):
-        self.logger.info( 'creating %s inside %s' % (obj, parent))
+        self.logger.info( "creating page '%s' inside parent folder '%s'" % (obj,
+            self.list_to_path(parent.getPhysicalPath())))
         parent.invokeFactory('Document', obj)
         commit()
         return parent[obj]
 
     def create_image(self, parent, obj):
-        self.logger.info( 'creating %s inside %s' % (obj, parent))
+        self.logger.info( "creating image '%s' inside parent folder '%s'" % (obj,
+            self.list_to_path(parent.getPhysicalPath())))
         parent.invokeFactory('Image', obj)
         commit()
         return parent[obj]
+
+    def create_content(self, parent, obj):
+        if self.is_folder(obj):
+            folder = self.create_folder(parent, obj)
+            self.set_title(folder, obj)
+        elif self.is_html(obj):
+            page = self.create_page(parent, obj)
+            self.set_title(page, obj)
+        elif self.is_image(obj):
+            image = self.create_image(parent, obj)
+            self.set_title(image, obj)
 
     def add_files(self, site, files):
         count = 0
@@ -201,16 +223,8 @@ class Parse2Plone(object):
                     if self.check_exists(parent, obj):
                         self.logger.info( '%s exists inside %s' % (obj, parent))
                     else:
-                        if not self.is_html(obj) or not self.is_image(obj):
-                            self.logger.info( '%s does not exist inside %s' % (obj, parent))
-                            folder = self.create_folder(parent, obj)
-                            self.set_title(folder, obj)
-                        elif self.is_html(obj):
-                            page = self.create_page(parent, obj)
-                            self.set_title(page, obj)
-                        elif self.is_image(obj):
-                            page = self.create_image(parent, obj)
-                            self.set_title(image, obj)
+                        self.logger.info( '%s does not exist inside %s' % (obj, parent))
+                        self.create_content(parent, obj)
                 else:
                     break
         return 'Imported %s files' % count
