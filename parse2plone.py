@@ -29,6 +29,22 @@ from transaction import commit
 from zExceptions import BadRequest
 from zc.buildout.easy_install import scripts as create_scripts
 
+def setup_logger():
+    logger = logging.getLogger("parse2plone")
+    logger.setLevel(logging.INFO)
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    # "application" code
+#    logger.debug("debug message")
+#    logger.info("info message")
+#    logger.warn("warn message")
+#    logger.error("error message")
+#    logger.critical("critical message")
+    return logger
 
 class Recipe(object):
     """zc.buildout recipe"""
@@ -77,21 +93,7 @@ line = """
 
 class Parse2Plone(object):
 
-    logger = logging.getLogger("parse2plone")
-    logger.setLevel(logging.INFO)
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    # "application" code
-#    logger.debug("debug message")
-#    logger.info("info message")
-#    logger.warn("warn message")
-#    logger.error("error message")
-#    logger.critical("critical message")
-
+    logger = setup_logger()
     illegal_chars = ('_',)
     html_file_ext = ('html',)
     image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
