@@ -195,7 +195,8 @@ class Parse2Plone(object):
         return parent[obj]
 
     def set_image(self, image, obj, base, prefix):
-        file = open('/'.join([base, self.utils.list_to_path(prefix), obj]), 'rb')
+        file = open('/'.join([base, self.utils.list_to_path(prefix), obj]),
+            'rb')
         data = file.read()
         file.close()
         image.setImage(data)
@@ -217,7 +218,7 @@ class Parse2Plone(object):
         return count
 
     def add_files(self, site, files):
-        count = {'folders':0, 'pages':0, 'images':0}
+        count = {'folders': 0, 'pages': 0, 'images': 0}
         base = files.keys()[0]
         for file in files[base]:
             parts = self.utils.path_to_list(file)
@@ -231,15 +232,17 @@ class Parse2Plone(object):
                     parent = self.get_parent(parent,
                         self.utils.list_to_path(prefix))
                     if self.utils.check_exists(parent, obj):
-                        self.logger.info("object '%s' exists inside '%s'" % (obj,
-                            self.utils.pretty_print(parent)))
-                    else:
-                        self.logger.info("object '%s' does not exist inside '%s'" % (
+                        self.logger.info("object '%s' exists inside '%s'" % (
                             obj, self.utils.pretty_print(parent)))
-                        count = self.create_content(parent, obj, count, base, prefix)
+                    else:
+                        self.logger.info(
+                            "object '%s' does not exist inside '%s'"
+                            % (obj, self.utils.pretty_print(parent)))
+                        count = self.create_content(parent, obj, count, base,
+                            prefix)
                 else:
                     break
-        self.logger.info('Imported %s folders, %s pages, and %s images.' % 
+        self.logger.info('Imported %s folders, %s pages, and %s images.' %
            tuple(count.values()))
 
 
