@@ -26,7 +26,7 @@ follows.
 Run
 ---
 
-You can run ``Parse to Plone`` like so::
+You can run ``Parse to Plone`` like this::
 
     $ bin/plone run bin/import /path/to/files --ignore=3
 
