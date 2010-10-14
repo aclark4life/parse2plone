@@ -30,6 +30,7 @@ from zExceptions import BadRequest
 from zc.buildout.easy_install import scripts as create_scripts
 
 def setup_logger():
+    # log levels: debug, info, warn, error, critical
     logger = logging.getLogger("parse2plone")
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
@@ -38,12 +39,6 @@ def setup_logger():
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     handler.setFormatter(formatter)
     logger.addHandler(handler)
-    # "application" code
-#    logger.debug("debug message")
-#    logger.info("info message")
-#    logger.warn("warn message")
-#    logger.error("error message")
-#    logger.critical("critical message")
     return logger
 
 class Recipe(object):
