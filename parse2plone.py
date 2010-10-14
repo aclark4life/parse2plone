@@ -53,29 +53,20 @@ class Recipe(object):
         """Installer"""
 
         bindir = self.buildout['buildout']['bin-directory']
-
         create_scripts(
-
             # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
             # A sequence of distribution requirements.
             [('import', 'parse2plone', 'main')],
-
             # A working set,
             working_set,
-
             # The Python executable to use,
             executable,
-
             # The destination directory.
             bindir,
-
             # http://goo.gl/qm3f
             # The value passed is a source string to be placed between the
             # parentheses in the call
             arguments='app')
-
-        # Return files that were created by the recipe. The buildout
-        # will remove all returned files upon reinstall.
         return tuple()
 
     def update(self):
