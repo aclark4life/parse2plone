@@ -78,14 +78,14 @@ class Utils(object):
     html_file_ext = ('html',)
     image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
 
-    def path_to_list(self, file):
+    def string_to_list(self, file):
         return file.split('/')
 
-    def list_to_path(self, file):
+    def list_to_string(self, file):
         return '/'.join(file)
 
     def pretty_print(self, obj):
-        return self.list_to_path(obj.getPhysicalPath())
+        return self.list_to_string(obj.getPhysicalPath())
 
     def is_folder(self, obj):
         if len(obj.split('.')) == 1:
@@ -143,19 +143,19 @@ class Parse2Plone(object):
     def ignore_parts(self, files, ignore):
         results = []
         for file in files:
-            parts = self.utils.path_to_list(file)
+            parts = self.utils.string_to_list(file)
             if not ignore == '':
                 parts = parts[ignore:]
             results.append(parts)
         return results
 
     def prep_files(self, files, ignore):
-        base = self.utils.list_to_path(
-            self.utils.path_to_list(files[0])[:ignore])
+        base = self.utils.list_to_string(
+            self.utils.string_to_list(files[0])[:ignore])
         results = {base: []}
         files = self.ignore_parts(files, ignore)
         for file in files:
-            results[base].append(self.utils.list_to_path(file))
+            results[base].append(self.utils.list_to_string(file))
         return results
 
     def get_parent(self, parent, prefix):
@@ -190,7 +190,7 @@ class Parse2Plone(object):
         return parent[obj]
 
     def set_image(self, image, obj, base, prefix):
-        file = open('/'.join([base, self.utils.list_to_path(prefix), obj]),
+        file = open('/'.join([base, self.utils.list_to_string(prefix), obj]),
             'rb')
         data = file.read()
         file.close()
@@ -216,15 +216,15 @@ class Parse2Plone(object):
         count = {'folders': 0, 'pages': 0, 'images': 0}
         base = files.keys()[0]
         for file in files[base]:
-            parts = self.utils.path_to_list(file)
+            parts = self.utils.string_to_list(file)
             parent = site
             for i in range(len(parts)):
-                path = self.utils.list_to_path(parts[:i + 1])
-                prefix = self.utils.path_to_list(path)[:-1]
-                obj = self.utils.path_to_list(path)[-1:][0]
+                path = self.utils.list_to_string(parts[:i + 1])
+                prefix = self.utils.string_to_list(path)[:-1]
+                obj = self.utils.string_to_list(path)[-1:][0]
                 if obj[0] not in self.utils.illegal_chars:
                     parent = self.get_parent(parent,
-                        self.utils.list_to_path(prefix))
+                        self.utils.list_to_string(prefix))
                     if self.utils.check_exists(parent, obj):
                         self.logger.info("object '%s' exists inside '%s'" % (
                             obj, self.utils.pretty_print(parent)))
@@ -246,7 +246,7 @@ def main(app):
     parser = p2p.parse_options()
     options, args = parser.parse_args()
     dir = argv[1]
-    ignore = len(utils.path_to_list(dir))
+    ignore = len(utils.string_to_list(dir))
     site = p2p.setup_app(app)
     files = p2p.get_files(dir)
     files = p2p.prep_files(files, ignore)
