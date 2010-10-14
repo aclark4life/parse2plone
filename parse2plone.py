@@ -203,13 +203,13 @@ class Parse2Plone(object):
         commit()
         return parent[obj]
 
-    def set_image(self, image, obj, base):
-        file = open('/'.join(base, obj), 'rb')
+    def set_image(self, image, obj, base, prefix):
+        file = open('/'.join([base, self.utils.list_to_path(prefix), obj]), 'rb')
         data = file.read()
         file.close()
         image.setImage(data)
 
-    def create_content(self, parent, obj, count, base):
+    def create_content(self, parent, obj, count, base, prefix):
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
             self.set_title(folder, obj)
@@ -221,7 +221,7 @@ class Parse2Plone(object):
         elif self.utils.is_image(obj):
             image = self.create_image(parent, obj)
             self.set_title(image, obj)
-            self.set_image(image, obj, base)
+            self.set_image(image, obj, base, prefix)
             count['images'] += 1
         return count
 
@@ -245,7 +245,7 @@ class Parse2Plone(object):
                     else:
                         self.logger.info("object '%s' does not exist inside '%s'" % (
                             obj, self.utils.pretty_print(parent)))
-                        count = self.create_content(parent, obj, count, base)
+                        count = self.create_content(parent, obj, count, base, prefix)
                 else:
                     break
         self.logger.info('Imported %s folders, %s pages, and %s images.' % 
