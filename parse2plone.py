@@ -91,12 +91,28 @@ class Parse2Plone(object):
 #    logger.critical("critical message")
 
     illegal_chars = ('_',)
+    html_file_ext = ('html',)
+    image_file_ext = ('jpg',)
 
     def path_to_list(self, file):
         return file.split('/')
 
     def list_to_path(self, file):
         return '/'.join(file)
+
+    def is_html(self, obj):
+        result = False
+        for ext in self.html_file_ext:
+            if obj.endswith(ext):
+                result = True
+        return result
+
+    def is_image(self, obj):
+        result = False
+        for ext in self.image_file_ext:
+            if obj.endswith(ext):
+                result = True
+        return result
 
     def parse_options(self):
         parser = OptionParser()
@@ -157,6 +173,18 @@ class Parse2Plone(object):
         commit()
         return parent[obj]
 
+    def create_page(self, parent, obj):
+        self.logger.info( 'creating %s inside %s' % (obj, parent))
+        parent.invokeFactory('Document', obj)
+        commit()
+        return parent[obj]
+
+    def create_image(self, parent, obj):
+        self.logger.info( 'creating %s inside %s' % (obj, parent))
+        parent.invokeFactory('Image', obj)
+        commit()
+        return parent[obj]
+
     def add_files(self, site, files):
         count = 0
         for file in files:
@@ -173,10 +201,16 @@ class Parse2Plone(object):
                     if self.check_exists(parent, obj):
                         self.logger.info( '%s exists inside %s' % (obj, parent))
                     else:
-                        if not obj.endswith('html'):
+                        if not self.is_html(obj) or not self.is_image(obj):
                             self.logger.info( '%s does not exist inside %s' % (obj, parent))
                             folder = self.create_folder(parent, obj)
                             self.set_title(folder, obj)
+                        elif self.is_html(obj):
+                            page = self.create_page(parent, obj)
+                            self.set_title(page, obj)
+                        elif self.is_image(obj):
+                            page = self.create_image(parent, obj)
+                            self.set_title(image, obj)
                 else:
                     break
         return 'Imported %s files' % count
