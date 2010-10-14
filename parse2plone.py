@@ -170,8 +170,11 @@ class Parse2Plone(object):
 
     def get_parent(self, parent, prefix):
         if prefix is not '':
-            self.logger.info( 'get parent with %s and %s' % (parent, prefix))
-            return parent.restrictedTraverse(prefix)
+            newp = parent.restrictedTraverse(prefix)
+            self.logger.info( 'update parent from %s to %s' % (
+                self.list_to_path(parent.getPhysicalPath()),
+                self.list_to_path(newp.getPhysicalPath())))
+            return newp
         else:
             return parent
 
@@ -221,9 +224,11 @@ class Parse2Plone(object):
                 if obj[0] not in self.illegal_chars:
                     parent = self.get_parent(parent, self.list_to_path(prefix))
                     if self.check_exists(parent, obj):
-                        self.logger.info( '%s exists inside %s' % (obj, parent))
+                        self.logger.info( '%s exists inside %s' % (obj,
+                            self.list_to_path(parent.getPhysicalPath())))
                     else:
-                        self.logger.info( '%s does not exist inside %s' % (obj, parent))
+                        self.logger.info( '%s does not exist inside %s' % (obj,
+                            self.list_to_path(parent.getPhysicalPath())))
                         self.create_content(parent, obj)
                 else:
                     break
