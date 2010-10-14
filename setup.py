@@ -14,4 +14,7 @@ setup(
         'lxml',
         'BeautifulSoup',
     ],
+    packages = [
+        '.',
+    ]
 )
