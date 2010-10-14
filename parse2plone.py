@@ -120,8 +120,6 @@ class Parse2Plone(object):
 
     def parse_options(self):
         parser = OptionParser()
-        parser.add_option("-i", "--ignore", dest="ignore",
-                          help="Number of dirs to ignore")
         return parser
 
     def set_title(self, obj, title):
@@ -147,15 +145,15 @@ class Parse2Plone(object):
         for file in files:
             parts = self.utils.path_to_list(file)
             if not ignore == '':
-                parts = parts[int(ignore):]
+                parts = parts[ignore:]
             results.append(parts)
         return results
 
-    def prep_files(self, files, num):
+    def prep_files(self, files, ignore):
         base = self.utils.list_to_path(
-            self.utils.path_to_list(files[0])[:int(num)])
+            self.utils.path_to_list(files[0])[:ignore])
         results = {base: []}
-        files = self.ignore_parts(files, num)
+        files = self.ignore_parts(files, ignore)
         for file in files:
             results[base].append(self.utils.list_to_path(file))
         return results
@@ -244,10 +242,12 @@ class Parse2Plone(object):
 
 def main(app):
     p2p = Parse2Plone()
+    utils = Utils()
     parser = p2p.parse_options()
     options, args = parser.parse_args()
     dir = argv[1]
+    ignore = len(utils.path_to_list(dir))
     site = p2p.setup_app(app)
     files = p2p.get_files(dir)
-    files = p2p.prep_files(files, options.ignore)
+    files = p2p.prep_files(files, ignore)
     p2p.add_files(site, files)
