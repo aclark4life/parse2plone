@@ -51,7 +51,6 @@ class Recipe(object):
 
     def install(self):
         """Installer"""
-
         bindir = self.buildout['buildout']['bin-directory']
         create_scripts(
             # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
@@ -75,7 +74,6 @@ class Recipe(object):
 
 
 class Utils(object):
-
     illegal_chars = ('_',)
     html_file_ext = ('html',)
     image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
@@ -117,7 +115,6 @@ class Utils(object):
 
 
 class Parse2Plone(object):
-
     utils = Utils()
     logger = setup_logger()
 
@@ -227,7 +224,6 @@ class Parse2Plone(object):
                 path = self.utils.list_to_path(parts[:i + 1])
                 prefix = self.utils.path_to_list(path)[:-1]
                 obj = self.utils.path_to_list(path)[-1:][0]
-
                 if obj[0] not in self.utils.illegal_chars:
                     parent = self.get_parent(parent,
                         self.utils.list_to_path(prefix))
