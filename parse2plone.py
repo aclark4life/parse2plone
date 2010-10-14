@@ -204,7 +204,10 @@ class Parse2Plone(object):
         return parent[obj]
 
     def set_image(self, image, obj, base):
-        pass
+        file = open('/'.join(base, obj), 'rb')
+        data = file.read()
+        file.close()
+        image.setImage(data)
 
     def create_content(self, parent, obj, count, base):
         if self.utils.is_folder(obj):
