@@ -103,7 +103,7 @@ class Parse2Plone(object):
         return '/'.join(file)
 
     def pretty_print(self, obj):
-        return list_to_path(obj.getPhysicalPath())
+        return self.list_to_path(obj.getPhysicalPath())
 
     def is_folder(self, obj):
         if len(obj.split('.')) == 1:
