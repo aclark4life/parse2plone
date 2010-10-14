@@ -163,17 +163,19 @@ class Parse2Plone(object):
             results.append(parts)
         return results
 
-    def prep_files(self, files, ignore):
-        results = []
-        files = self.ignore_parts(files, ignore)
+    def prep_files(self, files, num):
+        base = self.utils.list_to_path(
+            self.utils.path_to_list(files[0])[:int(num)])
+        results = {base: []}
+        files = self.ignore_parts(files, num)
         for file in files:
-            results.append(self.utils.list_to_path(file))
+            results[base].append(self.utils.list_to_path(file))
         return results
 
     def get_parent(self, parent, prefix):
         if prefix is not '':
             newp = parent.restrictedTraverse(prefix)
-            self.logger.info('update parent from %s to %s' % (
+            self.logger.info('updating parent from %s to %s' % (
                 self.utils.pretty_print(parent),
                 self.utils.pretty_print(newp)))
             return newp
@@ -201,7 +203,10 @@ class Parse2Plone(object):
         commit()
         return parent[obj]
 
-    def create_content(self, parent, obj, count):
+    def set_image(self, image, obj, base):
+        pass
+
+    def create_content(self, parent, obj, count, base):
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
             self.set_title(folder, obj)
@@ -213,12 +218,14 @@ class Parse2Plone(object):
         elif self.utils.is_image(obj):
             image = self.create_image(parent, obj)
             self.set_title(image, obj)
+            self.set_image(image, obj, base)
             count['images'] += 1
         return count
 
     def add_files(self, site, files):
         count = {'folders':0, 'pages':0, 'images':0}
-        for file in files:
+        base = files.keys()[0]
+        for file in files[base]:
             parts = self.utils.path_to_list(file)
             parent = site
             for i in range(len(parts)):
@@ -230,12 +237,12 @@ class Parse2Plone(object):
                     parent = self.get_parent(parent,
                         self.utils.list_to_path(prefix))
                     if self.utils.check_exists(parent, obj):
-                        self.logger.info("'%s' exists inside '%s'" % (obj,
+                        self.logger.info("object '%s' exists inside '%s'" % (obj,
                             self.utils.pretty_print(parent)))
                     else:
-                        self.logger.info("'%s' does not exist inside '%s'" % (
+                        self.logger.info("object '%s' does not exist inside '%s'" % (
                             obj, self.utils.pretty_print(parent)))
-                        count = self.create_content(parent, obj, count)
+                        count = self.create_content(parent, obj, count, base)
                 else:
                     break
         self.logger.info('Imported %s folders, %s pages, and %s images.' % 
