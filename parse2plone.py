@@ -201,21 +201,24 @@ class Parse2Plone(object):
         commit()
         return parent[obj]
 
-    def create_content(self, parent, obj):
+    def create_content(self, parent, obj, count):
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
             self.set_title(folder, obj)
+            count['folders'] += 1
         elif self.utils.is_html(obj):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
+            count['pages'] += 1
         elif self.utils.is_image(obj):
             image = self.create_image(parent, obj)
             self.set_title(image, obj)
+            count['images'] += 1
+        return count
 
     def add_files(self, site, files):
-        count = 0
+        count = {'folders':0, 'pages':0, 'images':0}
         for file in files:
-            count += 1
             parts = self.utils.path_to_list(file)
             parent = site
             for i in range(len(parts)):
@@ -232,10 +235,11 @@ class Parse2Plone(object):
                     else:
                         self.logger.info("'%s' does not exist inside '%s'" % (
                             obj, self.utils.pretty_print(parent)))
-                        self.create_content(parent, obj)
+                        count = self.create_content(parent, obj, count)
                 else:
                     break
-        return 'Imported %s files' % count
+        self.logger.info('Imported %s folders, %s pages, and %s images.' % 
+           tuple(count.values()))
 
 
 def main(app):
@@ -246,5 +250,4 @@ def main(app):
     site = p2p.setup_app(app)
     files = p2p.get_files(dir)
     files = p2p.prep_files(files, options.ignore)
-    results = p2p.add_files(site, files)
-    print results
+    p2p.add_files(site, files)
