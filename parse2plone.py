@@ -86,6 +86,11 @@ line = """
 """
 
 
+class Utils(object):
+
+    def path_to_list(self, file):
+        return file.split('/')
+
 class Parse2Plone(object):
 
     logger = setup_logger()
@@ -93,8 +98,6 @@ class Parse2Plone(object):
     html_file_ext = ('html',)
     image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
 
-    def path_to_list(self, file):
-        return file.split('/')
 
     def list_to_path(self, file):
         return '/'.join(file)
@@ -153,9 +156,10 @@ class Parse2Plone(object):
         return results
 
     def ignore_parts(self, files, ignore):
+        utils = Utils()
         results = []
         for file in files:
-            parts = self.path_to_list(file)
+            parts = utils.path_to_list(file)
             if not ignore == '':
                 parts = parts[int(ignore):]
             results.append(parts)
@@ -211,15 +215,16 @@ class Parse2Plone(object):
             self.set_title(image, obj)
 
     def add_files(self, site, files):
+        utils = Utils()
         count = 0
         for file in files:
             count += 1
-            parts = self.path_to_list(file)
+            parts = utils.path_to_list(file)
             parent = site
             for i in range(len(parts)):
                 path = self.list_to_path(parts[:i + 1])
-                prefix = self.path_to_list(path)[:-1]
-                obj = self.path_to_list(path)[-1:][0]
+                prefix = utils.path_to_list(path)[:-1]
+                obj = utils.path_to_list(path)[-1:][0]
 
                 if obj[0] not in self.illegal_chars:
                     parent = self.get_parent(parent, self.list_to_path(prefix))
