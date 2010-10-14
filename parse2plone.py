@@ -29,6 +29,7 @@ from transaction import commit
 from zExceptions import BadRequest
 from zc.buildout.easy_install import scripts as create_scripts
 
+
 def setup_logger():
     # log levels: debug, info, warn, error, critical
     logger = logging.getLogger("parse2plone")
@@ -40,6 +41,7 @@ def setup_logger():
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
+
 
 class Recipe(object):
     """zc.buildout recipe"""
@@ -88,16 +90,12 @@ line = """
 
 class Utils(object):
 
-    def path_to_list(self, file):
-        return file.split('/')
-
-class Parse2Plone(object):
-
-    logger = setup_logger()
     illegal_chars = ('_',)
     html_file_ext = ('html',)
     image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
 
+    def path_to_list(self, file):
+        return file.split('/')
 
     def list_to_path(self, file):
         return '/'.join(file)
@@ -125,17 +123,22 @@ class Parse2Plone(object):
                 result = True
         return result
 
-    def parse_options(self):
-        parser = OptionParser()
-        parser.add_option("-i", "--ignore", dest="ignore",
-                          help="Number of dirs to ignore")
-        return parser
-
     def check_exists(self, parent, obj):
         if obj in parent:
             return True
         else:
             return False
+
+class Parse2Plone(object):
+
+    utils = Utils()
+    logger = setup_logger()
+
+    def parse_options(self):
+        parser = OptionParser()
+        parser.add_option("-i", "--ignore", dest="ignore",
+                          help="Number of dirs to ignore")
+        return parser
 
     def set_title(self, obj, title):
         obj.setTitle(title.title())
@@ -156,10 +159,9 @@ class Parse2Plone(object):
         return results
 
     def ignore_parts(self, files, ignore):
-        utils = Utils()
         results = []
         for file in files:
-            parts = utils.path_to_list(file)
+            parts = self.utils.path_to_list(file)
             if not ignore == '':
                 parts = parts[int(ignore):]
             results.append(parts)
@@ -169,71 +171,70 @@ class Parse2Plone(object):
         results = []
         files = self.ignore_parts(files, ignore)
         for file in files:
-            results.append(self.list_to_path(file))
+            results.append(self.utils.list_to_path(file))
         return results
 
     def get_parent(self, parent, prefix):
         if prefix is not '':
             newp = parent.restrictedTraverse(prefix)
             self.logger.info('update parent from %s to %s' % (
-                self.pretty_print(parent),
-                self.pretty_print(newp)))
+                self.utils.pretty_print(parent),
+                self.utils.pretty_print(newp)))
             return newp
         else:
             return parent
 
     def create_folder(self, parent, obj):
         self.logger.info("creating folder '%s' inside parent folder '%s'" % (
-            obj, self.pretty_print(parent)))
+            obj, self.utils.pretty_print(parent)))
         parent.invokeFactory('Folder', obj)
         commit()
         return parent[obj]
 
     def create_page(self, parent, obj):
         self.logger.info("creating page '%s' inside parent folder '%s'" % (obj,
-            self.pretty_print(parent)))
+            self.utils.pretty_print(parent)))
         parent.invokeFactory('Document', obj)
         commit()
         return parent[obj]
 
     def create_image(self, parent, obj):
         self.logger.info("creating image '%s' inside parent folder '%s'" % (
-            obj, self.pretty_print(parent)))
+            obj, self.utils.pretty_print(parent)))
         parent.invokeFactory('Image', obj)
         commit()
         return parent[obj]
 
     def create_content(self, parent, obj):
-        if self.is_folder(obj):
+        if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
             self.set_title(folder, obj)
-        elif self.is_html(obj):
+        elif self.utils.is_html(obj):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
-        elif self.is_image(obj):
+        elif self.utils.is_image(obj):
             image = self.create_image(parent, obj)
             self.set_title(image, obj)
 
     def add_files(self, site, files):
-        utils = Utils()
         count = 0
         for file in files:
             count += 1
-            parts = utils.path_to_list(file)
+            parts = self.utils.path_to_list(file)
             parent = site
             for i in range(len(parts)):
-                path = self.list_to_path(parts[:i + 1])
-                prefix = utils.path_to_list(path)[:-1]
-                obj = utils.path_to_list(path)[-1:][0]
+                path = self.utils.list_to_path(parts[:i + 1])
+                prefix = self.utils.path_to_list(path)[:-1]
+                obj = self.utils.path_to_list(path)[-1:][0]
 
-                if obj[0] not in self.illegal_chars:
-                    parent = self.get_parent(parent, self.list_to_path(prefix))
-                    if self.check_exists(parent, obj):
+                if obj[0] not in self.utils.illegal_chars:
+                    parent = self.get_parent(parent, self.utils.list_to_path(prefix))
+                    if self.utils.check_exists(parent, obj):
                         self.logger.info("'%s' exists inside '%s'" % (obj,
-                            self.pretty_print(parent)))
+                            self.utils.pretty_print(parent)))
                     else:
                         self.logger.info("'%s' does not exist inside '%s'" % (
-                            obj, self.pretty_print(parent)))
+                            obj, self.utils.pretty_print(parent)))
                         self.create_content(parent, obj)
                 else:
                     break
