@@ -83,11 +83,6 @@ class Recipe(object):
         pass
 
 
-line = """
-===============================================================================
-"""
-
-
 class Utils(object):
 
     illegal_chars = ('_',)
