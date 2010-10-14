@@ -102,6 +102,9 @@ class Parse2Plone(object):
     def list_to_path(self, file):
         return '/'.join(file)
 
+    def pretty_print(self, obj):
+        return list_to_path(obj.getPhysicalPath())
+
     def is_folder(self, obj):
         if len(obj.split('.')) == 1:
             return True
@@ -171,30 +174,30 @@ class Parse2Plone(object):
     def get_parent(self, parent, prefix):
         if prefix is not '':
             newp = parent.restrictedTraverse(prefix)
-            self.logger.info( 'update parent from %s to %s' % (
-                self.list_to_path(parent.getPhysicalPath()),
-                self.list_to_path(newp.getPhysicalPath())))
+            self.logger.info('update parent from %s to %s' % (
+                self.pretty_print(parent), 
+                self.pretty_print(newp)))
             return newp
         else:
             return parent
 
     def create_folder(self, parent, obj):
-        self.logger.info( "creating folder '%s' inside parent folder '%s'" % (obj, 
-            self.list_to_path(parent.getPhysicalPath())))
+        self.logger.info( "creating folder '%s' inside parent folder '%s'" % (obj,
+            self.pretty_print(parent)))
         parent.invokeFactory('Folder', obj)
         commit()
         return parent[obj]
 
     def create_page(self, parent, obj):
         self.logger.info( "creating page '%s' inside parent folder '%s'" % (obj,
-            self.list_to_path(parent.getPhysicalPath())))
+            self.pretty_print(parent)))
         parent.invokeFactory('Document', obj)
         commit()
         return parent[obj]
 
     def create_image(self, parent, obj):
         self.logger.info( "creating image '%s' inside parent folder '%s'" % (obj,
-            self.list_to_path(parent.getPhysicalPath())))
+            self.pretty_print(parent)))
         parent.invokeFactory('Image', obj)
         commit()
         return parent[obj]
@@ -225,10 +228,10 @@ class Parse2Plone(object):
                     parent = self.get_parent(parent, self.list_to_path(prefix))
                     if self.check_exists(parent, obj):
                         self.logger.info( '%s exists inside %s' % (obj,
-                            self.list_to_path(parent.getPhysicalPath())))
+                            self.pretty_print(parent)))
                     else:
                         self.logger.info( '%s does not exist inside %s' % (obj,
-                            self.list_to_path(parent.getPhysicalPath())))
+                            self.pretty_print(parent)))
                         self.create_content(parent, obj)
                 else:
                     break
