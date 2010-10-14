@@ -129,6 +129,7 @@ class Utils(object):
         else:
             return False
 
+
 class Parse2Plone(object):
 
     utils = Utils()
@@ -228,7 +229,8 @@ class Parse2Plone(object):
                 obj = self.utils.path_to_list(path)[-1:][0]
 
                 if obj[0] not in self.utils.illegal_chars:
-                    parent = self.get_parent(parent, self.utils.list_to_path(prefix))
+                    parent = self.get_parent(parent,
+                        self.utils.list_to_path(prefix))
                     if self.utils.check_exists(parent, obj):
                         self.logger.info("'%s' exists inside '%s'" % (obj,
                             self.utils.pretty_print(parent)))
