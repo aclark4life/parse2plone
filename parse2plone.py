@@ -195,6 +195,14 @@ class Parse2Plone(object):
         image.setImage(data)
         commit()
 
+    def set_page(self, page, obj, base, prefix):
+        file = open('/'.join([base, self.utils.list_to_string(prefix), obj]),
+            'rb')
+        data = file.read()
+        file.close()
+        page.setText(data)
+        commit()
+
     def create_content(self, parent, obj, count, base, prefix):
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
@@ -203,6 +211,7 @@ class Parse2Plone(object):
         elif self.utils.is_html(obj):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
+            self.set_page(page, obj, base, prefix)
             count['pages'] += 1
         elif self.utils.is_image(obj):
             image = self.create_image(parent, obj)
