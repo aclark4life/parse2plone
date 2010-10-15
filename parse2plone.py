@@ -195,6 +195,7 @@ class Parse2Plone(object):
         data = file.read()
         file.close()
         image.setImage(data)
+        commit()
 
     def create_content(self, parent, obj, count, base, prefix):
         if self.utils.is_folder(obj):
