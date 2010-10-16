@@ -19,6 +19,7 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SpecialUsers import system
 from Testing.makerequest import makerequest
 
+from lxml.html import fromstring
 from optparse import OptionParser
 from os import path as os_path
 from os import walk
@@ -72,9 +73,10 @@ class Recipe(object):
 
 
 class Utils(object):
-    illegal_chars = ('_',)
     html_file_ext = ('html',)
+    illegal_chars = ('_',)
     image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
+    target_tags = ('p',)
 
     def string_to_list(self, file):
         return file.split('/')
@@ -196,11 +198,18 @@ class Parse2Plone(object):
         commit()
 
     def set_page(self, page, obj, base, prefix):
+        results = ''
         file = open('/'.join([base, self.utils.list_to_string(prefix), obj]),
             'rb')
         data = file.read()
         file.close()
-        page.setText(data)
+        root = fromstring(data)
+        for element in root.iter():
+            tag = element.tag
+            text = element.text
+            if tag in self.utils.target_tags:
+                results += '<%s>%s</%s>' % (tag, text, tag)
+        page.setText(results)
         commit()
 
     def create_content(self, parent, obj, count, base, prefix):
