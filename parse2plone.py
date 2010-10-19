@@ -76,7 +76,7 @@ class Utils(object):
     html_file_ext = ('html',)
     illegal_chars = ('_',)
     image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
-    target_tags = ('p',)
+    target_tags = ('a', 'div', 'h1', 'h2', 'p',)
 
     def string_to_list(self, file):
         return file.split('/')
