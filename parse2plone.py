@@ -207,7 +207,7 @@ class Parse2Plone(object):
         for element in root.iter():
             tag = element.tag
             text = element.text
-            if tag in self.utils.target_tags:
+            if tag in self.utils.target_tags and text is not '':
                 results += '<%s>%s</%s>' % (tag, text, tag)
         page.setText(results)
         commit()
