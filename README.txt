@@ -25,15 +25,15 @@ so:
 
 - Now run ``bin/buildout`` as usual.
 
-Run
----
+Execution
+---------
 
 You can run ``Parse2Plone`` like so::
 
     $ bin/plone run bin/import /path/to/files
 
-Example
--------
+Demonstration
+-------------
 
 If you have a site in /var/www/html that contains the following::
 
@@ -49,8 +49,8 @@ And the following will be created:
     - http://localhost:8080/Plone/index.html
     - http://localhost:8080/Plone/about/index.html
 
-Why
----
+Explanation
+-----------
 
 Why did you create ``Parse2Plone`` when the following packages (and probably many
 more) already exist:
@@ -73,7 +73,7 @@ Here are a few reasons:
 - The author had an itch to scratch. It wil be nice for him to able to say 
   "just write a script" and then actually be able to point to an example.
 
-Contact
--------
+Communication
+-------------
 
 Questions, comments, or concerns? Email: aclark@aclark.net
