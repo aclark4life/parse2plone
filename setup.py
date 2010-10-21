@@ -2,7 +2,7 @@
 from setuptools import setup
 
 name = 'parse2plone'
-version='0.1'
+version = '0.1'
 
 setup(
     name=name,
@@ -14,7 +14,4 @@ setup(
         'lxml',
         'BeautifulSoup',
     ],
-    packages = [
-        '.',
-    ]
 )
