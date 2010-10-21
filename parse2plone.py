@@ -144,7 +144,7 @@ class Parse2Plone(object):
         results = []
         for file in files:
             parts = self.utils.string_to_list(file)
-            if not ignore == '':
+            if ignore is not '':
                 parts = parts[ignore:]
             results.append(parts)
         return results
@@ -159,7 +159,7 @@ class Parse2Plone(object):
         return results
 
     def get_parent(self, parent, prefix):
-        if not prefix == '':
+        if prefix is not '':
             newp = parent.restrictedTraverse(prefix)
             self.logger.info('updating parent from %s to %s' % (
                 self.utils.pretty_print(parent),
@@ -207,7 +207,7 @@ class Parse2Plone(object):
         for element in root.iter():
             tag = element.tag
             text = element.text
-            if tag in self.utils.target_tags and text is not '':
+            if tag in self.utils.target_tags and text is not None:
                 results += '<%s>%s</%s>' % (tag, text, tag)
         page.setText(results)
         commit()
