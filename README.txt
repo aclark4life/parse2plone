@@ -73,6 +73,19 @@ Here are a few reasons:
 - The author had an itch to scratch. It wil be nice for him to able to say 
   "just write a script" and then actually be able to point to an example.
 
+Consternation
+-------------
+
+``Parse2Plone`` requires ``lxml`` which in turn requires ``libxml2`` and
+``libxslt``. If you do not have ``lxml`` installed "globally" (i.e. in your
+system Python's site-packages directory) then Buildout will try to install it
+for you.
+
+At this point ``lxml`` will look for the libxml2/libxslt2 development
+libraries to build against, and if you don't have them installed on your system
+already *your mileage
+may vary* (i.e. Buildout will fail).
+
 Communication
 -------------
 
