@@ -159,7 +159,7 @@ class Parse2Plone(object):
         return results
 
     def get_parent(self, parent, prefix):
-        if prefix is not '':
+        if not prefix == '':
             newp = parent.restrictedTraverse(prefix)
             self.logger.info('updating parent from %s to %s' % (
                 self.utils.pretty_print(parent),
