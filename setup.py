@@ -1,9 +1,9 @@
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 name = 'parse2plone'
 description = 'Easily import static HTML files into Plone.' 
-version = '0.2'
+version = '0.3'
 
 def read(file):
     file = open(file)
@@ -23,5 +23,5 @@ setup(
         'lxml',
         'BeautifulSoup',
     ],
-    packages=find_packages(),
+    py_modules=['parse2plone'],
 )
