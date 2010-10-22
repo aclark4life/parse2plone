@@ -23,5 +23,5 @@ setup(
         'lxml',
         'BeautifulSoup',
     ],
-    package=find_packages(),
+    packages=find_packages(),
 )
