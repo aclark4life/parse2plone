@@ -2,6 +2,11 @@
 History
 =======
 
+0.5 - 10/22/2010
+----------------
+
+- Revert add Plone to install_requires
+
 0.4 - 10/22/2010
 ----------------
 

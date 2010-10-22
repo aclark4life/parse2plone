@@ -3,7 +3,7 @@ from setuptools import setup
 
 name = 'parse2plone'
 description = 'Easily import static HTML files into Plone.' 
-version = '0.4'
+version = '0.5'
 
 def read(file):
     file = open(file)
@@ -15,7 +15,7 @@ setup(
     name=name,
     version=version,
     description=description,
-    long_description=read('README.txt')+read('docs/HISTORY.txt'),
+    long_description=read('README.txt'),
     entry_points={
         'zc.buildout': ['default = %s:Recipe' % name],
     },
