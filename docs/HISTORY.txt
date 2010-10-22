@@ -1,0 +1,23 @@
+
+History
+=======
+
+0.4 - 10/22/2010
+----------------
+
+- Add Plone to install_requires
+
+0.3 - 10/22/2010
+----------------
+
+- Another setuptools fix
+
+0.2 - 10/22/2010
+----------------
+
+- Setuptools fix
+
+0.1 - 10/21/2010
+----------------
+
+- Initial release
