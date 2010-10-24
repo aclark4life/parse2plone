@@ -114,8 +114,7 @@ for you.
 
 At this point ``lxml`` will look for the libxml2/libxslt2 development
 libraries to build against, and if you don't have them installed on your system
-already *your mileage
-may vary* (i.e. Buildout will fail).
+already *your mileage may vary* (i.e. Buildout will fail).
 
 Database access
 ~~~~~~~~~~~~~~~
