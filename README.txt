@@ -88,7 +88,7 @@ more) already exist:
 Here are a few reasons:
 
 - Because ``Parse2Plone`` is aimed at lowering the bar for folks who don't
-  know (or want to know) what a "transmogrifier blueprint" is, but can edit
+  already know (or want to know) what a "transmogrifier blueprint" is, but can edit
   their *buildout.cfg* file and run a single command without having to think
   too much.
 
