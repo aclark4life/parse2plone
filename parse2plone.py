@@ -290,8 +290,8 @@ def main(app, path=None):
         path = options.path
 
     # Run parse2plone
-    p2p = Parse2Plone()
-    site = p2p.setup_app(app, path)
-    files = p2p.get_files(import_dir)
-    files = p2p.prep_files(files, ignore)
-    p2p.add_files(site, files)
+    parse2plone = Parse2Plone()
+    site = parse2plone.setup_app(app, path)
+    files = parse2plone.get_files(import_dir)
+    files = parse2plone.prep_files(files, ignore)
+    parse2plone.add_files(site, files)
