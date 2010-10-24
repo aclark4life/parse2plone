@@ -87,10 +87,10 @@ more) already exist:
 
 Here are a few reasons:
 
-- Because ``Parse2Plone`` is aimed at lowering the bar for folks who don't
-  already know (or want to know) what a "transmogrifier blueprint" is, but can edit
-  their *buildout.cfg* file and run a single command without having to think
-  too much.
+- Because ``Parse2Plone`` is aimed at lowering the bar for folks who don't already
+  know (or want to know) what a "transmogrifier blueprint" is but can update
+  their *buildout.cfg* file, run ``Buildout``, and then run a single import command
+  to import static content from the file system all without having to think very much.
 
 - collective.transmogrify provides a framework for creating reusable pipes
   (whose definitions are called blueprints). ``Parse2Plone`` provides 
