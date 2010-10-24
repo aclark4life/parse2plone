@@ -9,6 +9,7 @@ History
 - Add docs/HISTORY.txt
 - Add troubleshooting tips to consternation section
 - Allow user to specify path to Plone site object
+- Allow user to customize settings in ``buildout.cfg``
 
 0.5 - 10/22/2010
 ~~~~~~~~~~~~~~~~

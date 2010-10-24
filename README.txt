@@ -155,8 +155,8 @@ In your ``buildout.cfg`` file you may specify the following::
     image_file_ext = bmp
     target_tags = span
 
-The results of customization are cumulative. So with the above settings,
-the values in ``parse2plone.py`` will become::
+The results of this customization are cumulative. So with the above settings
+the values in ``parse2plone.py`` become::
 
     html_file_ext = ('html','htm')
     illegal_chars = ('_','*')
