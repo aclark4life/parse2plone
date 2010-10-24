@@ -117,9 +117,9 @@ class Parse2Plone(object):
             site = app.Plone
         return site
 
-    def get_files(self, dir):
+    def get_files(self, import_dir):
         results = []
-        for path, subdirs, files in walk(dir):
+        for path, subdirs, files in walk(import_dir):
             for file in fnmatch.filter(files, '*'):
                 results.append(os_path.join(path, file))
         return results
@@ -284,14 +284,14 @@ def main(app, path=None):
     options, args = option_parser.parse_args()
 
     # Configure settings
-    dir = args[0]
-    ignore = len(utils.string_to_list(dir))
+    import_dir = args[0]
+    ignore = len(utils.string_to_list(import_dir))
     if options.path is not None:
         path = options.path
 
     # Run parse2plone
     p2p = Parse2Plone()
     site = p2p.setup_app(app, path)
-    files = p2p.get_files(dir)
+    files = p2p.get_files(import_dir)
     files = p2p.prep_files(files, ignore)
     p2p.add_files(site, files)
