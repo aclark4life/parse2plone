@@ -5,12 +5,13 @@ History
 0.6 - 10/23/2010
 ~~~~~~~~~~~~~~~~
 
-- No really, revert add Plone to install_requires
+- No really, revert 'add Plone to install_requires'
+- Add docs/HISTORY.txt
 
 0.5 - 10/22/2010
 ~~~~~~~~~~~~~~~~
 
-- Revert add Plone to install_requires
+- Revert 'add Plone to install_requires'
 
 0.4 - 10/22/2010
 ~~~~~~~~~~~~~~~~

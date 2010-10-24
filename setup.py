@@ -16,6 +16,7 @@ setup(
     version=version,
     description=description,
     long_description=read('README.txt')+read('docs/HISTORY.txt'),
+    url='http://aclark4life.github.com/Parse-to-Plone',
     entry_points={
         'zc.buildout': ['default = %s:Recipe' % name],
     },
