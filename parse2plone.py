@@ -122,6 +122,14 @@ class Parse2Plone(object):
         parser = OptionParser()
         parser.add_option("-p", "--path", dest="path",
                           help="Path to Plone site object")
+        parser.add_option("", "--html-file-ext", dest="html_file_ext",
+                          help="")
+        parser.add_option("", "--illegal-chars", dest="illegal_chars",
+                          help="")
+        parser.add_option("", "--image-file-ext", dest="image_file_ext",
+                          help="")
+        parser.add_option("", "--target-tags", dest="target_tags",
+                          help="")
         return parser
 
     def set_title(self, obj, title):
