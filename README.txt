@@ -124,8 +124,8 @@ The following ``parse2plone`` recipe options are available.
 Parameters
 ''''''''''
 
-You can override the following default variables in ``parse2plone`` by
-configuring their corresponding parameter in ``buildout.cfg``.
+You can override the following variables in ``parse2plone`` by
+configuring their corresponding parameter in your ``buildout.cfg`` file.
 
 - ``html_file_ext`` - Specify HTML file extensions. ``parse2plone`` will
   import HTML files with these extensions.
