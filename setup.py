@@ -30,5 +30,8 @@ setup(
     classifiers=[
         'Framework :: Buildout'
         'Framework :: Plone'
-    ]
+    ],
+    extras_require={
+        'tests': ['zope.testing'],
+    }
 )
