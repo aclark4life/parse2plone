@@ -76,6 +76,9 @@ Here are a few reasons:
 Consternation
 -------------
 
+lxml
+~~~~
+
 ``Parse2Plone`` requires ``lxml`` which in turn requires ``libxml2`` and
 ``libxslt``. If you do not have ``lxml`` installed "globally" (i.e. in your
 system Python's site-packages directory) then Buildout will try to install it
@@ -85,6 +88,13 @@ At this point ``lxml`` will look for the libxml2/libxslt2 development
 libraries to build against, and if you don't have them installed on your system
 already *your mileage
 may vary* (i.e. Buildout will fail).
+
+ZEO
+~~~
+
+Before running ``parse2plone``, you must either stop your Plone site or
+use ZEO. Otherwise, ``parse2plone`` will not be able to access the
+database.
 
 Communication
 -------------
