@@ -51,6 +51,10 @@ class Recipe(object):
     def install(self):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
+        if self.options.has_key('path'):
+            path = self.options['path']
+        else:
+            path = 'Plone'
         create_scripts(
             # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
             # A sequence of distribution requirements.
@@ -64,7 +68,7 @@ class Recipe(object):
             # http://goo.gl/qm3f
             # The value passed is a source string to be placed between the
             # parentheses in the call
-            arguments="app, path='%s'" % self.options['path'])
+            arguments="app, path='%s'" % path)
         return tuple()
 
     def update(self):
