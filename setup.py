@@ -20,7 +20,6 @@ setup(
         'zc.buildout': ['default = %s:Recipe' % name],
     },
     install_requires=[
-        'Plone',
         'lxml',
         'BeautifulSoup',
     ],
