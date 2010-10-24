@@ -7,6 +7,8 @@ History
 
 - No really, revert 'add Plone to install_requires'
 - Add docs/HISTORY.txt
+- Add troubleshooting tips to consternation section
+- Allow user to specify path to Plone site object
 
 0.5 - 10/22/2010
 ~~~~~~~~~~~~~~~~
