@@ -18,11 +18,10 @@ here they are::
     #target_tags = a div h1 h2 p
     #illegal_chars = _
 
-Everything but the ``recipe`` parameter is commented out, and the parameters
-listed are configured with the default settings. Uncomment/edit these
-if you would like to change the default behavior, they are (hopefully) 
-self-explanatory. Now you can just cut and paste to get started, or keep 
-reading if you would like to know more.
+Everything but the ``recipe`` parameter is commented out; the parameters
+listed are configured with default values. Uncomment/edit these if you 
+would like to change the default behavior, they are (hopefully) self-explanatory.
+Now you can just cut and paste to get started, or keep reading if you would like to know more.
 
 Installation
 ------------
