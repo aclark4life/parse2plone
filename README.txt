@@ -21,7 +21,8 @@ here they are::
 Everything but the ``recipe`` parameter is commented out; the parameters
 listed are configured with default values. Uncomment/edit these if you 
 would like to change the default behavior, they are (hopefully) self-explanatory.
-Now you can just cut and paste to get started, or keep reading if you would like to know more.
+Now you can just cut and paste to get started, or keep reading if you would like
+to know more.
 
 Installation
 ------------
