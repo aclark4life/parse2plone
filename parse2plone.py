@@ -25,7 +25,7 @@ from optparse import OptionParser
 from os import path as os_path
 from os import walk
 from pkg_resources import working_set
-from sys import argv, executable
+from sys import executable
 from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
@@ -276,14 +276,21 @@ class Recipe(object):
 
 
 def main(app, path=None):
-    p2p = Parse2Plone()
+    """parse2plone"""
+
+    # Parse args
     utils = Utils()
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
-    dir = argv[1]
+    dir = args[0]
+
+    # Configure settings
     ignore = len(utils.string_to_list(dir))
     if options.path is not None:
         path = options.path
+
+    # Run parse2plone
+    p2p = Parse2Plone()
     site = p2p.setup_app(app, path)
     files = p2p.get_files(dir)
     files = p2p.prep_files(files, ignore)
