@@ -102,6 +102,8 @@ Here are a few reasons:
 Consternation
 -------------
 
+Here are some trouble-shooting comments/tips.
+
 lxml
 ~~~~
 
