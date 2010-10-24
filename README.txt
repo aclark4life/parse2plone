@@ -19,7 +19,7 @@ here they are::
     #illegal_chars = _
 
 Everything but the ``recipe`` parameter is commented out, and the parameters
-listed are configured with the default settings. Uncomment and edit these
+listed are configured with the default settings. Uncomment/edit these
 parameters if you would like to change the defaults, they are (hopefully) 
 self-explanatory. Now you can just cut and paste to get started, or keep 
 reading if you would like to know more.
