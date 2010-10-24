@@ -10,7 +10,8 @@ History
 - Add more troubleshooting tips to consternation section
 - Allow user to specify path to Plone site object
 - Allow user to configure all customizable settings in both ``buildout.cfg``
-  and via command line arguments.
+  and via command line arguments
+- Move option parser to Utils class
 
 0.5 - 10/22/2010
 ~~~~~~~~~~~~~~~~

@@ -117,24 +117,24 @@ class Utils(object):
         else:
             return False
 
+    def create_option_parser(self):
+        option_parser = OptionParser()
+        option_parser.add_option("-p", "--path", dest="path",
+                          help="Path to Plone site object")
+        option_parser.add_option("", "--html-file-ext", dest="html_file_ext",
+                          help="")
+        option_parser.add_option("", "--illegal-chars", dest="illegal_chars",
+                          help="")
+        option_parser.add_option("", "--image-file-ext", dest="image_file_ext",
+                          help="")
+        option_parser.add_option("", "--target-tags", dest="target_tags",
+                          help="")
+        return option_parser
+
 
 class Parse2Plone(object):
     utils = Utils()
     logger = setup_logger()
-
-    def parse_options(self):
-        parser = OptionParser()
-        parser.add_option("-p", "--path", dest="path",
-                          help="Path to Plone site object")
-        parser.add_option("", "--html-file-ext", dest="html_file_ext",
-                          help="")
-        parser.add_option("", "--illegal-chars", dest="illegal_chars",
-                          help="")
-        parser.add_option("", "--image-file-ext", dest="image_file_ext",
-                          help="")
-        parser.add_option("", "--target-tags", dest="target_tags",
-                          help="")
-        return parser
 
     def set_title(self, obj, title):
         obj.setTitle(title.title())
@@ -277,8 +277,8 @@ class Parse2Plone(object):
 def main(app, path=None):
     p2p = Parse2Plone()
     utils = Utils()
-    parser = p2p.parse_options()
-    options, args = parser.parse_args()
+    option_parser = utils.create_option_parser()
+    options, args = option_parser.parse_args()
     dir = argv[1]
     ignore = len(utils.string_to_list(dir))
     if options.path is not None:
