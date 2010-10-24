@@ -64,7 +64,7 @@ class Recipe(object):
             # http://goo.gl/qm3f
             # The value passed is a source string to be placed between the
             # parentheses in the call
-            arguments='app')
+            arguments="app, path='%s'" % self.options['path'])
         return tuple()
 
     def update(self):
@@ -262,14 +262,16 @@ class Parse2Plone(object):
            tuple(count.values()))
 
 
-def main(app):
+def main(app, path=None):
     p2p = Parse2Plone()
     utils = Utils()
     parser = p2p.parse_options()
     options, args = parser.parse_args()
     dir = argv[1]
     ignore = len(utils.string_to_list(dir))
-    site = p2p.setup_app(app, options.path)
+    if options.path is not None:
+        path = options.path
+    site = p2p.setup_app(app, path)
     files = p2p.get_files(dir)
     files = p2p.prep_files(files, ignore)
     p2p.add_files(site, files)
