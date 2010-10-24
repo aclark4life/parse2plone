@@ -27,4 +27,8 @@ setup(
         'BeautifulSoup',
     ],
     py_modules=['parse2plone'],
+    classifiers=[
+        'Framework :: Buildout'
+        'Framework :: Plone'
+    ]
 )
