@@ -1,8 +1,8 @@
 Introduction
 ============
 
-``Parse2Plone`` is an lxml/soup parser (in the form of a Buildout recipe) to 
-easily get content from static HTML files into Plone.
+``Parse2Plone`` is an lxml/soup parser (in the form of a Buildout recipe that
+creates a script for you) to easily get content from static HTML files into Plone.
 
 Warning
 -------
