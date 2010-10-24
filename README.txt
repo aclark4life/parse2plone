@@ -12,15 +12,16 @@ here they are::
 
     [import]
     recipe = parse2plone
-    #path =
-    #html_file_ext =
-    #illegal_chars =
-    #image_file_ext =
-    #target_tags =
+    #path = Plone
+    #html_file_ext = html
+    #image_file_ext = gif jpg jpeg png
+    #target_tags = a div h1 h2 p
+    #illegal_chars = _
 
-Everything but the recipe parameter is commented out. Uncomment these options 
-if you would like to use them, they are (hopefully) self-explanatory. Now you
-can just cut and paste to get started, or keep reading if you
+Everything but the recipe parameter is commented out, and the parameters are
+configured with the recipe's defaults. Uncomment and edit these paramenters if 
+you would like to change the defaults, they are (hopefully) self-explanatory.
+Now you can just cut and paste to get started, or keep reading if you
 would like to know more.
 
 Installation
