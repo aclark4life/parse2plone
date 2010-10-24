@@ -43,7 +43,7 @@ def logger():
     return logger
 
 
-class Helpers(object):
+class Utils(object):
     html_file_ext = ('html',)
     illegal_chars = ('_',)
     image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
@@ -100,7 +100,7 @@ class Helpers(object):
 
 
 class Parse2Plone(object):
-    utils = Helpers()
+    utils = Utils()
     logger = logger()
 
     def set_title(self, obj, title):
@@ -277,7 +277,7 @@ class Recipe(object):
 
 def main(app, path=None):
     p2p = Parse2Plone()
-    utils = Helpers()
+    utils = Utils()
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
     dir = argv[1]
