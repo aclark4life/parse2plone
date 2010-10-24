@@ -14,6 +14,7 @@
 
 import fnmatch
 import logging
+import unittest
 
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SpecialUsers import system
@@ -75,6 +76,22 @@ class Recipe(object):
         """Updater"""
         pass
 
+class TestSuite(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def foo(self):
+        pass
+
+    def bar(self):
+        pass
+
+    def baz(self):
+        pass
 
 class Utils(object):
     html_file_ext = ('html',)

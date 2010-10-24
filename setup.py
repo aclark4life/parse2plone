@@ -33,5 +33,6 @@ setup(
     ],
     extras_require={
         'tests': ['zope.testing'],
-    }
+    },
+    test_suite='parse2plone.TestSuite',
 )
