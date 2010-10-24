@@ -15,7 +15,7 @@ setup(
     name=name,
     version=version,
     description=description,
-    long_description=read('README.txt'),
+    long_description=read('README.txt')+read('docs/HISTORY.txt'),
     entry_points={
         'zc.buildout': ['default = %s:Recipe' % name],
     },
