@@ -282,9 +282,9 @@ def main(app, path=None):
     utils = Utils()
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
-    dir = args[0]
 
     # Configure settings
+    dir = args[0]
     ignore = len(utils.string_to_list(dir))
     if options.path is not None:
         path = options.path
