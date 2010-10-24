@@ -147,7 +147,7 @@ The following ``parse2plone`` recipe options are available.
 Parameters
 ''''''''''
 
-You can configure the following paramenters in your ``buildout.cfg`` file: 
+You can configure the following parameters in your ``buildout.cfg`` file: 
 
 - ``path`` - Specify an alternate location for the Plone site object in the
   database.
