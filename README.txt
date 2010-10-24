@@ -163,7 +163,8 @@ You can configure the following paramenters in your ``buildout.cfg`` file:
 Example
 '''''''
 
-Instead of accepting the default behaviour, in your ``buildout.cfg`` file you may specify the following::
+Instead of accepting the default behaviour, in your ``buildout.cfg`` file you
+may specify the following configuration::
 
     [import]
     recipe = parse2plone
