@@ -212,7 +212,7 @@ class Parse2Plone(object):
             count['images'] += 1
         return count
 
-    def add_files(self, site, files):
+    def import_files(self, site, files):
         count = {'folders': 0, 'pages': 0, 'images': 0}
         base = files.keys()[0]
         for file in files[base]:
@@ -249,10 +249,17 @@ class Recipe(object):
     def install(self):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
+
         if 'path' in self.options:
             path = self.options['path']
         else:
             path = 'Plone'
+
+        if 'target_tags' in self.options:
+            target_tags = self.options['target_tags']
+        else:
+            target_tags = defaults['target_tags']
+
         create_scripts(
             # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
             # A sequence of distribution requirements.
@@ -266,7 +273,7 @@ class Recipe(object):
             # http://goo.gl/qm3f
             # The value passed is a source string to be placed between the
             # parentheses in the call
-            arguments="app, path='%s'" % path)
+            arguments="app, path='%s', target_tags='%s'" % (path, target_tags))
         return tuple()
 
     def update(self):
@@ -293,4 +300,4 @@ def main(app, path=None):
     site = parse2plone.setup_app(app, path)
     files = parse2plone.get_files(import_dir)
     files = parse2plone.prep_files(files, ignore)
-    parse2plone.add_files(site, files)
+    parse2plone.import_files(site, files)
