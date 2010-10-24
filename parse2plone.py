@@ -66,7 +66,7 @@ class Recipe(object):
 
 class Parse2Plone(object):
     utils = Utils()
-    logger = setup_logger()
+    logger = logger()
 
     def set_title(self, obj, title):
         obj.setTitle(title.title())
@@ -262,6 +262,19 @@ class Utils(object):
         return option_parser
 
 
+def logger():
+    # log levels: debug, info, warn, error, critical
+    logger = logging.getLogger("parse2plone")
+    logger.setLevel(logging.INFO)
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
+
+
 def main(app, path=None):
     p2p = Parse2Plone()
     utils = Utils()
@@ -275,16 +288,3 @@ def main(app, path=None):
     files = p2p.get_files(dir)
     files = p2p.prep_files(files, ignore)
     p2p.add_files(site, files)
-
-
-def setup_logger():
-    # log levels: debug, info, warn, error, critical
-    logger = logging.getLogger("parse2plone")
-    logger.setLevel(logging.INFO)
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    return logger
