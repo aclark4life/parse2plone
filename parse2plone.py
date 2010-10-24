@@ -14,7 +14,6 @@
 
 import fnmatch
 import logging
-import unittest
 
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SpecialUsers import system
