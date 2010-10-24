@@ -4,6 +4,21 @@ Introduction
 ``Parse2Plone`` is an lxml/soup parser (in the form of a Buildout recipe) to 
 easily get content from static HTML files into Plone.
 
+Because it always drives me nuts when you have to dig for a recipe's options,
+here they are::
+
+    [import]
+    recipe = parse2plone
+    #path =
+    #html_file_ext =
+    #illegal_chars =
+    #image_file_ext =
+    #target_tags =
+
+Everything but the recipe parameter is commented out. Uncomment them if you
+would like to use them. Now you can cut and paste, or keep reading if you
+would like to know more.
+
 Installation
 ------------
 
