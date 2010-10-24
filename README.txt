@@ -163,17 +163,18 @@ You can configure the following paramenters in your ``buildout.cfg`` file:
 Example
 '''''''
 
-In your ``buildout.cfg`` file you may specify the following::
+Instead of accepting the default behaviour, in your ``buildout.cfg`` file you may specify the following::
 
     [import]
-    path = Plone2
     recipe = parse2plone
+    path = Plone2
     html_file_ext = htm
-    illegal_chars = *
-    image_file_ext = bmp
-    target_tags = span
+    image_file_ext = png
+    target_tags = p
 
-With the exception of ``path``, the results of these customizations are cumulative. 
+This will configure ``parse2plone`` to (only) import images ending in
+``.png``, and content in ``p`` tags from files ending in ``.htm`` to a Plone
+site object named ``Plone2``.
 
 Communication
 -------------
