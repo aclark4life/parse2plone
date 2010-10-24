@@ -89,12 +89,79 @@ libraries to build against, and if you don't have them installed on your system
 already *your mileage
 may vary* (i.e. Buildout will fail).
 
-ZEO
-~~~
+Database access
+~~~~~~~~~~~~~~~
 
 Before running ``parse2plone``, you must either stop your Plone site or
-use ZEO. Otherwise, ``parse2plone`` will not be able to access the
+use ZEO. Otherwise ``parse2plone`` will not be able to access the
 database.
+
+Modification
+------------
+
+Modifying the default behavior of ``parse2plone`` is easy; use the command
+line options, or add parameters to your ``buildout.cfg`` file.
+
+Command line
+~~~~~~~~~~~~
+
+The following ``parse2plone`` command line options are available.
+
+Path (``--path``, ``-p``)
+'''''''''''''''''''''''''
+
+You can specify an alternate path to the Plone site object located within
+the database ('/Plone' by default) with ``--path`` or ``-p``::
+
+    $ bin/plone run bin/import /path/to/files --path=/path/to/Plone
+    $ bin/plone run bin/import /path/to/files -p MyPloneSite
+
+Buildout
+~~~~~~~~
+
+The following ``parse2plone`` recipe options are available.
+
+Parameters
+''''''''''
+
+You can override the following default variables in ``parse2plone`` by
+configuring their corresponding parameter in ``buildout.cfg``.
+
+- ``html_file_ext`` - Specify HTML file extensions. ``parse2plone`` will
+  import HTML files with these extensions.
+- ``illegal_chars`` - Specify illegal characters. ``parse2plone`` will ignore
+  files that contain these characters.
+- ``image_file_ext`` - Specify image file extensions. ``parse2plone`` will
+  import image files with these extensions.
+- ``target_tags`` - Specify target tags. ``parse2plone`` will parse the
+  contents of HTML tags listed.
+
+Example
+'''''''
+
+``parse2plone.py`` contains the following Python code::
+
+    html_file_ext = ('html',)
+    illegal_chars = ('_',)
+    image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
+    target_tags = ('a', 'div', 'h1', 'h2', 'p',)
+
+In your ``buildout.cfg`` file you may specify the following::
+
+    [import]
+    recipe = parse2plone
+    html_file_ext = htm
+    illegal_chars = *
+    image_file_ext = bmp
+    target_tags = span
+
+The results of customization are cumulative. So with the above settings,
+the values in ``parse2plone.py`` will become::
+
+    html_file_ext = ('html','htm')
+    illegal_chars = ('_','*')
+    image_file_ext = ('gif', 'jpg', 'jpeg', 'png', 'bmp')
+    target_tags = ('a', 'div', 'h1', 'h2', 'p', 'span')
 
 Communication
 -------------
