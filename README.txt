@@ -124,9 +124,10 @@ The following ``parse2plone`` recipe options are available.
 Parameters
 ''''''''''
 
-You can override the following variables in ``parse2plone`` by
-configuring their corresponding parameter in your ``buildout.cfg`` file.
+You can configure the following paramenters in your ``buildout.cfg`` file: 
 
+- ``path`` - Specify an alternate location for the Plone site object in the
+  database.
 - ``html_file_ext`` - Specify HTML file extensions. ``parse2plone`` will
   import HTML files with these extensions.
 - ``illegal_chars`` - Specify illegal characters. ``parse2plone`` will ignore
@@ -139,29 +140,17 @@ configuring their corresponding parameter in your ``buildout.cfg`` file.
 Example
 '''''''
 
-``parse2plone.py`` contains the following Python code::
-
-    html_file_ext = ('html',)
-    illegal_chars = ('_',)
-    image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
-    target_tags = ('a', 'div', 'h1', 'h2', 'p',)
-
 In your ``buildout.cfg`` file you may specify the following::
 
     [import]
+    path = Plone2
     recipe = parse2plone
     html_file_ext = htm
     illegal_chars = *
     image_file_ext = bmp
     target_tags = span
 
-The results of this customization are cumulative. So with the above settings
-the values in ``parse2plone.py`` become::
-
-    html_file_ext = ('html','htm')
-    illegal_chars = ('_','*')
-    image_file_ext = ('gif', 'jpg', 'jpeg', 'png', 'bmp')
-    target_tags = ('a', 'div', 'h1', 'h2', 'p', 'span')
+With the exception of ``path``, the results of these customizations are cumulative. 
 
 Communication
 -------------
