@@ -30,7 +30,7 @@ from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
 
-def logger():
+def setup_logger():
     # log levels: debug, info, warn, error, critical
     logger = logging.getLogger("parse2plone")
     logger.setLevel(logging.INFO)
@@ -101,7 +101,7 @@ class Utils(object):
 
 class Parse2Plone(object):
     utils = Utils()
-    logger = logger()
+    logger = setup_logger()
 
     def set_title(self, obj, title):
         obj.setTitle(title.title())
