@@ -30,42 +30,77 @@ from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
 
-class Recipe(object):
-    """zc.buildout recipe"""
+def logger():
+    # log levels: debug, info, warn, error, critical
+    logger = logging.getLogger("parse2plone")
+    logger.setLevel(logging.INFO)
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
 
-    def __init__(self, buildout, name, options):
-        self.buildout, self.name, self.options = buildout, name, options
 
-    def install(self):
-        """Installer"""
-        bindir = self.buildout['buildout']['bin-directory']
-        if 'path' in self.options:
-            path = self.options['path']
+class Helpers(object):
+    html_file_ext = ('html',)
+    illegal_chars = ('_',)
+    image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
+    target_tags = ('a', 'div', 'h1', 'h2', 'p',)
+
+    def string_to_list(self, file):
+        return file.split('/')
+
+    def list_to_string(self, file):
+        return '/'.join(file)
+
+    def pretty_print(self, obj):
+        return self.list_to_string(obj.getPhysicalPath())
+
+    def is_folder(self, obj):
+        if len(obj.split('.')) == 1:
+            return True
         else:
-            path = 'Plone'
-        create_scripts(
-            # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
-            # A sequence of distribution requirements.
-            [('import', 'parse2plone', 'main')],
-            # A working set,
-            working_set,
-            # The Python executable to use,
-            executable,
-            # The destination directory.
-            bindir,
-            # http://goo.gl/qm3f
-            # The value passed is a source string to be placed between the
-            # parentheses in the call
-            arguments="app, path='%s'" % path)
-        return tuple()
+            return False
 
-    def update(self):
-        """Updater"""
-        pass
+    def is_html(self, obj):
+        result = False
+        for ext in self.html_file_ext:
+            if obj.endswith(ext):
+                result = True
+        return result
+
+    def is_image(self, obj):
+        result = False
+        for ext in self.image_file_ext:
+            if obj.endswith(ext):
+                result = True
+        return result
+
+    def check_exists(self, parent, obj):
+        if obj in parent:
+            return True
+        else:
+            return False
+
+    def create_option_parser(self):
+        option_parser = OptionParser()
+        option_parser.add_option("-p", "--path", dest="path",
+                          help="Path to Plone site object")
+        option_parser.add_option("", "--html-file-ext", dest="html_file_ext",
+                          help="")
+        option_parser.add_option("", "--illegal-chars", dest="illegal_chars",
+                          help="")
+        option_parser.add_option("", "--image-file-ext", dest="image_file_ext",
+                          help="")
+        option_parser.add_option("", "--target-tags", dest="target_tags",
+                          help="")
+        return option_parser
 
 
 class Parse2Plone(object):
-    utils = Utils()
+    utils = Helpers()
     logger = logger()
 
     def set_title(self, obj, title):
@@ -206,78 +241,43 @@ class Parse2Plone(object):
            tuple(count.values()))
 
 
-class Utils(object):
-    html_file_ext = ('html',)
-    illegal_chars = ('_',)
-    image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
-    target_tags = ('a', 'div', 'h1', 'h2', 'p',)
+class Recipe(object):
+    """zc.buildout recipe"""
 
-    def string_to_list(self, file):
-        return file.split('/')
+    def __init__(self, buildout, name, options):
+        self.buildout, self.name, self.options = buildout, name, options
 
-    def list_to_string(self, file):
-        return '/'.join(file)
-
-    def pretty_print(self, obj):
-        return self.list_to_string(obj.getPhysicalPath())
-
-    def is_folder(self, obj):
-        if len(obj.split('.')) == 1:
-            return True
+    def install(self):
+        """Installer"""
+        bindir = self.buildout['buildout']['bin-directory']
+        if 'path' in self.options:
+            path = self.options['path']
         else:
-            return False
+            path = 'Plone'
+        create_scripts(
+            # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
+            # A sequence of distribution requirements.
+            [('import', 'parse2plone', 'main')],
+            # A working set,
+            working_set,
+            # The Python executable to use,
+            executable,
+            # The destination directory.
+            bindir,
+            # http://goo.gl/qm3f
+            # The value passed is a source string to be placed between the
+            # parentheses in the call
+            arguments="app, path='%s'" % path)
+        return tuple()
 
-    def is_html(self, obj):
-        result = False
-        for ext in self.html_file_ext:
-            if obj.endswith(ext):
-                result = True
-        return result
-
-    def is_image(self, obj):
-        result = False
-        for ext in self.image_file_ext:
-            if obj.endswith(ext):
-                result = True
-        return result
-
-    def check_exists(self, parent, obj):
-        if obj in parent:
-            return True
-        else:
-            return False
-
-    def create_option_parser(self):
-        option_parser = OptionParser()
-        option_parser.add_option("-p", "--path", dest="path",
-                          help="Path to Plone site object")
-        option_parser.add_option("", "--html-file-ext", dest="html_file_ext",
-                          help="")
-        option_parser.add_option("", "--illegal-chars", dest="illegal_chars",
-                          help="")
-        option_parser.add_option("", "--image-file-ext", dest="image_file_ext",
-                          help="")
-        option_parser.add_option("", "--target-tags", dest="target_tags",
-                          help="")
-        return option_parser
-
-
-def logger():
-    # log levels: debug, info, warn, error, critical
-    logger = logging.getLogger("parse2plone")
-    logger.setLevel(logging.INFO)
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    return logger
+    def update(self):
+        """Updater"""
+        pass
 
 
 def main(app, path=None):
     p2p = Parse2Plone()
-    utils = Utils()
+    utils = Helpers()
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
     dir = argv[1]
