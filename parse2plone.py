@@ -116,7 +116,11 @@ class Parse2Plone(object):
         app = makerequest(app)
         newSecurityManager(None, system)
         if path is not '':
-            site = app[path]
+            try:
+                site = app[path]
+            except KeyError:
+                self.logger.error("site object '%s' does not exist" % path)
+                exit(1)
         else:
             site = app.Plone
         return site
