@@ -2,12 +2,12 @@
 History
 -------
 
-0.7 - 10/25/2010
+0.7 (10/25/2010)
 ~~~~~~~~~~~~~~~~
 
 - Documentation fixes
 
-0.6 - 10/25/2010
+0.6 (10/25/2010)
 ~~~~~~~~~~~~~~~~
 
 - No really, revert 'add Plone to install_requires'
@@ -18,27 +18,27 @@ History
 - Refactor utility functions
 - Add ``tests.py``
 
-0.5 - 10/22/2010
+0.5 (10/22/2010)
 ~~~~~~~~~~~~~~~~
 
 - Revert 'add Plone to install_requires'
 
-0.4 - 10/22/2010
+0.4 (10/22/2010)
 ~~~~~~~~~~~~~~~~
 
 - Add 'Plone' to install_requires
 
-0.3 - 10/22/2010
+0.3 (10/22/2010)
 ~~~~~~~~~~~~~~~~
 
 - Another setuptools fix
 
-0.2 - 10/22/2010
+0.2 (10/22/2010)
 ~~~~~~~~~~~~~~~~
 
 - Setuptools fix
 
-0.1 - 10/21/2010
+0.1 (10/21/2010)
 ~~~~~~~~~~~~~~~~
 
 - Initial release
