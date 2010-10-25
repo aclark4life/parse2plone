@@ -187,15 +187,21 @@ You can specify the target tags to parse with the ``--target-tags`` option::
 Example
 '''''''
 
-Instead of accepting the default ``parse2plone`` behaviour on the command line you
+Instead of accepting the default ``parse2plone`` behaviour, on the command line you
 may specify the following::
 
     $ bin/plone run bin/import /path/to/files -p Plone2 --html-extensions=html \
         --image-extensions=png --target-tags=p
 
-This will configure ``parse2plone`` to (only) import images ending in
-``.png``, and content in ``p`` tags from files ending in ``.htm`` to a Plone
-site object named ``Plone2``.
+This will configure ``parse2plone`` to (only) import content *from*:
+
+    - Images ending in ``.png``
+    - HTML files ending in ``.htm``
+    - Text within ``p`` tags
+
+*to*: 
+
+    - A Plone site object named ``Plone2``.
 
 Consternation
 -------------
