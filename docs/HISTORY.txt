@@ -2,19 +2,16 @@
 History
 -------
 
-0.6 - 10/24/2010
+0.6 - 10/25/2010
 ~~~~~~~~~~~~~~~~
 
 - No really, revert 'add Plone to install_requires'
-- Add docs/HISTORY.txt
-- Add more troubleshooting tips to consternation section
-- Add configurable options: path, illegal_chars, html_extensions,
-  image_extensions, and target_tags
+- Add configurable options for: ``path``, ``illegal_chars``,
+  ``html_extensions``, ``image_extensions``, and ``target_tags``
 - Allow user to set all configurable options via both ``buildout.cfg``
   and command line arguments
-- Move option parser to Utils class
-- Updates to README
 - Refactor utility functions
+- Add ``tests.py``
 
 0.5 - 10/22/2010
 ~~~~~~~~~~~~~~~~
