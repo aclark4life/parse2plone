@@ -132,19 +132,7 @@ line options or add parameters to your ``buildout.cfg`` file.
 Both approaches allow customization of the same set of options, but the
 command line arguments will trump any settings found in your ``buildout.cfg`` file.
 
-Command line
-~~~~~~~~~~~~
-
-The following ``parse2plone`` command line options are available.
-
-Path (``--path``, ``-p``)
-'''''''''''''''''''''''''
-
-You can specify an alternate path to the Plone site object located within
-the database ('/Plone' by default) with ``--path`` or ``-p``::
-
-    $ bin/plone run bin/import /path/to/files --path=/path/to/Plone
-    $ bin/plone run bin/import /path/to/files -p MyPloneSite
+The easiest way to modify settings is to edit your ``buildout.cfg`` file.
 
 Buildout
 ~~~~~~~~
@@ -166,6 +154,59 @@ You can configure the following parameters in your ``buildout.cfg`` file:
   import image files with these extensions.
 - ``target_tags`` - Specify target tags. ``parse2plone`` will parse the
   contents of HTML tags listed.
+
+The exact same options are available via the command line.
+
+Command line
+~~~~~~~~~~~~
+
+The following ``parse2plone`` command line options are available.
+
+Path (``--path``, ``-p``)
+'''''''''''''''''''''''''
+
+You can specify an alternate path to the Plone site object located within
+the database ('/Plone' by default) with ``--path`` or ``-p``::
+
+    $ bin/plone run bin/import /path/to/files --path=Plone2
+    $ bin/plone run bin/import /path/to/files -p Plone2
+
+Illegal characters (``--illegal-chars``)
+''''''''''''''''''''''''''''''''''''''''
+
+You can specify an alternate path to the Plone site object located within
+the database ('/Plone' by default) with ``--path`` or ``-p``::
+
+    $ bin/plone run bin/import /path/to/files --path=Plone2
+    $ bin/plone run bin/import /path/to/files -p Plone2
+
+HTML file extensions (``--html-extensions``)
+''''''''''''''''''''''''''''''''''''''''''''
+
+You can specify an alternate path to the Plone site object located within
+the database ('/Plone' by default) with ``--path`` or ``-p``::
+
+    $ bin/plone run bin/import /path/to/files --path=Plone2
+    $ bin/plone run bin/import /path/to/files -p Plone2
+
+Image file extensions (``--image-extensions``)
+''''''''''''''''''''''''''''''''''''''''''''''
+
+You can specify an alternate path to the Plone site object located within
+the database ('/Plone' by default) with ``--path`` or ``-p``::
+
+    $ bin/plone run bin/import /path/to/files --path=Plone2
+    $ bin/plone run bin/import /path/to/files -p Plone2
+
+Target tags (``--target-tags``)
+'''''''''''''''''''''''''''''''
+
+You can specify an alternate path to the Plone site object located within
+the database ('/Plone' by default) with ``--path`` or ``-p``::
+
+    $ bin/plone run bin/import /path/to/files --path=Plone2
+    $ bin/plone run bin/import /path/to/files -p Plone2
+
 
 Example
 '''''''
