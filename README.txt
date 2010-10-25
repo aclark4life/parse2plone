@@ -26,7 +26,7 @@ here they are::
     illegal_chars = _ .
 
 The parameters listed are configured with their default values. Edit these if you 
-would like to change the default behavior, they are (hopefully) self-explanatory.
+would like to change the default behavior; they are (hopefully) self-explanatory.
 Now you can just cut and paste to get started or keep reading if you would like
 to know more.
 
