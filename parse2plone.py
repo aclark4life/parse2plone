@@ -91,15 +91,15 @@ class Utils(object):
     def create_option_parser(self):
         option_parser = OptionParser()
         option_parser.add_option("-p", "--path", dest="path",
-                          help="Path to Plone site object")
+            help="Path to Plone site object")
         option_parser.add_option("", "--html-file-ext", dest="html_extensions",
-                          help="")
+            help="")
         option_parser.add_option("", "--illegal-chars", dest="illegal_chars",
-                          help="")
-        option_parser.add_option("", "--image-file-ext", dest="image_extensions",
-                          help="")
+            help="")
+        option_parser.add_option("", "--image-file-ext",
+            dest="image_extensions", help="")
         option_parser.add_option("", "--target-tags", dest="target_tags",
-                          help="")
+            help="")
         return option_parser
 
 
@@ -229,7 +229,8 @@ class Parse2Plone(object):
             count['images'] += 1
         return count
 
-    def import_files(self, site, files, illegal_chars, html_extensions, image_extensions, target_tags):
+    def import_files(self, site, files, illegal_chars, html_extensions,
+        image_extensions, target_tags):
         count = {'folders': 0, 'pages': 0, 'images': 0}
         base = files.keys()[0]
         for file in files[base]:
@@ -275,8 +276,9 @@ class Recipe(object):
     def install(self):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
-    
-        path, illegal_chars, html_extensions, image_extensions, target_tags = self.parse_options(self.options)
+
+        (path, illegal_chars, html_extensions,
+            image_extensions, target_tags=self.parse_options(self.options))
 
         create_scripts(
             # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
@@ -291,8 +293,11 @@ class Recipe(object):
             # http://goo.gl/qm3f
             # The value passed is a source string to be placed between the
             # parentheses in the call
-            arguments="app, path='%s', illegal_chars='%s', html_extensions='%s', image_extensions='%s', target_tags='%s'" % (
-                path, illegal_chars, html_extensions, image_extensions, target_tags))
+            arguments="app, path='%s', illegal_chars='%s',
+                html_extensions='%s', image_extensions='%s',
+                target_tags='%s'" % (
+                path, illegal_chars, html_extensions, image_extensions,
+                target_tags))
         return tuple()
 
     def update(self):
@@ -301,7 +306,8 @@ class Recipe(object):
 
     def parse_options(self, options):
 
-        path, illegal_chars, html_extensions, image_extensions, target_tags = None,None,None,None,None
+        (path, illegal_chars, html_extensions, image_extensions,
+            target_tags=None, None, None, None, None)
 
         if 'path' in options:
             path = options['path']
@@ -309,36 +315,44 @@ class Recipe(object):
             path = defaults['path']
 
         if 'illegal_chars' in options:
-            illegal_chars = self.utils.join_input(options['illegal_chars'], ' ')
+            illegal_chars = self.utils.join_input(options['illegal_chars'],
+                ' ')
         else:
-            illegal_chars = self.utils.join_input(defaults['illegal_chars'], ',')
+            illegal_chars = self.utils.join_input(defaults['illegal_chars'],
+                ',')
 
         if 'html_extensions' in options:
-            html_extensions = self.utils.join_input(options['html_extensions'], ' ')
+            html_extensions = self.utils.join_input(options['html_extensions'],
+                ' ')
         else:
-            html_extensions = self.utils.join_input(defaults['html_extensions'], ',')
+            html_extensions = self.utils.join_input(
+                defaults['html_extensions'], ',')
 
         if 'image_extensions' in options:
-            image_extensions = self.utils.join_input(options['image_extensions'], ' ')
+            image_extensions = self.utils.join_input(
+                options['image_extensions'], ' ')
         else:
-            image_extensions = self.utils.join_input(defaults['image_extensions'], ',')
+            image_extensions = self.utils.join_input(
+                defaults['image_extensions'], ',')
 
         if 'target_tags' in options:
             target_tags = self.utils.join_input(options['target_tags'], ' ')
         else:
             target_tags = self.utils.join_input(defaults['target_tags'], ',')
 
-        return path, illegal_chars, html_extensions, image_extensions, target_tags
+        return (path, illegal_chars, html_extensions, image_extensions,
+            target_tags)
 
 
-def main(app, path=None, illegal_chars=None, html_extensions=None, image_extensions=None, target_tags=None):
+def main(app, path=None, illegal_chars=None, html_extensions=None,
+    image_extensions=None, target_tags=None):
     """parse2plone"""
 
     # Process args
     utils = Utils()
 
     illegal_chars = utils.split_input(illegal_chars, ',')
-    html_extensions = utils.split_input(html_extensions, ',') 
+    html_extensions = utils.split_input(html_extensions, ',')
     image_extensions = utils.split_input(image_extensions, ',')
     target_tags = utils.split_input(target_tags, ',')
 
@@ -356,4 +370,5 @@ def main(app, path=None, illegal_chars=None, html_extensions=None, image_extensi
     site = parse2plone.setup_app(app, path)
     files = parse2plone.get_files(import_dir)
     files = parse2plone.prep_files(files, ignore)
-    parse2plone.import_files(site, files, illegal_chars, html_extensions, image_extensions, target_tags)
+    parse2plone.import_files(site, files, illegal_chars, html_extensions,
+        image_extensions, target_tags)
