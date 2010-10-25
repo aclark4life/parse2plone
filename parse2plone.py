@@ -92,14 +92,14 @@ class Utils(object):
         option_parser = OptionParser()
         option_parser.add_option("-p", "--path", dest="path",
             help="Path to Plone site object")
-        option_parser.add_option("", "--html-file-ext", dest="html_extensions",
-            help="")
+        option_parser.add_option("", "--html-extensions", dest="html_extensions",
+            help="Specify HTML file extensions")
         option_parser.add_option("", "--illegal-chars", dest="illegal_chars",
-            help="")
-        option_parser.add_option("", "--image-file-ext",
-            dest="image_extensions", help="")
+            help="Specify characters to ignore")
+        option_parser.add_option("", "--image-extensions",
+            dest="image_extensions", help="Specify image file extensions")
         option_parser.add_option("", "--target-tags", dest="target_tags",
-            help="")
+            help="Specify HTML tags to parse")
         return option_parser
 
 
