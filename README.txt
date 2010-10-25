@@ -142,9 +142,15 @@ may specify the following::
     target_tags = p
     ...
 
-This will configure ``parse2plone`` to (only) import images ending in
-``.png``, and content in ``p`` tags from files ending in ``.htm`` to a Plone
-site object named ``Plone2``.
+This will configure ``parse2plone`` to (only) import content *from*:
+
+    - Images ending in ``.png``
+    - HTML files ending in ``.htm``
+    - Text within ``p`` tags
+
+*to*: 
+
+    - A Plone site object named ``Plone2``.
 
 Command line options
 ~~~~~~~~~~~~~~~~~~~~
