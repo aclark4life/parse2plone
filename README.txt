@@ -54,7 +54,6 @@ Here are a few reasons:
 - The author had an itch to scratch; it will be nice for him to be able to say
   "just go write a script" and then point to an example.
 
-
 Installation
 ------------
 
