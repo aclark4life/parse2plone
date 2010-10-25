@@ -19,8 +19,8 @@ here they are::
     [import]
     recipe = parse2plone
     #path = Plone
-    #html_file_ext = html
-    #image_file_ext = gif jpg jpeg png
+    #html_extensions = html
+    #image_extensions = gif jpg jpeg png
     #target_tags = a div h1 h2 p
     #illegal_chars = _
 
@@ -158,11 +158,11 @@ You can configure the following parameters in your ``buildout.cfg`` file:
 
 - ``path`` - Specify an alternate location for the Plone site object in the
   database.
-- ``html_file_ext`` - Specify HTML file extensions. ``parse2plone`` will
+- ``html_extensions`` - Specify HTML file extensions. ``parse2plone`` will
   import HTML files with these extensions.
 - ``illegal_chars`` - Specify illegal characters. ``parse2plone`` will ignore
   files that contain these characters.
-- ``image_file_ext`` - Specify image file extensions. ``parse2plone`` will
+- ``image_extensions`` - Specify image file extensions. ``parse2plone`` will
   import image files with these extensions.
 - ``target_tags`` - Specify target tags. ``parse2plone`` will parse the
   contents of HTML tags listed.
@@ -176,8 +176,8 @@ may specify the following configuration::
     [import]
     recipe = parse2plone
     path = Plone2
-    html_file_ext = htm
-    image_file_ext = png
+    html_extensions = htm
+    image_extensions = png
     target_tags = p
 
 This will configure ``parse2plone`` to (only) import images ending in
