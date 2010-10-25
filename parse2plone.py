@@ -31,7 +31,7 @@ from zc.buildout.easy_install import scripts as create_scripts
 
 
 defaults = {
-    'path': 'Plone',
+    'path': ['/Plone/burmese'],
     'illegal_chars': ['_', '.'],
     'html_extensions': ['html'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
@@ -83,6 +83,15 @@ class Utils(object):
                 result = True
         return result
 
+    def is_path(self, app, path):
+        if path.startswith('/'):
+            path = path[1:]
+        if len(path.split('/')) > 1:
+            site = app.restrictedTraverse(path)
+        else:
+            site = app[path]
+        return site
+
     def check_exists(self, parent, obj):
         if obj in parent:
             return True
@@ -118,7 +127,7 @@ class Parse2Plone(object):
         newSecurityManager(None, system)
         if path is not '':
             try:
-                site = app[path]
+                site = self.utils.is_path(app, path)
             except KeyError:
                 self.logger.error("site object '%s' does not exist" % path)
                 exit(1)
@@ -319,7 +328,6 @@ class Recipe(object):
 
         path, target_tags, html_extensions, image_extensions, illegal_chars = (
             results.values())
-        path = join_input(split_input(path, ','), '')
         return (path, illegal_chars, html_extensions, image_extensions,
             target_tags)
 

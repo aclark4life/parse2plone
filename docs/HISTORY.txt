@@ -2,6 +2,13 @@
 History
 -------
 
+0.8 ()
+
+- Improvements to ``--path`` option:
+    - Accept any path (assuming it's either the Plone site object or one of
+      it's folder-ish children.)
+    - Try to create the path if it doesn't exist.
+
 0.7 (10/25/2010)
 ~~~~~~~~~~~~~~~~
 
