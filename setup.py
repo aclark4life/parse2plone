@@ -28,7 +28,7 @@ setup(
     ],
     py_modules=['parse2plone'],
     classifiers=[
-        'Framework :: Buildout'
+        'Framework :: Buildout',
         'Framework :: Plone'
     ],
     extras_require={
