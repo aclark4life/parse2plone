@@ -281,10 +281,6 @@ class Recipe(object):
         (path, illegal_chars, html_extensions, image_extensions,
             target_tags=self.parse_options(self.options))
 
-        arguments = "app, path='%s', illegal_chars='%s', "
-        arguments += "html_extensions='%s', "
-        arguments += "image_extensions='%s', target_tags='%s'"
-
         create_scripts(
             # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
             # A sequence of distribution requirements.
@@ -298,8 +294,10 @@ class Recipe(object):
             # http://goo.gl/qm3f
             # The value passed is a source string to be placed between the
             # parentheses in the call
-            arguments=arguments % (path, illegal_chars, html_extensions,
-                image_extensions, target_tags))
+            arguments=arguments % ("app, path='%s', illegal_chars='%s',
+                html_extensions='%s', image_extensions='%s', target_tags='%s'"
+                % (path, illegal_chars, html_extensions, image_extensions,
+                target_tags)))
         return tuple()
 
     def update(self):
