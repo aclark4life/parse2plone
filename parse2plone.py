@@ -29,6 +29,15 @@ from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
 
+defaults = {
+    'path': 'Plone',
+    'html_extensions': ['html'],
+    'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
+    'target_tags': ['a', 'div', 'h1', 'h2', 'p'],
+    'illegal_chars': ['_', '.'],
+}
+
+
 def setup_logger():
     # log levels: debug, info, warn, error, critical
     logger = logging.getLogger("parse2plone")
@@ -43,19 +52,15 @@ def setup_logger():
 
 
 class Utils(object):
-    html_file_ext = ('html',)
-    illegal_chars = ('_',)
-    image_file_ext = ('gif', 'jpg', 'jpeg', 'png',)
-    target_tags = ('a', 'div', 'h1', 'h2', 'p',)
 
-    def string_to_list(self, file):
-        return file.split('/')
+    def split_input(self, input, delimiter):
+        return input.split(delimiter)
 
-    def list_to_string(self, file):
-        return '/'.join(file)
+    def join_input(self, input, delimiter):
+        return delimiter.join(input)
 
     def pretty_print(self, obj):
-        return self.list_to_string(obj.getPhysicalPath())
+        return self.join_input(obj.getPhysicalPath(), '/')
 
     def is_folder(self, obj):
         if len(obj.split('.')) == 1:
@@ -63,16 +68,16 @@ class Utils(object):
         else:
             return False
 
-    def is_html(self, obj):
+    def is_html(self, obj, html_extensions):
         result = False
-        for ext in self.html_file_ext:
+        for ext in html_extensions:
             if obj.endswith(ext):
                 result = True
         return result
 
-    def is_image(self, obj):
+    def is_image(self, obj, image_extensions):
         result = False
-        for ext in self.image_file_ext:
+        for ext in image_extensions:
             if obj.endswith(ext):
                 result = True
         return result
@@ -87,11 +92,11 @@ class Utils(object):
         option_parser = OptionParser()
         option_parser.add_option("-p", "--path", dest="path",
                           help="Path to Plone site object")
-        option_parser.add_option("", "--html-file-ext", dest="html_file_ext",
+        option_parser.add_option("", "--html-file-ext", dest="html_extensions",
                           help="")
         option_parser.add_option("", "--illegal-chars", dest="illegal_chars",
                           help="")
-        option_parser.add_option("", "--image-file-ext", dest="image_file_ext",
+        option_parser.add_option("", "--image-file-ext", dest="image_extensions",
                           help="")
         option_parser.add_option("", "--target-tags", dest="target_tags",
                           help="")
@@ -126,19 +131,19 @@ class Parse2Plone(object):
     def ignore_parts(self, files, ignore):
         results = []
         for file in files:
-            parts = self.utils.string_to_list(file)
+            parts = self.utils.split_input(file, '/')
             if ignore is not '':
                 parts = parts[ignore:]
             results.append(parts)
         return results
 
     def prep_files(self, files, ignore):
-        base = self.utils.list_to_string(
-            self.utils.string_to_list(files[0])[:ignore])
+        base = self.utils.join_input(
+            self.utils.split_input(files[0], '/')[:ignore], '/')
         results = {base: []}
         files = self.ignore_parts(files, ignore)
         for file in files:
-            results[base].append(self.utils.list_to_string(file))
+            results[base].append(self.utils.join_input(file, '/'))
         return results
 
     def get_parent(self, parent, prefix):
@@ -173,16 +178,16 @@ class Parse2Plone(object):
         return parent[obj]
 
     def set_image(self, image, obj, base, prefix):
-        file = open('/'.join([base, self.utils.list_to_string(prefix), obj]),
+        file = open('/'.join([base, self.utils.join_input(prefix, '/'), obj]),
             'rb')
         data = file.read()
         file.close()
         image.setImage(data)
         commit()
 
-    def set_page(self, page, obj, base, prefix):
+    def set_page(self, page, obj, base, prefix, target_tags):
         results = ''
-        file = open('/'.join([base, self.utils.list_to_string(prefix), obj]),
+        file = open('/'.join([base, self.utils.join_input(prefix, '/'), obj]),
             'rb')
         data = file.read()
         file.close()
@@ -190,41 +195,49 @@ class Parse2Plone(object):
         for element in root.iter():
             tag = element.tag
             text = element.text
-            if tag in self.utils.target_tags and text is not None:
+            if tag in target_tags and text is not None:
                 results += '<%s>%s</%s>' % (tag, text, tag)
         page.setText(results)
         commit()
 
-    def create_content(self, parent, obj, count, base, prefix):
+    def create_content(self,
+        parent,
+        obj,
+        count,
+        base,
+        prefix,
+        html_extensions,
+        image_extensions,
+        target_tags):
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
             self.set_title(folder, obj)
             count['folders'] += 1
-        elif self.utils.is_html(obj):
+        elif self.utils.is_html(obj, html_extensions):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
-            self.set_page(page, obj, base, prefix)
+            self.set_page(page, obj, base, prefix, target_tags)
             count['pages'] += 1
-        elif self.utils.is_image(obj):
+        elif self.utils.is_image(obj, image_extensions):
             image = self.create_image(parent, obj)
             self.set_title(image, obj)
             self.set_image(image, obj, base, prefix)
             count['images'] += 1
         return count
 
-    def import_files(self, site, files):
+    def import_files(self, site, files, illegal_chars, html_extensions, image_extensions, target_tags):
         count = {'folders': 0, 'pages': 0, 'images': 0}
         base = files.keys()[0]
         for file in files[base]:
-            parts = self.utils.string_to_list(file)
+            parts = self.utils.split_input(file, '/')
             parent = site
             for i in range(len(parts)):
-                path = self.utils.list_to_string(parts[:i + 1])
-                prefix = self.utils.string_to_list(path)[:-1]
-                obj = self.utils.string_to_list(path)[-1:][0]
-                if obj[0] not in self.utils.illegal_chars:
+                path = self.utils.join_input(parts[:i + 1], '/')
+                prefix = self.utils.split_input(path, '/')[:-1]
+                obj = self.utils.split_input(path, '/')[-1:][0]
+                if obj[0] not in illegal_chars:
                     parent = self.get_parent(parent,
-                        self.utils.list_to_string(prefix))
+                        self.utils.join_input(prefix, '/'))
                     if self.utils.check_exists(parent, obj):
                         self.logger.info("object '%s' exists inside '%s'" % (
                             obj, self.utils.pretty_print(parent)))
@@ -232,8 +245,15 @@ class Parse2Plone(object):
                         self.logger.info(
                             "object '%s' does not exist inside '%s'"
                             % (obj, self.utils.pretty_print(parent)))
-                        count = self.create_content(parent, obj, count, base,
-                            prefix)
+                        count = self.create_content(
+                                parent,
+                                obj,
+                                count,
+                                base,
+                                prefix,
+                                html_extensions,
+                                image_extensions,
+                                target_tags)
                 else:
                     break
         self.logger.info('Imported %s folders, %s pages, and %s images.' %
@@ -243,22 +263,16 @@ class Parse2Plone(object):
 class Recipe(object):
     """zc.buildout recipe"""
 
+    utils = Utils()
+
     def __init__(self, buildout, name, options):
         self.buildout, self.name, self.options = buildout, name, options
 
     def install(self):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
-
-        if 'path' in self.options:
-            path = self.options['path']
-        else:
-            path = 'Plone'
-
-        if 'target_tags' in self.options:
-            target_tags = self.options['target_tags']
-        else:
-            target_tags = defaults['target_tags']
+    
+        path, illegal_chars, html_extensions, image_extensions, target_tags = self.parse_options(self.options)
 
         create_scripts(
             # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
@@ -273,25 +287,63 @@ class Recipe(object):
             # http://goo.gl/qm3f
             # The value passed is a source string to be placed between the
             # parentheses in the call
-            arguments="app, path='%s', target_tags='%s'" % (path, target_tags))
+            arguments="app, path='%s', illegal_chars='%s', html_extensions='%s', image_extensions='%s', target_tags='%s'" % (
+                path, illegal_chars, html_extensions, image_extensions, target_tags))
         return tuple()
 
     def update(self):
         """Updater"""
         pass
 
+    def parse_options(self, options):
 
-def main(app, path=None):
+        path, illegal_chars, html_extensions, image_extensions, target_tags = None,None,None,None,None
+
+        if 'path' in options:
+            path = options['path']
+        else:
+            path = defaults['path']
+
+        if 'illegal_chars' in options:
+            illegal_chars = self.utils.join_input(options['illegal_chars'], ' ')
+        else:
+            illegal_chars = self.utils.join_input(defaults['illegal_chars'], ',')
+
+        if 'html_extensions' in options:
+            html_extensions = self.utils.join_input(options['html_extensions'], ' ')
+        else:
+            html_extensions = self.utils.join_input(defaults['html_extensions'], ',')
+
+        if 'image_extensions' in options:
+            image_extensions = self.utils.join_input(options['image_extensions'], ' ')
+        else:
+            image_extensions = self.utils.join_input(defaults['image_extensions'], ',')
+
+        if 'target_tags' in options:
+            target_tags = self.utils.join_input(options['target_tags'], ' ')
+        else:
+            target_tags = self.utils.join_input(defaults['target_tags'], ',')
+
+        return path, illegal_chars, html_extensions, image_extensions, target_tags
+
+
+def main(app, path=None, illegal_chars=None, html_extensions=None, image_extensions=None, target_tags=None):
     """parse2plone"""
 
-    # Parse args
+    # Process args
     utils = Utils()
+
+    illegal_chars = utils.split_input(illegal_chars, ',')
+    html_extensions = utils.split_input(html_extensions, ',') 
+    image_extensions = utils.split_input(image_extensions, ',')
+    target_tags = utils.split_input(target_tags, ',')
+
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
 
     # Configure settings
     import_dir = args[0]
-    ignore = len(utils.string_to_list(import_dir))
+    ignore = len(utils.split_input(import_dir, '/'))
     if options.path is not None:
         path = options.path
 
@@ -300,4 +352,4 @@ def main(app, path=None):
     site = parse2plone.setup_app(app, path)
     files = parse2plone.get_files(import_dir)
     files = parse2plone.prep_files(files, ignore)
-    parse2plone.import_files(site, files)
+    parse2plone.import_files(site, files, illegal_chars, html_extensions, image_extensions, target_tags)
