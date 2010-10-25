@@ -278,8 +278,7 @@ class Recipe(object):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
 
-        (path, illegal_chars, html_extensions, image_extensions,
-            target_tags=self.parse_options(self.options))
+        path, illegal_chars, html_extensions, image_extensions, target_tags=self.parse_options(self.options)
 
         create_scripts(
             # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
