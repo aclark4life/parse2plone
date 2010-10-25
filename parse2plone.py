@@ -312,8 +312,7 @@ class Recipe(object):
             else:
                 results[option] = join_input(defaults[option], ',')
 
-        (path, target_tags, html_extensions, image_extensions,
-            illegal_chars=results.values())
+        path, target_tags, html_extensions, image_extensions, illegal_chars=results.values()
         path = join_input(split_input(path, ','), '')
         return (path, illegal_chars, html_extensions, image_extensions,
             target_tags)
