@@ -19,6 +19,7 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SpecialUsers import system
 from Testing.makerequest import makerequest
 
+from copy import deepcopy
 from lxml.html import fromstring
 from optparse import OptionParser
 from os import path as os_path
@@ -31,10 +32,10 @@ from zc.buildout.easy_install import scripts as create_scripts
 
 defaults = {
     'path': 'Plone',
+    'illegal_chars': ['_', '.'],
     'html_extensions': ['html'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
     'target_tags': ['a', 'div', 'h1', 'h2', 'p'],
-    'illegal_chars': ['_', '.'],
 }
 
 
@@ -277,8 +278,7 @@ class Recipe(object):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
 
-        (path, illegal_chars, html_extensions,
-            image_extensions, target_tags=self.parse_options(self.options))
+        path, illegal_chars, html_extensions, image_extensions, target_tags=self.parse_options(self.options)
 
         create_scripts(
             # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
@@ -293,9 +293,7 @@ class Recipe(object):
             # http://goo.gl/qm3f
             # The value passed is a source string to be placed between the
             # parentheses in the call
-            arguments="app, path='%s', illegal_chars='%s',
-                html_extensions='%s', image_extensions='%s',
-                target_tags='%s'" % (
+            arguments="app, path='%s', illegal_chars='%s', html_extensions='%s', image_extensions='%s', target_tags='%s'" % (
                 path, illegal_chars, html_extensions, image_extensions,
                 target_tags))
         return tuple()
@@ -305,41 +303,19 @@ class Recipe(object):
         pass
 
     def parse_options(self, options):
+        results = deepcopy(defaults)
+        join_input = self.utils.join_input
+        split_input = self.utils.split_input
+        for option in results:
+            results[option] = None
+        for option in results:
+            if option in options:
+                results[option] = join_input(options[option], ',')
+            else:
+                results[option] = join_input(defaults[option], ',')
 
-        (path, illegal_chars, html_extensions, image_extensions,
-            target_tags=None, None, None, None, None)
-
-        if 'path' in options:
-            path = options['path']
-        else:
-            path = defaults['path']
-
-        if 'illegal_chars' in options:
-            illegal_chars = self.utils.join_input(options['illegal_chars'],
-                ' ')
-        else:
-            illegal_chars = self.utils.join_input(defaults['illegal_chars'],
-                ',')
-
-        if 'html_extensions' in options:
-            html_extensions = self.utils.join_input(options['html_extensions'],
-                ' ')
-        else:
-            html_extensions = self.utils.join_input(
-                defaults['html_extensions'], ',')
-
-        if 'image_extensions' in options:
-            image_extensions = self.utils.join_input(
-                options['image_extensions'], ' ')
-        else:
-            image_extensions = self.utils.join_input(
-                defaults['image_extensions'], ',')
-
-        if 'target_tags' in options:
-            target_tags = self.utils.join_input(options['target_tags'], ' ')
-        else:
-            target_tags = self.utils.join_input(defaults['target_tags'], ',')
-
+        path, target_tags, html_extensions, image_extensions, illegal_chars = results.values()
+        path = join_input(split_input(path, ','), '')
         return (path, illegal_chars, html_extensions, image_extensions,
             target_tags)
 
