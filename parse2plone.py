@@ -294,7 +294,7 @@ class Recipe(object):
             # http://goo.gl/qm3f
             # The value passed is a source string to be placed between the
             # parentheses in the call
-            arguments=arguments % ("app, path='%s', illegal_chars='%s',
+            arguments=("app, path='%s', illegal_chars='%s',
                 html_extensions='%s', image_extensions='%s', target_tags='%s'"
                 % (path, illegal_chars, html_extensions, image_extensions,
                 target_tags)))
