@@ -93,8 +93,8 @@ class Utils(object):
         option_parser = OptionParser()
         option_parser.add_option("-p", "--path", dest="path",
             help="Path to Plone site object")
-        option_parser.add_option("", "--html-extensions", dest="html_extensions",
-            help="Specify HTML file extensions")
+        option_parser.add_option("", "--html-extensions",
+            dest="html_extensions", help="Specify HTML file extensions")
         option_parser.add_option("", "--illegal-chars", dest="illegal_chars",
             help="Specify characters to ignore")
         option_parser.add_option("", "--image-extensions",
@@ -278,7 +278,12 @@ class Recipe(object):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
 
-        path, illegal_chars, html_extensions, image_extensions, target_tags=self.parse_options(self.options)
+        (path, illegal_chars, html_extensions, image_extensions,
+            target_tags=self.parse_options(self.options))
+
+        arguments = "app, path='%s', illegal_chars='%s', "
+        arguments += "html_extensions='%s', "
+        arguments += "image_extensions='%s', target_tags='%s'"
 
         create_scripts(
             # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
@@ -293,9 +298,8 @@ class Recipe(object):
             # http://goo.gl/qm3f
             # The value passed is a source string to be placed between the
             # parentheses in the call
-            arguments="app, path='%s', illegal_chars='%s', html_extensions='%s', image_extensions='%s', target_tags='%s'" % (
-                path, illegal_chars, html_extensions, image_extensions,
-                target_tags))
+            arguments=arguments % (path, illegal_chars, html_extensions,
+                image_extensions, target_tags))
         return tuple()
 
     def update(self):
@@ -314,7 +318,8 @@ class Recipe(object):
             else:
                 results[option] = join_input(defaults[option], ',')
 
-        path, target_tags, html_extensions, image_extensions, illegal_chars = results.values()
+        (path, target_tags, html_extensions, image_extensions,
+            illegal_chars=results.values())
         path = join_input(split_input(path, ','), '')
         return (path, illegal_chars, html_extensions, image_extensions,
             target_tags)
