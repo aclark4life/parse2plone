@@ -55,14 +55,28 @@ def setup_logger():
 
 class Utils(object):
 
-    def split_input(self, input, delimiter):
-        return input.split(delimiter)
+    def check_exists(self, parent, obj):
+        if obj in parent:
+            return True
+        else:
+            return False
 
-    def join_input(self, input, delimiter):
-        return delimiter.join(input)
-
-    def pretty_print(self, obj):
-        return self.join_input(obj.getPhysicalPath(), '/')
+    def create_option_parser(self):
+        option_parser = OptionParser()
+        option_parser.add_option("-p", "--path", dest="path",
+            help="Path to Plone site object or sub-folder")
+        option_parser.add_option("", "--html-extensions",
+            dest="html_extensions", help="Specify HTML file extensions")
+        option_parser.add_option("", "--illegal-chars", dest="illegal_chars",
+            help="Specify characters to ignore")
+        option_parser.add_option("", "--image-extensions",
+            dest="image_extensions", help="Specify image file extensions")
+        option_parser.add_option("", "--target-tags", dest="target_tags",
+            help="Specify HTML tags to parse")
+        option_parser.add_option("-f", "--force",
+            action="store_true", dest="force", default=False,
+            help="Force creation of folders")
+        return option_parser
 
     def is_folder(self, obj):
         if len(obj.split('.')) == 1:
@@ -90,28 +104,14 @@ class Utils(object):
         else:
             return False
 
-    def check_exists(self, parent, obj):
-        if obj in parent:
-            return True
-        else:
-            return False
+    def join_input(self, input, delimiter):
+        return delimiter.join(input)
 
-    def create_option_parser(self):
-        option_parser = OptionParser()
-        option_parser.add_option("-p", "--path", dest="path",
-            help="Path to Plone site object or sub-folder")
-        option_parser.add_option("", "--html-extensions",
-            dest="html_extensions", help="Specify HTML file extensions")
-        option_parser.add_option("", "--illegal-chars", dest="illegal_chars",
-            help="Specify characters to ignore")
-        option_parser.add_option("", "--image-extensions",
-            dest="image_extensions", help="Specify image file extensions")
-        option_parser.add_option("", "--target-tags", dest="target_tags",
-            help="Specify HTML tags to parse")
-        option_parser.add_option("-f", "--force",
-            action="store_true", dest="force", default=False,
-            help="don't print status messages to stdout")
-        return option_parser
+    def pretty_print(self, obj):
+        return self.join_input(obj.getPhysicalPath(), '/')
+
+    def split_input(self, input, delimiter):
+        return input.split(delimiter)
 
 
 class Parse2Plone(object):
