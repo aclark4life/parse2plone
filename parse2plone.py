@@ -193,17 +193,53 @@ class Parse2Plone(object):
             results.append(parts)
         return results
 
-    def import_files(self, parent, files, illegal_chars, html_extensions,
-        image_extensions, target_tags, count, base):
+#    def import_files(self, parent, files, illegal_chars, html_extensions,
+#        image_extensions, target_tags, count, base):
+#        for file in files[base]:
+#            parts = self.utils.split_input(file, '/')
+#            parent, count = self.traverse_create(parts, parent, count,
+#                illegal_chars, base, html_extensions, image_extensions,
+#                target_tags)
+#        msg = "Imported %s folders, %s pages, and %s images into: '%s'."
+#        results = list(count.values())
+#        results.append(self.utils.pretty_print(parent))
+#        self.logger.info(msg % tuple(results))
+
+
+    def import_files(self, site, files, illegal_chars, html_extensions,
+        image_extensions, target_tags):
+        count = {'folders': 0, 'pages': 0, 'images': 0}
+        base = files.keys()[0]
         for file in files[base]:
             parts = self.utils.split_input(file, '/')
-            parent, count = self.traverse_create(parts, parent, count,
-                illegal_chars, base, html_extensions, image_extensions,
-                target_tags)
-        msg = "Imported %s folders, %s pages, and %s images into: '%s'."
-        results = list(count.values())
-        results.append(self.utils.pretty_print(parent))
-        self.logger.info(msg % tuple(results))
+            parent = site
+            for i in range(len(parts)):
+                path = self.utils.join_input(parts[:i + 1], '/')
+                prefix = self.utils.split_input(path, '/')[:-1]
+                obj = self.utils.split_input(path, '/')[-1:][0]
+                if obj[0] not in illegal_chars:
+                    parent = self.get_parent(parent,
+                        self.utils.join_input(prefix, '/'))
+                    if self.utils.check_exists(parent, obj):
+                        self.logger.info("object '%s' exists inside '%s'" % (
+                            obj, self.utils.pretty_print(parent)))
+                    else:
+                        self.logger.info(
+                            "object '%s' does not exist inside '%s'"
+                            % (obj, self.utils.pretty_print(parent)))
+                        count = self.create_content(
+                                parent,
+                                obj,
+                                count,
+                                base,
+                                prefix,
+                                html_extensions,
+                                image_extensions,
+                                target_tags)
+                else:
+                    break
+        self.logger.info('Imported %s folders, %s pages, and %s images.' %
+           tuple(count.values()))
 
     def prep_files(self, files, ignore, base):
         results = {base: []}
