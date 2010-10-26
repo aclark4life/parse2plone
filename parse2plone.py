@@ -116,8 +116,6 @@ class Utils(object):
 
 class Parse2Plone(object):
     utils = Utils()
-    logger = setup_logger()
-
     def create_content(self, parent, obj, count, base,
         prefix_path, html_extensions, image_extensions,
         target_tags):
@@ -235,7 +233,9 @@ class Parse2Plone(object):
 
     def import_files(self, site, files, illegal_chars, html_extensions,
         image_extensions, target_tags, count):
+
         base = files.keys()[0]
+
         for file in files[base]:
             parts = self.utils.split_input(file, '/')
             parent = site
@@ -264,10 +264,9 @@ class Parse2Plone(object):
                                 target_tags)
                 else:
                     break
-        msg = "Imported %s folders, %s pages, and %s images into: '%s'."
         results = list(count.values())
         results.append(self.utils.obj_to_path(parent))
-        self.logger.info(msg % tuple(results))
+        return results
 
     def prep_files(self, files, ignore, base):
         results = {base: []}
@@ -393,6 +392,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, target_tags=None, force=False):
     """parse2plone"""
 
+    logger = setup_logger()
     count = {'folders': 0, 'pages': 0, 'images': 0}
 
     # Process args
@@ -414,6 +414,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
 
     # Run parse2plone
     parse2plone = Parse2Plone()
+    parse2plone.logger = logger
 
     files = parse2plone.get_files(import_dir)
 
@@ -423,12 +424,12 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
 #        illegal_chars, base, html_extensions, image_extensions,
 #        target_tags)
 
-
     app = parse2plone.setup_app(app)
-
     parent = parse2plone.get_parent(app, path)
-
     files = parse2plone.prep_files(files, ignore, base)
-
-    parse2plone.import_files(parent, files, illegal_chars,
+    results = parse2plone.import_files(parent, files, illegal_chars,
         html_extensions, image_extensions, target_tags, count)
+
+    # Print results
+    msg = "Imported %s folders, %s pages, and %s images into: '%s'."
+    logger.info(msg % tuple(results))
