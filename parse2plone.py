@@ -193,22 +193,9 @@ class Parse2Plone(object):
             results.append(parts)
         return results
 
-#    def import_files(self, parent, files, illegal_chars, html_extensions,
-#        image_extensions, target_tags, count, base):
-#        for file in files[base]:
-#            parts = self.utils.split_input(file, '/')
-#            parent, count = self.traverse_create(parts, parent, count,
-#                illegal_chars, base, html_extensions, image_extensions,
-#                target_tags)
-#        msg = "Imported %s folders, %s pages, and %s images into: '%s'."
-#        results = list(count.values())
-#        results.append(self.utils.pretty_print(parent))
-#        self.logger.info(msg % tuple(results))
-
 
     def import_files(self, site, files, illegal_chars, html_extensions,
-        image_extensions, target_tags):
-        count = {'folders': 0, 'pages': 0, 'images': 0}
+        image_extensions, target_tags, count):
         base = files.keys()[0]
         for file in files[base]:
             parts = self.utils.split_input(file, '/')
@@ -238,8 +225,10 @@ class Parse2Plone(object):
                                 target_tags)
                 else:
                     break
-        self.logger.info('Imported %s folders, %s pages, and %s images.' %
-           tuple(count.values()))
+        msg = "Imported %s folders, %s pages, and %s images into: '%s'."
+        results = list(count.values())
+        results.append(self.utils.pretty_print(parent))
+        self.logger.info(msg % tuple(results))
 
     def prep_files(self, files, ignore, base):
         results = {base: []}
@@ -426,5 +415,6 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         illegal_chars, base, html_extensions, image_extensions,
         target_tags)
     files = parse2plone.prep_files(files, ignore, base)
+
     parse2plone.import_files(parent, files, illegal_chars,
-        html_extensions, image_extensions, target_tags, count, base)
+        html_extensions, image_extensions, target_tags, count)
