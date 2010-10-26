@@ -264,8 +264,8 @@ class Parse2Plone(object):
                                 target_tags)
                 else:
                     break
-        results = list(count.values())
-        results.append(self.utils.obj_to_path(parent))
+        results = count.values()
+        results.append(self.utils.obj_to_path(site))
         return results
 
     def prep_files(self, files, ignore, base):
@@ -393,7 +393,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     """parse2plone"""
 
     logger = setup_logger()
-    count = {'folders': 0, 'pages': 0, 'images': 0}
+    count = {'folders': 0, 'images': 0, 'pages': 0}
 
     # Process args
     utils = Utils()
@@ -431,5 +431,5 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         html_extensions, image_extensions, target_tags, count)
 
     # Print results
-    msg = "Imported %s folders, %s pages, and %s images into: '%s'."
+    msg = "Imported %s folders, %s images, and %s pages into: '%s'."
     logger.info(msg % tuple(results))
