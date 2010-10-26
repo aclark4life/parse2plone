@@ -115,7 +115,6 @@ class Utils(object):
 
 
 class Parse2Plone(object):
-    utils = Utils()
 
     def create_content(self, parent, obj, count, base,
         prefix_path, html_extensions, image_extensions,
@@ -358,13 +357,13 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     count = {'folders': 0, 'images': 0, 'pages': 0}
 
     # Clean up input
+    utils = Utils()
     illegal_chars = utils.split_input(illegal_chars, ',')
     html_extensions = utils.split_input(html_extensions, ',')
     image_extensions = utils.split_input(image_extensions, ',')
     target_tags = utils.split_input(target_tags, ',')
 
     # Process command line args
-    utils = Utils()
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
 
@@ -377,6 +376,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Run parse2plone
     parse2plone = Parse2Plone()
     parse2plone.logger = logger
+    parse2plone.utils = utils
     files = parse2plone.get_files(import_dir)
     base = parse2plone.get_base(files, ignore)
     app = parse2plone.setup_app(app)
