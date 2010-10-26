@@ -123,7 +123,8 @@ class Parse2Plone(object):
         obj.reindexObject()
         commit()
 
-    def setup_app(self, app, path, force, count, illegal_chars, base, html_extensions, image_extensions, target_tags):
+    def setup_app(self, app, path, force, count, illegal_chars, base,
+        html_extensions, image_extensions, target_tags):
         site = None
         app = makerequest(app)
         newSecurityManager(None, system)
@@ -135,17 +136,24 @@ class Parse2Plone(object):
                     try:
                         site = app.restrictedTraverse(path)
                     except:
-                        if not force: 
-                            self.logger.error("object '%s' does not exist, use --force to create it" % path)
+                        if not force:
+                            errmsg = "object '%s' does not exist, "
+                            errmsg += "use --force to create it"
+                            self.logger.error(errmsg % path)
                             exit(1)
                         else:
                             parts = self.utils.split_input(path, '/')
-                            site, count = self.traverse_create(parts, app, count, illegal_chars, base, html_extensions, image_extensions, target_tags)
+                            site, count = self.traverse_create(parts,
+                                app, count, illegal_chars, base,
+                                html_extensions, image_extensions,
+                                target_tags)
                 else:
                     site = app[path]
             except KeyError:
-                if not force: 
-                    self.logger.error("object '%s' does not exist, use --force to create it" % path)
+                if not force:
+                    errmsg = "object '%s' does not exist, "
+                    errmsg += "use --force to create it"
+                    self.logger.error(errmsg % path)
                     exit(1)
                 else:
                     site = self.get_parent(app, self.get_prefix(path))
@@ -178,8 +186,6 @@ class Parse2Plone(object):
         return results
 
     def prep_files(self, files, ignore, base):
-#        base = self.utils.join_input(
-#            self.utils.split_input(files[0], '/')[:ignore], '/')
         results = {base: []}
         files = self.ignore_parts(files, ignore)
         for file in files:
@@ -259,8 +265,8 @@ class Parse2Plone(object):
             count['images'] += 1
         return count
 
-    def traverse_create(self, parts, parent, count, illegal_chars, base, html_extensions, image_extensions, target_tags):
-
+    def traverse_create(self, parts, parent, count, illegal_chars,
+        base, html_extensions, image_extensions, target_tags):
         site = parent
         for i in range(len(parts)):
 
@@ -291,16 +297,15 @@ class Parse2Plone(object):
 
     def import_files(self, site, files, illegal_chars, html_extensions,
         image_extensions, target_tags, count, base):
-
-#        base = files.keys()[0]
-
-
         for file in files[base]:
             parts = self.utils.split_input(file, '/')
             parent = site
-            site, count = self.traverse_create(parts, parent, count, illegal_chars, base, html_extensions, image_extensions, target_tags)
-        self.logger.info('Imported %s folders, %s pages, and %s images into %s.' %
-           tuple(count.values(), site))
+            site, count = self.traverse_create(parts, parent, count,
+                illegal_chars, base, html_extensions, image_extensions,
+                target_tags)
+        msg = "Imported %s folders, %s pages, and %s images into %s."
+        self.logger.info(msg % tuple(count.values(), site))
+
 
 class Recipe(object):
     """zc.buildout recipe"""
@@ -354,6 +359,7 @@ class Recipe(object):
                 results[option] = join_input(defaults[option], ',')
         return results.values()
 
+
 def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, target_tags=None, force=False):
     """parse2plone"""
@@ -380,14 +386,11 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Run parse2plone
     parse2plone = Parse2Plone()
     files = parse2plone.get_files(import_dir)
-
-#    base = files.keys()[0]
-
-    base = utils.join_input(utils.split_input(files[0], '/')[:ignore], '/')
-
-    site, count = parse2plone.setup_app(app, path, force, count, illegal_chars, base, html_extensions, image_extensions, target_tags)
-
+    base = utils.join_input(
+        utils.split_input(files[0], '/')[:ignore], '/')
+    site, count = parse2plone.setup_app(app, path, force, count,
+        illegal_chars, base, html_extensions, image_extensions,
+        target_tags)
     files = parse2plone.prep_files(files, ignore, base)
-
-    parse2plone.import_files(site, files, illegal_chars, html_extensions,
-        image_extensions, target_tags, count, base)
+    parse2plone.import_files(site, files, illegal_chars,
+        html_extensions, image_extensions, target_tags, count, base)
