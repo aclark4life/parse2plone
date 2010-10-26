@@ -178,6 +178,9 @@ class Parse2Plone(object):
         else:
             return parent
 
+    def get_path(self, parts, i):
+        return self.utils.join_input(parts[:i + 1], '/')
+
     def get_prefix(self, path):
         return self.utils.split_input(path, '/')[:-1]
 
@@ -198,8 +201,10 @@ class Parse2Plone(object):
             site, count = self.traverse_create(parts, parent, count,
                 illegal_chars, base, html_extensions, image_extensions,
                 target_tags)
-        msg = "Imported %s folders, %s pages, and %s images into %s."
-        self.logger.info(msg % tuple(count.values(), site))
+        msg = "Imported %s folders, %s pages, and %s images into: '%s'."
+        results = list(count.values())
+        results.append(self.utils.pretty_print(site))
+        self.logger.info(msg % tuple(results))
 
     def prep_files(self, files, ignore, base):
         results = {base: []}
@@ -269,9 +274,15 @@ class Parse2Plone(object):
                     self.logger.error(errmsg % path)
                     exit(1)
                 else:
-                    site = self.get_parent(app, self.get_prefix(path))
-                    obj = self.get_obj(path)
-                    site = self.create_folder(site, obj)
+                    parts = self.utils.split_input(path, '/')
+                    site, count = self.traverse_create(parts,
+                        app, count, illegal_chars, base,
+                        html_extensions, image_extensions,
+                        target_tags)
+#                    site = self.get_parent(app, self.get_prefix(path))
+#                    obj = self.get_obj(path)
+#                    site = self.create_folder(site, obj)
+
         else:
             site = app.Plone
         return site, count
@@ -280,19 +291,15 @@ class Parse2Plone(object):
         base, html_extensions, image_extensions, target_tags):
         site = parent
         for i in range(len(parts)):
-
-            path = self.utils.join_input(parts[:i + 1], '/')
+            path = self.get_path(parts, i)
             prefix = self.get_prefix(path)
             obj = self.get_obj(path)
-
             if self.utils.is_legal(obj, illegal_chars):
                 parent = self.get_parent(parent,
                     self.utils.join_input(prefix, '/'))
-
                 if self.utils.check_exists(parent, obj):
                     self.logger.info("object '%s' exists inside '%s'" % (
                         obj, self.utils.pretty_print(parent)))
-
                 else:
                     self.logger.info(
                         "object '%s' does not exist inside '%s'"
@@ -300,9 +307,11 @@ class Parse2Plone(object):
                     count = self.create_content(parent, obj, count,
                         base, prefix, html_extensions,
                         image_extensions, target_tags)
-                site = parent.restrictedTraverse(path)
             else:
                 break
+
+#        site = parent.restrictedTraverse(path)
+
         return site, count
 
 
