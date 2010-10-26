@@ -31,7 +31,7 @@ from zc.buildout.easy_install import scripts as create_scripts
 
 
 defaults = {
-    'path': ['/Plone/burmese'],
+    'path': ['/Plone'],
     'illegal_chars': ['_', '.'],
     'html_extensions': ['html'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
@@ -84,14 +84,11 @@ class Utils(object):
                 result = True
         return result
 
-    def is_path(self, app, path):
-        if path.startswith('/'):
-            path = path[1:]
-        if len(path.split('/')) > 1:
-            site = app.restrictedTraverse(path)
+    def is_legal(self, obj, illegal_chars):
+        if obj[0] not in illegal_chars:
+            return True
         else:
-            site = app[path]
-        return site
+            return False
 
     def check_exists(self, parent, obj):
         if obj in parent:
@@ -126,16 +123,29 @@ class Parse2Plone(object):
         obj.reindexObject()
         commit()
 
-    def setup_app(self, app, path, force):
+    def setup_app(self, app, path, force, count, illegal_chars, base, html_extensions, image_extensions, target_tags):
         site = None
         app = makerequest(app)
         newSecurityManager(None, system)
         if path is not '':
             try:
-                site = self.utils.is_path(app, path)
+                if path.startswith('/'):
+                    path = path[1:]
+                if len(path.split('/')) > 1:
+                    try:
+                        site = app.restrictedTraverse(path)
+                    except:
+                        if not force: 
+                            self.logger.error("object '%s' does not exist, use --force to create it" % path)
+                            exit(1)
+                        else:
+                            parts = self.utils.split_input(path, '/')
+                            site, count = self.traverse_create(parts, app, count, illegal_chars, base, html_extensions, image_extensions, target_tags)
+                else:
+                    site = app[path]
             except KeyError:
                 if not force: 
-                    self.logger.error("object '%s' does not exist" % path)
+                    self.logger.error("object '%s' does not exist, use --force to create it" % path)
                     exit(1)
                 else:
                     site = self.get_parent(app, self.get_prefix(path))
@@ -143,7 +153,7 @@ class Parse2Plone(object):
                     site = self.create_folder(site, obj)
         else:
             site = app.Plone
-        return site
+        return site, count
 
     def get_files(self, import_dir):
         results = []
@@ -167,9 +177,9 @@ class Parse2Plone(object):
             results.append(parts)
         return results
 
-    def prep_files(self, files, ignore):
-        base = self.utils.join_input(
-            self.utils.split_input(files[0], '/')[:ignore], '/')
+    def prep_files(self, files, ignore, base):
+#        base = self.utils.join_input(
+#            self.utils.split_input(files[0], '/')[:ignore], '/')
         results = {base: []}
         files = self.ignore_parts(files, ignore)
         for file in files:
@@ -249,36 +259,48 @@ class Parse2Plone(object):
             count['images'] += 1
         return count
 
+    def traverse_create(self, parts, parent, count, illegal_chars, base, html_extensions, image_extensions, target_tags):
+
+        site = parent
+        for i in range(len(parts)):
+
+            path = self.utils.join_input(parts[:i + 1], '/')
+            prefix = self.get_prefix(path)
+            obj = self.get_obj(path)
+
+            if self.utils.is_legal(obj, illegal_chars):
+                parent = self.get_parent(parent,
+                    self.utils.join_input(prefix, '/'))
+
+                if self.utils.check_exists(parent, obj):
+                    self.logger.info("object '%s' exists inside '%s'" % (
+                        obj, self.utils.pretty_print(parent)))
+
+                else:
+                    self.logger.info(
+                        "object '%s' does not exist inside '%s'"
+                        % (obj, self.utils.pretty_print(parent)))
+                    count = self.create_content(parent, obj, count,
+                        base, prefix, html_extensions,
+                        image_extensions, target_tags)
+                site = parent.restrictedTraverse(path)
+            else:
+                break
+
+        return site, count
+
     def import_files(self, site, files, illegal_chars, html_extensions,
-        image_extensions, target_tags):
-        count = {'folders': 0, 'pages': 0, 'images': 0}
-        base = files.keys()[0]
+        image_extensions, target_tags, count, base):
+
+#        base = files.keys()[0]
+
+
         for file in files[base]:
             parts = self.utils.split_input(file, '/')
             parent = site
-            for i in range(len(parts)):
-                path = self.utils.join_input(parts[:i + 1], '/')
-                prefix = self.get_prefix(path)
-#                obj = self.utils.split_input(path, '/')[-1:][0]
-                obj = self.get_obj(path)
-                if obj[0] not in illegal_chars:
-                    parent = self.get_parent(parent,
-                        self.utils.join_input(prefix, '/'))
-                    if self.utils.check_exists(parent, obj):
-                        self.logger.info("object '%s' exists inside '%s'" % (
-                            obj, self.utils.pretty_print(parent)))
-                    else:
-                        self.logger.info(
-                            "object '%s' does not exist inside '%s'"
-                            % (obj, self.utils.pretty_print(parent)))
-                        count = self.create_content(parent, obj, count,
-                            base, prefix, html_extensions,
-                            image_extensions, target_tags)
-                else:
-                    break
-        self.logger.info('Imported %s folders, %s pages, and %s images.' %
-           tuple(count.values()))
-
+            site, count = self.traverse_create(parts, parent, count, illegal_chars, base, html_extensions, image_extensions, target_tags)
+        self.logger.info('Imported %s folders, %s pages, and %s images into %s.' %
+           tuple(count.values(), site))
 
 class Recipe(object):
     """zc.buildout recipe"""
@@ -336,6 +358,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, target_tags=None, force=False):
     """parse2plone"""
 
+    count = {'folders': 0, 'pages': 0, 'images': 0}
+
     # Process args
     utils = Utils()
 
@@ -355,8 +379,15 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
 
     # Run parse2plone
     parse2plone = Parse2Plone()
-    site = parse2plone.setup_app(app, path, force)
     files = parse2plone.get_files(import_dir)
-    files = parse2plone.prep_files(files, ignore)
+
+#    base = files.keys()[0]
+
+    base = utils.join_input(utils.split_input(files[0], '/')[:ignore], '/')
+
+    site, count = parse2plone.setup_app(app, path, force, count, illegal_chars, base, html_extensions, image_extensions, target_tags)
+
+    files = parse2plone.prep_files(files, ignore, base)
+
     parse2plone.import_files(site, files, illegal_chars, html_extensions,
-        image_extensions, target_tags)
+        image_extensions, target_tags, count, base)
