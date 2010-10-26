@@ -273,12 +273,6 @@ class Parse2Plone(object):
                     self.logger.error(errmsg % path)
                     exit(1)
                 else:
-#                    parts = self.utils.split_input(path, '/')
-#                    parent, count = self.traverse_create(parts,
-#                        app, count, illegal_chars, base,
-#                        html_extensions, image_extensions,
-#                        target_tags)
-
                     parent = self.get_parent(app, self.get_prefix(path))
                     obj = self.get_obj(path)
                     parent = self.create_folder(parent, obj)
