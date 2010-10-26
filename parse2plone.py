@@ -118,6 +118,119 @@ class Parse2Plone(object):
     utils = Utils()
     logger = setup_logger()
 
+    def create_content(self, parent, obj, count, base,
+        prefix, html_extensions, image_extensions,
+        target_tags):
+        if self.utils.is_folder(obj):
+            folder = self.create_folder(parent, obj)
+            self.set_title(folder, obj)
+            count['folders'] += 1
+        elif self.utils.is_html(obj, html_extensions):
+            page = self.create_page(parent, obj)
+            self.set_title(page, obj)
+            self.set_page(page, obj, base, prefix, target_tags)
+            count['pages'] += 1
+        elif self.utils.is_image(obj, image_extensions):
+            image = self.create_image(parent, obj)
+            self.set_title(image, obj)
+            self.set_image(image, obj, base, prefix)
+            count['images'] += 1
+        return count
+
+    def create_folder(self, parent, obj):
+        self.logger.info("creating folder '%s' inside parent folder '%s'" % (
+            obj, self.utils.pretty_print(parent)))
+        parent.invokeFactory('Folder', obj)
+        commit()
+        return parent[obj]
+
+    def create_image(self, parent, obj):
+        self.logger.info("creating image '%s' inside parent folder '%s'" % (
+            obj, self.utils.pretty_print(parent)))
+        parent.invokeFactory('Image', obj)
+        commit()
+        return parent[obj]
+
+    def create_page(self, parent, obj):
+        self.logger.info("creating page '%s' inside parent folder '%s'" % (obj,
+            self.utils.pretty_print(parent)))
+        parent.invokeFactory('Document', obj)
+        commit()
+        return parent[obj]
+
+    def get_files(self, import_dir):
+        results = []
+        for path, subdirs, files in walk(import_dir):
+            for file in fnmatch.filter(files, '*'):
+                results.append(os_path.join(path, file))
+        return results
+
+    def get_obj(self, path):
+        return self.utils.split_input(path, '/')[-1:][0]
+
+    def get_parent(self, parent, prefix):
+        if prefix is not '':
+            newp = parent.restrictedTraverse(prefix)
+            self.logger.info('updating parent from %s to %s' % (
+                self.utils.pretty_print(parent),
+                self.utils.pretty_print(newp)))
+            return newp
+        else:
+            return parent
+
+    def get_prefix(self, path):
+        return self.utils.split_input(path, '/')[:-1]
+
+    def ignore_parts(self, files, ignore):
+        results = []
+        for file in files:
+            parts = self.utils.split_input(file, '/')
+            if ignore is not '':
+                parts = parts[ignore:]
+            results.append(parts)
+        return results
+
+    def import_files(self, site, files, illegal_chars, html_extensions,
+        image_extensions, target_tags, count, base):
+        for file in files[base]:
+            parts = self.utils.split_input(file, '/')
+            parent = site
+            site, count = self.traverse_create(parts, parent, count,
+                illegal_chars, base, html_extensions, image_extensions,
+                target_tags)
+        msg = "Imported %s folders, %s pages, and %s images into %s."
+        self.logger.info(msg % tuple(count.values(), site))
+
+    def prep_files(self, files, ignore, base):
+        results = {base: []}
+        files = self.ignore_parts(files, ignore)
+        for file in files:
+            results[base].append(self.utils.join_input(file, '/'))
+        return results
+
+    def set_image(self, image, obj, base, prefix):
+        file = open('/'.join([base, self.utils.join_input(prefix, '/'), obj]),
+            'rb')
+        data = file.read()
+        file.close()
+        image.setImage(data)
+        commit()
+
+    def set_page(self, page, obj, base, prefix, target_tags):
+        results = ''
+        file = open('/'.join([base, self.utils.join_input(prefix, '/'), obj]),
+            'rb')
+        data = file.read()
+        file.close()
+        root = fromstring(data)
+        for element in root.iter():
+            tag = element.tag
+            text = element.text
+            if tag in target_tags and text is not None:
+                results += '<%s>%s</%s>' % (tag, text, tag)
+        page.setText(results)
+        commit()
+
     def set_title(self, obj, title):
         obj.setTitle(title.title())
         obj.reindexObject()
@@ -163,108 +276,6 @@ class Parse2Plone(object):
             site = app.Plone
         return site, count
 
-    def get_files(self, import_dir):
-        results = []
-        for path, subdirs, files in walk(import_dir):
-            for file in fnmatch.filter(files, '*'):
-                results.append(os_path.join(path, file))
-        return results
-
-    def get_prefix(self, path):
-        return self.utils.split_input(path, '/')[:-1]
-
-    def get_obj(self, path):
-        return self.utils.split_input(path, '/')[-1:][0]
-
-    def ignore_parts(self, files, ignore):
-        results = []
-        for file in files:
-            parts = self.utils.split_input(file, '/')
-            if ignore is not '':
-                parts = parts[ignore:]
-            results.append(parts)
-        return results
-
-    def prep_files(self, files, ignore, base):
-        results = {base: []}
-        files = self.ignore_parts(files, ignore)
-        for file in files:
-            results[base].append(self.utils.join_input(file, '/'))
-        return results
-
-    def get_parent(self, parent, prefix):
-        if prefix is not '':
-            newp = parent.restrictedTraverse(prefix)
-            self.logger.info('updating parent from %s to %s' % (
-                self.utils.pretty_print(parent),
-                self.utils.pretty_print(newp)))
-            return newp
-        else:
-            return parent
-
-    def create_folder(self, parent, obj):
-        self.logger.info("creating folder '%s' inside parent folder '%s'" % (
-            obj, self.utils.pretty_print(parent)))
-        parent.invokeFactory('Folder', obj)
-        commit()
-        return parent[obj]
-
-    def create_page(self, parent, obj):
-        self.logger.info("creating page '%s' inside parent folder '%s'" % (obj,
-            self.utils.pretty_print(parent)))
-        parent.invokeFactory('Document', obj)
-        commit()
-        return parent[obj]
-
-    def create_image(self, parent, obj):
-        self.logger.info("creating image '%s' inside parent folder '%s'" % (
-            obj, self.utils.pretty_print(parent)))
-        parent.invokeFactory('Image', obj)
-        commit()
-        return parent[obj]
-
-    def set_image(self, image, obj, base, prefix):
-        file = open('/'.join([base, self.utils.join_input(prefix, '/'), obj]),
-            'rb')
-        data = file.read()
-        file.close()
-        image.setImage(data)
-        commit()
-
-    def set_page(self, page, obj, base, prefix, target_tags):
-        results = ''
-        file = open('/'.join([base, self.utils.join_input(prefix, '/'), obj]),
-            'rb')
-        data = file.read()
-        file.close()
-        root = fromstring(data)
-        for element in root.iter():
-            tag = element.tag
-            text = element.text
-            if tag in target_tags and text is not None:
-                results += '<%s>%s</%s>' % (tag, text, tag)
-        page.setText(results)
-        commit()
-
-    def create_content(self, parent, obj, count, base,
-        prefix, html_extensions, image_extensions,
-        target_tags):
-        if self.utils.is_folder(obj):
-            folder = self.create_folder(parent, obj)
-            self.set_title(folder, obj)
-            count['folders'] += 1
-        elif self.utils.is_html(obj, html_extensions):
-            page = self.create_page(parent, obj)
-            self.set_title(page, obj)
-            self.set_page(page, obj, base, prefix, target_tags)
-            count['pages'] += 1
-        elif self.utils.is_image(obj, image_extensions):
-            image = self.create_image(parent, obj)
-            self.set_title(image, obj)
-            self.set_image(image, obj, base, prefix)
-            count['images'] += 1
-        return count
-
     def traverse_create(self, parts, parent, count, illegal_chars,
         base, html_extensions, image_extensions, target_tags):
         site = parent
@@ -292,19 +303,7 @@ class Parse2Plone(object):
                 site = parent.restrictedTraverse(path)
             else:
                 break
-
         return site, count
-
-    def import_files(self, site, files, illegal_chars, html_extensions,
-        image_extensions, target_tags, count, base):
-        for file in files[base]:
-            parts = self.utils.split_input(file, '/')
-            parent = site
-            site, count = self.traverse_create(parts, parent, count,
-                illegal_chars, base, html_extensions, image_extensions,
-                target_tags)
-        msg = "Imported %s folders, %s pages, and %s images into %s."
-        self.logger.info(msg % tuple(count.values(), site))
 
 
 class Recipe(object):
