@@ -309,9 +309,6 @@ class Parse2Plone(object):
                         image_extensions, target_tags)
             else:
                 break
-
-#        site = parent.restrictedTraverse(path)
-
         return site, count
 
 
