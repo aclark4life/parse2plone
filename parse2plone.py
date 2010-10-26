@@ -193,17 +193,16 @@ class Parse2Plone(object):
             results.append(parts)
         return results
 
-    def import_files(self, site, files, illegal_chars, html_extensions,
+    def import_files(self, parent, files, illegal_chars, html_extensions,
         image_extensions, target_tags, count, base):
         for file in files[base]:
             parts = self.utils.split_input(file, '/')
-            parent = site
-            site, count = self.traverse_create(parts, parent, count,
+            parent, count = self.traverse_create(parts, parent, count,
                 illegal_chars, base, html_extensions, image_extensions,
                 target_tags)
         msg = "Imported %s folders, %s pages, and %s images into: '%s'."
         results = list(count.values())
-        results.append(self.utils.pretty_print(site))
+        results.append(self.utils.pretty_print(parent))
         self.logger.info(msg % tuple(results))
 
     def prep_files(self, files, ignore, base):
@@ -243,7 +242,7 @@ class Parse2Plone(object):
 
     def setup_app(self, app, path, force, count, illegal_chars, base,
         html_extensions, image_extensions, target_tags):
-        site = None
+        parent = None
         app = makerequest(app)
         newSecurityManager(None, system)
         if path is not '':
@@ -252,7 +251,7 @@ class Parse2Plone(object):
                     path = path[1:]
                 if len(path.split('/')) > 1:
                     try:
-                        site = app.restrictedTraverse(path)
+                        parent = app.restrictedTraverse(path)
                     except:
                         if not force:
                             errmsg = "object '%s' does not exist, "
@@ -261,12 +260,12 @@ class Parse2Plone(object):
                             exit(1)
                         else:
                             parts = self.utils.split_input(path, '/')
-                            site, count = self.traverse_create(parts,
+                            parent, count = self.traverse_create(parts,
                                 app, count, illegal_chars, base,
                                 html_extensions, image_extensions,
                                 target_tags)
                 else:
-                    site = app[path]
+                    parent = app[path]
             except KeyError:
                 if not force:
                     errmsg = "object '%s' does not exist, "
@@ -274,22 +273,22 @@ class Parse2Plone(object):
                     self.logger.error(errmsg % path)
                     exit(1)
                 else:
-                    parts = self.utils.split_input(path, '/')
-                    site, count = self.traverse_create(parts,
-                        app, count, illegal_chars, base,
-                        html_extensions, image_extensions,
-                        target_tags)
-#                    site = self.get_parent(app, self.get_prefix(path))
-#                    obj = self.get_obj(path)
-#                    site = self.create_folder(site, obj)
+#                    parts = self.utils.split_input(path, '/')
+#                    parent, count = self.traverse_create(parts,
+#                        app, count, illegal_chars, base,
+#                        html_extensions, image_extensions,
+#                        target_tags)
+
+                    parent = self.get_parent(app, self.get_prefix(path))
+                    obj = self.get_obj(path)
+                    parent = self.create_folder(parent, obj)
 
         else:
-            site = app.Plone
-        return site, count
+            parent = app.Plone
+        return parent, count
 
     def traverse_create(self, parts, parent, count, illegal_chars,
         base, html_extensions, image_extensions, target_tags):
-        site = parent
         for i in range(len(parts)):
             path = self.get_path(parts, i)
             prefix = self.get_prefix(path)
@@ -309,7 +308,7 @@ class Parse2Plone(object):
                         image_extensions, target_tags)
             else:
                 break
-        return site, count
+        return parent, count
 
 
 class Recipe(object):
@@ -393,9 +392,9 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     files = parse2plone.get_files(import_dir)
     base = utils.join_input(
         utils.split_input(files[0], '/')[:ignore], '/')
-    site, count = parse2plone.setup_app(app, path, force, count,
+    parent, count = parse2plone.setup_app(app, path, force, count,
         illegal_chars, base, html_extensions, image_extensions,
         target_tags)
     files = parse2plone.prep_files(files, ignore, base)
-    parse2plone.import_files(site, files, illegal_chars,
+    parse2plone.import_files(parent, files, illegal_chars,
         html_extensions, image_extensions, target_tags, count, base)
