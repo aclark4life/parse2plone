@@ -2,12 +2,15 @@
 History
 -------
 
-0.8 ()
+0.8 (10/26/2010)
 
 - Improvements to ``--path`` option:
     - Accept any path (assuming it's either the Plone site object or one of
       it's folder-ish children.)
-    - Try to create the path if it doesn't exist.
+    - Create the path if it doesn't exist (when called with ``--force``)
+- Added ``--force`` option
+- Factor out code from ``Parse2Plone`` class method ``import_files`` into
+  ``Parse2Plone`` class methods ``get_prefix`` and ``get_obj``.
 
 0.7 (10/25/2010)
 ~~~~~~~~~~~~~~~~

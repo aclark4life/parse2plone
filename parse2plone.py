@@ -36,6 +36,7 @@ defaults = {
     'html_extensions': ['html'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
     'target_tags': ['a', 'div', 'h1', 'h2', 'p'],
+    'force': ['false'],
 }
 
 
@@ -101,7 +102,7 @@ class Utils(object):
     def create_option_parser(self):
         option_parser = OptionParser()
         option_parser.add_option("-p", "--path", dest="path",
-            help="Path to Plone site object")
+            help="Path to Plone site object or sub-folder")
         option_parser.add_option("", "--html-extensions",
             dest="html_extensions", help="Specify HTML file extensions")
         option_parser.add_option("", "--illegal-chars", dest="illegal_chars",
@@ -110,6 +111,9 @@ class Utils(object):
             dest="image_extensions", help="Specify image file extensions")
         option_parser.add_option("", "--target-tags", dest="target_tags",
             help="Specify HTML tags to parse")
+        option_parser.add_option("-f", "--force",
+            action="store_true", dest="force", default=False,
+            help="don't print status messages to stdout")
         return option_parser
 
 
@@ -122,15 +126,21 @@ class Parse2Plone(object):
         obj.reindexObject()
         commit()
 
-    def setup_app(self, app, path):
+    def setup_app(self, app, path, force):
+        site = None
         app = makerequest(app)
         newSecurityManager(None, system)
         if path is not '':
             try:
                 site = self.utils.is_path(app, path)
             except KeyError:
-                self.logger.error("site object '%s' does not exist" % path)
-                exit(1)
+                if not force: 
+                    self.logger.error("object '%s' does not exist" % path)
+                    exit(1)
+                else:
+                    site = self.get_parent(app, self.get_prefix(path))
+                    obj = self.get_obj(path)
+                    site = self.create_folder(site, obj)
         else:
             site = app.Plone
         return site
@@ -141,6 +151,12 @@ class Parse2Plone(object):
             for file in fnmatch.filter(files, '*'):
                 results.append(os_path.join(path, file))
         return results
+
+    def get_prefix(self, path):
+        return self.utils.split_input(path, '/')[:-1]
+
+    def get_obj(self, path):
+        return self.utils.split_input(path, '/')[-1:][0]
 
     def ignore_parts(self, files, ignore):
         results = []
@@ -214,14 +230,8 @@ class Parse2Plone(object):
         page.setText(results)
         commit()
 
-    def create_content(self,
-        parent,
-        obj,
-        count,
-        base,
-        prefix,
-        html_extensions,
-        image_extensions,
+    def create_content(self, parent, obj, count, base,
+        prefix, html_extensions, image_extensions,
         target_tags):
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
@@ -248,8 +258,9 @@ class Parse2Plone(object):
             parent = site
             for i in range(len(parts)):
                 path = self.utils.join_input(parts[:i + 1], '/')
-                prefix = self.utils.split_input(path, '/')[:-1]
-                obj = self.utils.split_input(path, '/')[-1:][0]
+                prefix = self.get_prefix(path)
+#                obj = self.utils.split_input(path, '/')[-1:][0]
+                obj = self.get_obj(path)
                 if obj[0] not in illegal_chars:
                     parent = self.get_parent(parent,
                         self.utils.join_input(prefix, '/'))
@@ -260,15 +271,9 @@ class Parse2Plone(object):
                         self.logger.info(
                             "object '%s' does not exist inside '%s'"
                             % (obj, self.utils.pretty_print(parent)))
-                        count = self.create_content(
-                                parent,
-                                obj,
-                                count,
-                                base,
-                                prefix,
-                                html_extensions,
-                                image_extensions,
-                                target_tags)
+                        count = self.create_content(parent, obj, count,
+                            base, prefix, html_extensions,
+                            image_extensions, target_tags)
                 else:
                     break
         self.logger.info('Imported %s folders, %s pages, and %s images.' %
@@ -287,11 +292,11 @@ class Recipe(object):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
 
-        path, illegal_chars, html_extensions, image_extensions, target_tags = (
-            self.parse_options(self.options))
+        [force, html_extensions, target_tags, path, illegal_chars,
+            image_extensions] = self.parse_options(self.options)
 
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
-        arguments += " image_extensions='%s', target_tags='%s'"
+        arguments += " image_extensions='%s', target_tags='%s', force='%s'"
 
         create_scripts(
             # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
@@ -307,7 +312,7 @@ class Recipe(object):
             # The value passed is a source string to be placed between the
             # parentheses in the call
             arguments=arguments % (path, illegal_chars, html_extensions,
-                image_extensions, target_tags))
+                image_extensions, target_tags, force))
         return tuple()
 
     def update(self):
@@ -325,15 +330,10 @@ class Recipe(object):
                 results[option] = join_input(options[option], ',')
             else:
                 results[option] = join_input(defaults[option], ',')
-
-        path, target_tags, html_extensions, image_extensions, illegal_chars = (
-            results.values())
-        return (path, illegal_chars, html_extensions, image_extensions,
-            target_tags)
-
+        return results.values()
 
 def main(app, path=None, illegal_chars=None, html_extensions=None,
-    image_extensions=None, target_tags=None):
+    image_extensions=None, target_tags=None, force=False):
     """parse2plone"""
 
     # Process args
@@ -355,7 +355,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
 
     # Run parse2plone
     parse2plone = Parse2Plone()
-    site = parse2plone.setup_app(app, path)
+    site = parse2plone.setup_app(app, path, force)
     files = parse2plone.get_files(import_dir)
     files = parse2plone.prep_files(files, ignore)
     parse2plone.import_files(site, files, illegal_chars, html_extensions,
