@@ -19,6 +19,7 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SpecialUsers import system
 from Testing.makerequest import makerequest
 
+from ast import literal_eval
 from copy import deepcopy
 from lxml.html import fromstring
 from optparse import OptionParser
@@ -36,7 +37,7 @@ defaults = {
     'html_extensions': ['html'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
     'target_tags': ['a', 'div', 'h1', 'h2', 'p'],
-    'force': ['false'],
+    'force': ['False'],
 }
 
 
@@ -67,6 +68,10 @@ class Utils(object):
             return True
         except:
             return False
+
+    def clean_path(self, path):
+        if path.startswith('/'):
+            return path[1:]
 
     def create_option_parser(self):
         option_parser = OptionParser()
@@ -117,7 +122,10 @@ class Utils(object):
     def obj_to_path(self, obj):
         return self.join_input(obj.getPhysicalPath(), '/')
 
-    def parse_options(self, options):
+    def convert_recipe_options(self, options):
+        """
+        Convert recipe options into csv
+        """
         results = deepcopy(defaults)
         join_input = self.join_input
         split_input = self.split_input
@@ -303,7 +311,7 @@ class Recipe(object):
         utils = Utils()
         bindir = self.buildout['buildout']['bin-directory']
         [force, html_extensions, target_tags, path, illegal_chars,
-            image_extensions] = utils.parse_options(self.options)
+            image_extensions] = utils.convert_recipe_options(self.options)
 
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', target_tags='%s', force='%s'"
@@ -324,29 +332,37 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, target_tags=None, force=None):
     """parse2plone"""
 
+    utils = Utils()
     logger = setup_logger()
     count = {'folders': 0, 'images': 0, 'pages': 0}
 
-    # Process command line args
-    utils = Utils()
-    option_parser = utils.create_option_parser()
-    options, args = option_parser.parse_args()
-
-    # Clean up input
+    # Clean up recipe input
     illegal_chars = utils.split_input(illegal_chars, ',')
     html_extensions = utils.split_input(html_extensions, ',')
     image_extensions = utils.split_input(image_extensions, ',')
     target_tags = utils.split_input(target_tags, ',')
-    if path.startswith('/'):
-        path = path[1:]
+    path = utils.clean_path(path)
+    force = literal_eval(force)
 
-    # Override settings w/command line args
+    # Override settings with command line args as needed
+    option_parser = utils.create_option_parser()
+    options, args = option_parser.parse_args()
     import_dir = args[0]
-    ignore = len(utils.split_input(import_dir, '/'))
+    if options.illegal_chars is not None:
+        illegal_chars = options.illegal_chars
+
+    if options.html_extensions is not None:
+        html_extensions = options.html_extensions
+
+    if options.image_extensions is not None:
+        image_extensions = options.image_extensions
+
+    if options.target_tags is not None:
+        target_tags = options.target_tags
+
     if options.path is not None:
         path = options.path
-    if path.startswith('/'):
-        path = path[1:]
+    path = utils.clean_path(path)
 
     # Setup parse2plone
     parse2plone = Parse2Plone()
@@ -360,19 +376,25 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
 
     # Run parse2plone
     files = parse2plone.get_files(import_dir)
+    ignore = len(utils.split_input(import_dir, '/'))
     parse2plone.base = parse2plone.get_base(files, ignore)
     app = parse2plone.setup_app(app)
 
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:
-        parse2plone.create_parts(app, parse2plone.get_parts(path))
-        parent = parse2plone.get_parent(app, path)
+        if force:
+            parse2plone.create_parts(app, parse2plone.get_parts(path))
+            parent = parse2plone.get_parent(app, path)
+        else:
+            msg = "object in path '%s' does not exist, use --force to create"
+            logger.info(msg % path)
+            exit(1)
 
     files = parse2plone.prep_files(files, ignore)
-
     results = parse2plone.import_files(parent, files)
 
     # Print results
     msg = "Imported %s folders, %s images, and %s pages into: '%s'."
     logger.info(msg % tuple(results))
+    exit(0)
