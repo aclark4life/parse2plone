@@ -214,13 +214,11 @@ class Parse2Plone(object):
                     prefix_path = prefix_path[1:]
 
                 parts = self.get_parts(prefix_path)
-                self.logger.info('creating parts %s' % parts)
+                self.logger.info("creating parts '%s'" % parts)
                 updated_parent = self.create_parts(current_parent, parts)
-
-            self.logger.info('updating parent from %s to %s' % (
+            self.logger.info("updating parent from '%s' to '%s'" % (
                 self.utils.obj_to_path(current_parent),
                 self.utils.obj_to_path(updated_parent)))
-
             return updated_parent
         else:
             return current_parent
