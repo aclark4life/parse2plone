@@ -183,6 +183,9 @@ class Parse2Plone(object):
     def get_files(self, import_dir, illegal_chars):
         results = []
         for path, subdirs, files in walk(import_dir):
+            self.logger.info("path '%s', has subdirs '%s', and files '%s'" % (path,
+                self.utils.join_input(subdirs, ' '),
+                self.utils.join_input(files, ' ')))
             for f in fnmatch.filter(files, '*'):
                 if self.utils.is_legal(f, illegal_chars):
                     results.append(os_path.join(path, f))
