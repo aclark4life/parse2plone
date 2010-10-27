@@ -194,7 +194,7 @@ class Parse2Plone(object):
         elif self.utils.is_html(obj, self.html_extensions):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
-            self.set_page(page, obj, prefix_path)
+            self.set_page(page, obj, prefix_path, base)
             self.count['pages'] += 1
         elif self.utils.is_image(obj, self.image_extensions):
             image = self.create_image(parent, obj)
