@@ -171,6 +171,17 @@ class Utils(object):
         return (illegal_chars, html_extensions, image_extensions,
             target_tags, path, force)
 
+    def setup_attrs(self, parse2plone, utils, count, illegal_chars,
+        html_extensions, image_extensions, target_tags, logger):
+        parse2plone.utils = utils
+        parse2plone.count = count
+        parse2plone.html_extensions = html_extensions
+        parse2plone.image_extensions = image_extensions
+        parse2plone.illegal_chars = illegal_chars
+        parse2plone.target_tags = target_tags
+        parse2plone.logger = logger
+        return parse2plone
+
     def split_input(self, input, delimiter):
         return input.split(delimiter)
 
@@ -384,17 +395,11 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         illegal_chars, html_extensions, image_extensions, target_tags,
         path, force)
 
-    # Setup parse2plone
-    parse2plone = Parse2Plone()
-    parse2plone.logger = logger
-    parse2plone.utils = utils
-    parse2plone.count = count
-    parse2plone.html_extensions = html_extensions
-    parse2plone.image_extensions = image_extensions
-    parse2plone.illegal_chars = illegal_chars
-    parse2plone.target_tags = target_tags
-
     # Run parse2plone
+    parse2plone = Parse2Plone()
+    parse2plone = utils.setup_attrs(parse2plone, utils, count,
+        illegal_chars, html_extensions, image_extensions, target_tags,
+        logger)
     files = parse2plone.get_files(import_dir)
     ignore = len(utils.split_input(import_dir, '/'))
     parse2plone.base = parse2plone.get_base(files, ignore)
