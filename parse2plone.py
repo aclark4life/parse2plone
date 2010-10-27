@@ -156,7 +156,8 @@ class Parse2Plone(object):
         commit()
         return parent[obj]
 
-    def create_parent(parts):
+    def create_parent(self, current_parent, prefix_path):
+        parts = self.utils.join_input(prefix_path, '/')
         for i in range(len(parts)):
             path = self.utils.get_path(parts)
             prefix_path = self.utils.get_prefix_path(path)
