@@ -109,7 +109,9 @@ class Utils(object):
 
     def convert_recipe_options(self, options):
         """
-        Convert recipe options into csv
+        Convert recipe options into csv. Returns a list e.g.
+        ['False', 'html', 'mp3', 'a,div,h1,h2,p', '/Plone', '_,.',
+        'gif,jpg,jpeg,png']
         """
         results = deepcopy(defaults)
         join_input = self.join_input
@@ -376,9 +378,8 @@ class Recipe(object):
 
         utils = Utils()
         bindir = self.buildout['buildout']['bin-directory']
-        [force, html_extensions, target_tags, path, illegal_chars,
-            image_extensions, file_extensions] = utils.convert_recipe_options(
-            self.options)
+        [force, html_extensions, file_extensions, target_tags, path, illegal_chars,
+            image_extensions] = utils.convert_recipe_options(self.options)
 
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
