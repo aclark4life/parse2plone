@@ -129,24 +129,23 @@ class Utils(object):
 
 class Parse2Plone(object):
 
-    def create_content(self, parent, obj, count, base,
+    def create_content(self, parent, obj, base,
         prefix_path, html_extensions, image_extensions,
         target_tags):
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
             self.set_title(folder, obj)
-            count['folders'] += 1
+            self.count['folders'] += 1
         elif self.utils.is_html(obj, html_extensions):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
             self.set_page(page, obj, base, prefix_path, target_tags)
-            count['pages'] += 1
+            self.count['pages'] += 1
         elif self.utils.is_image(obj, image_extensions):
             image = self.create_image(parent, obj)
             self.set_title(image, obj)
             self.set_image(image, obj, base, prefix_path)
-            count['images'] += 1
-        return count
+            self.count['images'] += 1
 
     def create_folder(self, parent, obj):
         self.logger.info("creating folder '%s' inside parent folder '%s'" % (
@@ -176,7 +175,7 @@ class Parse2Plone(object):
             path = self.get_path(parts, i)
             prefix_path = self.get_prefix_path(path)
             obj = self.get_obj(path)
-            parent = self.get_parent(parent,
+            parent = self.get_parent(current_parent,
                 self.utils.join_input(prefix_path, '/'))
             if self.utils.check_exists(parent, obj):
                 self.logger.info("object '%s' exists inside '%s'" % (
@@ -185,9 +184,8 @@ class Parse2Plone(object):
                 self.logger.info(
                     "object '%s' does not exist inside '%s'"
                     % (obj, self.utils.obj_to_path(parent)))
-                count = self.create_content(parent, obj, count, base,
-                        prefix_path, html_extensions, image_extensions,
-                        target_tags)
+                self.create_content(parent, obj, base, prefix_path,
+                    html_extensions, image_extensions, target_tags)
 
     def get_base(self, files, ignore):
         return self.utils.join_input(self.utils.split_input(
@@ -238,7 +236,7 @@ class Parse2Plone(object):
         return results
 
     def import_files(self, site, files, html_extensions,
-        image_extensions, target_tags, count):
+        image_extensions, target_tags):
         base = files.keys()[0]
         for f in files[base]:
             parts = self.utils.split_input(f, '/')
@@ -256,11 +254,10 @@ class Parse2Plone(object):
                     self.logger.info(
                         "object '%s' does not exist inside '%s'"
                         % (obj, self.utils.obj_to_path(parent)))
-                    count = self.create_content(parent, obj, count, base,
-                            prefix_path, html_extensions, image_extensions,
-                            target_tags)
+                    self.create_content(parent, obj, base, prefix_path,
+                        html_extensions, image_extensions, target_tags)
 
-        results = count.values()
+        results = self.count.values()
         results.append(self.utils.obj_to_path(site))
         return results
 
@@ -369,13 +366,14 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     parse2plone = Parse2Plone()
     parse2plone.logger = logger
     parse2plone.utils = utils
+    parse2plone.count = count
     files = parse2plone.get_files(import_dir, illegal_chars)
     base = parse2plone.get_base(files, ignore)
     app = parse2plone.setup_app(app)
     parent = parse2plone.get_parent(app, path)
     files = parse2plone.prep_files(files, ignore, base, illegal_chars)
     results = parse2plone.import_files(parent, files,
-        html_extensions, image_extensions, target_tags, count)
+        html_extensions, image_extensions, target_tags)
 
     # Print results
     msg = "Imported %s folders, %s images, and %s pages into: '%s'."
