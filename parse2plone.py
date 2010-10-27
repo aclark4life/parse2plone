@@ -187,7 +187,7 @@ class Utils(object):
 
 class Parse2Plone(object):
 
-    def create_content(self, parent, obj, prefix_path):
+    def create_content(self, parent, obj, prefix_path, base):
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
             self.set_title(folder, obj)
@@ -200,7 +200,7 @@ class Parse2Plone(object):
         elif self.utils.is_image(obj, self.image_extensions):
             image = self.create_image(parent, obj)
             self.set_title(image, obj)
-            self.set_image(image, obj, prefix_path)
+            self.set_image(image, obj, prefix_path, base)
             self.count['images'] += 1
 
     def create_folder(self, parent, obj):
@@ -224,7 +224,7 @@ class Parse2Plone(object):
         commit()
         return parent[obj]
 
-    def create_parts(self, parent, parts):
+    def create_parts(self, parent, parts, base):
         self.logger.info("creating parts for '%s'" % self.utils.join_input(
             parts, '/'))
         for i in range(len(parts)):
@@ -241,7 +241,7 @@ class Parse2Plone(object):
                     self.logger.info(
                         "object '%s' does not exist inside '%s'"
                         % (obj, self.utils.obj_to_path(parent)))
-                    self.create_content(parent, obj, prefix_path)
+                    self.create_content(parent, obj, prefix_path, base)
             else:
                 self.logger.info("object '%s' has illegal chars" % obj)
                 break
@@ -291,34 +291,34 @@ class Parse2Plone(object):
             results.append(parts)
         return results
 
-    def import_files(self, parent, files):
-        self.base = files.keys()[0]
-        for f in files[self.base]:
+    def import_files(self, parent, files, base):
+        base = files.keys()[0]
+        for f in files[base]:
             parts = self.get_parts(f)
-            self.create_parts(parent, parts)
+            self.create_parts(parent, parts, base)
 
         results = self.count.values()
         results.append(self.utils.obj_to_path(parent))
         return results
 
-    def prep_files(self, files, ignore):
-        results = {self.base: []}
+    def prep_files(self, files, ignore, base):
+        results = {base: []}
         files = self.ignore_parts(files, ignore)
         for f in files:
-            results[self.base].append(self.utils.join_input(f, '/'))
+            results[base].append(self.utils.join_input(f, '/'))
         return results
 
-    def set_image(self, image, obj, prefix_path):
-        f = open('/'.join([self.base, self.utils.join_input(prefix_path, '/'),
+    def set_image(self, image, obj, prefix_path, base):
+        f = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
             obj]), 'rb')
         data = f.read()
         f.close()
         image.setImage(data)
         commit()
 
-    def set_page(self, page, obj, prefix_path):
+    def set_page(self, page, obj, prefix_path, base):
         results = ''
-        f = open('/'.join([self.base, self.utils.join_input(prefix_path, '/'),
+        f = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
             obj]), 'rb')
         data = f.read()
         f.close()
@@ -400,20 +400,20 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         logger)
     files = parse2plone.get_files(import_dir)
     ignore = len(utils.split_input(import_dir, '/'))
-    parse2plone.base = parse2plone.get_base(files, ignore)
     app = parse2plone.setup_app(app)
+    base = parse2plone.get_base(files, ignore)
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:
         if force:
-            parse2plone.create_parts(app, parse2plone.get_parts(path))
+            parse2plone.create_parts(app, parse2plone.get_parts(path), base)
             parent = parse2plone.get_parent(app, path)
         else:
             msg = "object in path '%s' does not exist, use --force to create"
             logger.info(msg % path)
             exit(1)
-    files = parse2plone.prep_files(files, ignore)
-    results = parse2plone.import_files(parent, files)
+    files = parse2plone.prep_files(files, ignore, base)
+    results = parse2plone.import_files(parent, files, base)
 
     # Print results
     msg = "Imported %s folders, %s images, and %s pages into: '%s'."
