@@ -209,12 +209,18 @@ class Parse2Plone(object):
             try:
                 updated_parent = current_parent.restrictedTraverse(prefix_path)
             except KeyError:
-                self.logger.info('creating parent(s) for %s' % prefix_path)
+
+                if prefix_path.startswith('/'):
+                    prefix_path = prefix_path[1:]
+
                 parts = self.get_parts(prefix_path)
+                self.logger.info('creating parts %s' % parts)
                 updated_parent = self.create_parts(current_parent, parts)
+
             self.logger.info('updating parent from %s to %s' % (
                 self.utils.obj_to_path(current_parent),
                 self.utils.obj_to_path(updated_parent)))
+
             return updated_parent
         else:
             return current_parent
