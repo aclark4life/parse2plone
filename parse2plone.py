@@ -163,33 +163,29 @@ class Parse2Plone(object):
             path = self.get_path(parts, i)
             prefix_path = self.get_prefix_path(path)
             obj = self.get_obj(path)
-
-            if self.utils.is_legal(obj, illegal_chars):
-
-                parent = self.get_parent(parent,
-                    self.utils.join_input(prefix_path, '/'))
-                if self.utils.check_exists(parent, obj):
-                    self.logger.info("object '%s' exists inside '%s'" % (
-                        obj, self.utils.obj_to_path(parent)))
-                else:
-                    self.logger.info(
-                        "object '%s' does not exist inside '%s'"
-                        % (obj, self.utils.obj_to_path(parent)))
-                    count = self.create_content(parent, obj, count, base,
-                            prefix_path, html_extensions, image_extensions,
-                            target_tags)
+            parent = self.get_parent(parent,
+                self.utils.join_input(prefix_path, '/'))
+            if self.utils.check_exists(parent, obj):
+                self.logger.info("object '%s' exists inside '%s'" % (
+                    obj, self.utils.obj_to_path(parent)))
             else:
-                break
+                self.logger.info(
+                    "object '%s' does not exist inside '%s'"
+                    % (obj, self.utils.obj_to_path(parent)))
+                count = self.create_content(parent, obj, count, base,
+                        prefix_path, html_extensions, image_extensions,
+                        target_tags)
 
     def get_base(self, files, ignore):
         return self.utils.join_input(self.utils.split_input(
             files[0], '/')[:ignore], '/')
 
-    def get_files(self, import_dir):
+    def get_files(self, import_dir, illegal_chars):
         results = []
         for path, subdirs, files in walk(import_dir):
             for f in fnmatch.filter(files, '*'):
-                results.append(os_path.join(path, f))
+                if self.utils.is_legal(f, illegal_chars):
+                    results.append(os_path.join(path, f))
         return results
 
     def get_obj(self, path):
@@ -224,7 +220,7 @@ class Parse2Plone(object):
             results.append(parts)
         return results
 
-    def import_files(self, site, files, illegal_chars, html_extensions,
+    def import_files(self, site, files, html_extensions,
         image_extensions, target_tags, count):
         base = files.keys()[0]
         for f in files[base]:
@@ -234,21 +230,20 @@ class Parse2Plone(object):
                 path = self.get_path(parts, i)
                 prefix_path = self.get_prefix_path(path)
                 obj = self.get_obj(path)
-                if self.utils.is_legal(obj, illegal_chars):
-                    parent = self.get_parent(parent,
-                        self.utils.join_input(prefix_path, '/'))
-                    if self.utils.check_exists(parent, obj):
-                        self.logger.info("object '%s' exists inside '%s'" % (
-                            obj, self.utils.obj_to_path(parent)))
-                    else:
-                        self.logger.info(
-                            "object '%s' does not exist inside '%s'"
-                            % (obj, self.utils.obj_to_path(parent)))
-                        count = self.create_content(parent, obj, count, base,
-                                prefix_path, html_extensions, image_extensions,
-                                target_tags)
+                parent = self.get_parent(parent,
+                    self.utils.join_input(prefix_path, '/'))
+                if self.utils.check_exists(parent, obj):
+                    self.logger.info("object '%s' exists inside '%s'" % (
+                        obj, self.utils.obj_to_path(parent)))
                 else:
-                    break
+                    self.logger.info(
+                        "object '%s' does not exist inside '%s'"
+                        % (obj, self.utils.obj_to_path(parent)))
+                    count = self.create_content(parent, obj, count, base,
+                            prefix_path, html_extensions, image_extensions,
+                            target_tags)
+
+
         results = count.values()
         results.append(self.utils.obj_to_path(site))
         return results
@@ -375,12 +370,12 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     parse2plone = Parse2Plone()
     parse2plone.logger = logger
     parse2plone.utils = utils
-    files = parse2plone.get_files(import_dir)
+    files = parse2plone.get_files(import_dir, illegal_chars)
     base = parse2plone.get_base(files, ignore)
     app = parse2plone.setup_app(app)
     parent = parse2plone.get_parent(app, path)
     files = parse2plone.prep_files(files, ignore, base)
-    results = parse2plone.import_files(parent, files, illegal_chars,
+    results = parse2plone.import_files(parent, files,
         html_extensions, image_extensions, target_tags, count)
 
     # Print results
