@@ -185,7 +185,7 @@ class Parse2Plone(object):
                         % (obj, self.utils.obj_to_path(parent)))
                     self.create_content(parent, obj, prefix_path)
             else:
-                self.logger.info("object '%s' has illegal chars" % (
+                self.logger.info("object '%s' has illegal chars" % obj)
                 break
 
     def get_base(self, files, ignore):
