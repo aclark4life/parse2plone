@@ -3,14 +3,9 @@ History
 -------
 
 0.8 (10/26/2010)
+~~~~~~~~~~~~~~~~
 
-- Improvements to ``--path`` option:
-    - Accept any path (assuming it's either the Plone site object or one of
-      it's folder-ish children.)
-    - Create the path if it doesn't exist (when called with ``--force``)
-- Added ``--force`` option
-- Factor out code from ``Parse2Plone`` class method ``import_files`` into
-  ``Parse2Plone`` class methods ``get_prefix`` and ``get_obj``.
+- ``path`` now supports sub-directories
 
 0.7 (10/25/2010)
 ~~~~~~~~~~~~~~~~
@@ -20,18 +15,12 @@ History
 0.6 (10/25/2010)
 ~~~~~~~~~~~~~~~~
 
-- No really, revert 'add Plone to install_requires'
-- Add configurable options for: ``path``, ``illegal_chars``,
-  ``html_extensions``, ``image_extensions``, and ``target_tags``
-- Allow user to set all configurable options via both ``buildout.cfg``
-  and command line arguments
-- Refactor utility functions
-- Add ``tests.py``
+- Support customization via recipe parameters and command line arguments
 
 0.5 (10/22/2010)
 ~~~~~~~~~~~~~~~~
 
-- Revert 'add Plone to install_requires'
+- Revert 'Add Plone to install_requires'
 
 0.4 (10/22/2010)
 ~~~~~~~~~~~~~~~~
