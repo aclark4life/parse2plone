@@ -174,7 +174,8 @@ class Parse2Plone(object):
         return parent[obj]
 
     def create_parts(self, parent, parts):
-        self.logger.info("creating parts for '%s'" % self.utils.join_input(parts, '/'))
+        self.logger.info("creating parts for '%s'" % self.utils.join_input(
+            parts, '/'))
         for i in range(len(parts)):
             path = self.get_path(parts, i)
             prefix_path = self.get_prefix_path(path)
@@ -220,48 +221,6 @@ class Parse2Plone(object):
              self.utils.obj_to_path(current_parent),
              self.utils.obj_to_path(updated_parent)))
         return updated_parent
-
-
-
-#        if self.utils.obj_to_path(current_parent) == prefix_path:
-#            return current_parent
-#        else:
-
-
-
-
-#            except KeyError:
-#                if prefix_path.startswith('/'):
-#                    prefix_path = prefix_path[1:]
-#                parts = self.get_parts(prefix_path)
-#                updated_parent = self.create_parts(current_parent, parts)
-#                return updated_parent
-#            except AttributeError:
-#                if prefix_path.startswith('/'):
-#                    prefix_path = prefix_path[1:]
-#                parts = self.get_parts(prefix_path)
-#                updated_parent = self.create_parts(current_parent, parts)
-#                return updated_parent
-
-
-#    def get_parent(self, current_parent, prefix_path):
-#        if not self.utils.obj_to_path(current_parent) == prefix_path:
-#            try:
-#                updated_parent = current_parent.restrictedTraverse(prefix_path)
-#            except KeyError:
-#
-#                if prefix_path.startswith('/'):
-#                    prefix_path = prefix_path[1:]
-#
-#                parts = self.get_parts(prefix_path)
-#                self.logger.info("creating parts '%s'" % parts)
-#                updated_parent = self.create_parts(current_parent, parts)
-#            self.logger.info("updating parent from '%s' to '%s'" % (
-#                self.utils.obj_to_path(current_parent),
-#                self.utils.obj_to_path(updated_parent)))
-#            return updated_parent
-#        else:
-#            return current_parent
 
     def get_parts(self, path):
         return self.utils.split_input(path, '/')
