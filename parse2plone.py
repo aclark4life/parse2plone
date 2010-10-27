@@ -36,6 +36,7 @@ defaults = {
     'illegal_chars': ['_', '.'],
     'html_extensions': ['html'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
+    'file_extensions': ['mp3'],
     'target_tags': ['a', 'div', 'h1', 'h2', 'p'],
     'force': ['False'],
 }
@@ -74,17 +75,18 @@ class Utils(object):
             return path[1:]
 
     def clean_recipe_input(self, illegal_chars, html_extensions,
-        image_extensions, target_tags, path, force):
+        image_extensions, file_extensions, target_tags, path, force):
 
         illegal_chars = self.split_input(illegal_chars, ',')
         html_extensions = self.split_input(html_extensions, ',')
         image_extensions = self.split_input(image_extensions, ',')
+        file_extensions = self.split_input(file_extensions, ',')
         target_tags = self.split_input(target_tags, ',')
         path = self.clean_path(path)
         force = literal_eval(force)
 
         return (illegal_chars, html_extensions, image_extensions,
-            target_tags, path, force)
+            file_extensions, target_tags, path, force)
 
     def create_option_parser(self):
         option_parser = OptionParser()
@@ -96,6 +98,8 @@ class Utils(object):
             help="Specify characters to ignore")
         option_parser.add_option("", "--image-extensions",
             dest="image_extensions", help="Specify image file extensions")
+        option_parser.add_option("", "--file-extensions",
+            dest="file_extensions", help="Specify generic file extensions")
         option_parser.add_option("", "--target-tags", dest="target_tags",
             help="Specify HTML tags to parse")
         option_parser.add_option("-f", "--force",
@@ -124,6 +128,13 @@ class Utils(object):
             return True
         else:
             return False
+
+    def is_file(self, obj, file_extensions):
+        result = False
+        for ext in file_extensions:
+            if obj.endswith(ext):
+                result = True
+        return result
 
     def is_html(self, obj, html_extensions):
         result = False
@@ -201,6 +212,11 @@ class Parse2Plone(object):
             self.set_title(image, obj)
             self.set_image(image, obj, prefix_path, base)
             self.count['images'] += 1
+        elif self.utils.is_image(obj, self.file_extensions):
+            file = self.create_file(parent, obj)
+            self.set_title(file, obj)
+            self.set_image(file, obj, prefix_path, base)
+            self.count['files'] += 1
 
     def create_folder(self, parent, obj):
         self.logger.info("creating folder '%s' inside parent folder '%s'" % (
@@ -220,6 +236,13 @@ class Parse2Plone(object):
         self.logger.info("creating page '%s' inside parent folder '%s'" % (obj,
             self.utils.obj_to_path(parent)))
         parent.invokeFactory('Document', obj)
+        commit()
+        return parent[obj]
+
+    def create_file(self, parent, obj):
+        self.logger.info("creating file '%s' inside parent folder '%s'" % (obj,
+            self.utils.obj_to_path(parent)))
+        parent.invokeFactory('File', obj)
         commit()
         return parent[obj]
 
@@ -353,16 +376,18 @@ class Recipe(object):
         utils = Utils()
         bindir = self.buildout['buildout']['bin-directory']
         [force, html_extensions, target_tags, path, illegal_chars,
-            image_extensions] = utils.convert_recipe_options(self.options)
+            image_extensions, file_extensions] = utils.convert_recipe_options(
+            self.options)
 
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
-        arguments += " image_extensions='%s', target_tags='%s', force='%s'"
+        arguments += " image_extensions='%s', file_extensions='%s',"
+        arguments += " target_tags='%s', force='%s'"
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([('import', 'parse2plone', 'main')],
             working_set, executable, bindir, arguments=arguments % (
             path, illegal_chars, html_extensions, image_extensions,
-            target_tags, force))
+            file_extensions, target_tags, force))
         return tuple()
 
     def update(self):
@@ -371,7 +396,8 @@ class Recipe(object):
 
 
 def main(app, path=None, illegal_chars=None, html_extensions=None,
-    image_extensions=None, target_tags=None, force=None):
+    image_extensions=None, file_extensions=None, target_tags=None,
+    force=None):
     """parse2plone"""
 
     utils = Utils()
@@ -379,24 +405,25 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     count = {'folders': 0, 'images': 0, 'pages': 0}
 
     # Clean recipe input
-    [illegal_chars, html_extensions, image_extensions, target_tags,
-        path, force] = utils.clean_recipe_input(illegal_chars,
-        html_extensions, image_extensions, target_tags, path, force)
+    [illegal_chars, html_extensions, image_extensions, file_extensions,
+        target_tags, path, force] = utils.clean_recipe_input(
+        illegal_chars, html_extensions, image_extensions, file_extensions, 
+        target_tags, path, force)
 
     # Process command line args
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
     import_dir = args[0]
-    [illegal_chars, html_extensions, image_extensions, target_tags,
-        path, force] = utils.process_command_line_args(options,
-        illegal_chars, html_extensions, image_extensions, target_tags,
-        path, force)
+    [illegal_chars, html_extensions, image_extensions, file_extensions,
+        target_tags, path, force] = utils.process_command_line_args(options,
+        illegal_chars, html_extensions, image_extensions, file_extensions,
+        target_tags, path, force)
 
     # Run parse2plone
     parse2plone = Parse2Plone()
     parse2plone = utils.setup_attrs(parse2plone, utils, count,
-        illegal_chars, html_extensions, image_extensions, target_tags,
-        logger)
+        illegal_chars, html_extensions, image_extensions, file_extensions,
+        target_tags, logger)
     files = parse2plone.get_files(import_dir)
     ignore = len(utils.split_input(import_dir, '/'))
     app = parse2plone.setup_app(app)

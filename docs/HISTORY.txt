@@ -2,6 +2,11 @@
 History
 -------
 
+0.8.1 ()
+~~~~~~~~
+
+- Add support for generic files
+
 0.8 (10/27/2010)
 ~~~~~~~~~~~~~~~~
 
