@@ -156,8 +156,26 @@ class Parse2Plone(object):
         commit()
         return parent[obj]
 
-    def create_parent():
-        pass
+    def create_parent(parts):
+        for i in range(len(parts)):
+            path = self.utils.get_path(parts)
+            prefix_path = self.utils.get_prefix_path(path)
+            obj = self.utils.get_obj(path)
+            if obj[0] not in illegal_chars:
+                parent = self.get_parent(parent,
+                    self.utils.join_input(prefix_path, '/'))
+                if self.utils.check_exists(parent, obj):
+                    self.logger.info("object '%s' exists inside '%s'" % (
+                        obj, self.utils.obj_to_path(parent)))
+                else:
+                    self.logger.info(
+                        "object '%s' does not exist inside '%s'"
+                        % (obj, self.utils.obj_to_path(parent)))
+                    count = self.create_content(parent, obj, count, base,
+                            prefix_path, html_extensions, image_extensions,
+                            target_tags)
+            else:
+                break
 
     def get_base(self, files, ignore):
         return self.utils.join_input(self.utils.split_input(
@@ -213,9 +231,9 @@ class Parse2Plone(object):
             parts = self.utils.split_input(file, '/')
             parent = site
             for i in range(len(parts)):
-                path = self.utils.join_input(parts[:i + 1], '/')
-                prefix_path = self.utils.split_input(path, '/')[:-1]
-                obj = self.utils.split_input(path, '/')[-1:][0]
+                path = self.get_path(parts, i)
+                prefix_path = self.get_prefix_path(path)
+                obj = self.get_obj(path)
                 if obj[0] not in illegal_chars:
                     parent = self.get_parent(parent,
                         self.utils.join_input(prefix_path, '/'))
