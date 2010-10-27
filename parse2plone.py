@@ -55,10 +55,17 @@ def setup_logger():
 
 class Utils(object):
 
-    def check_exists(self, parent, obj):
+    def check_exists_obj(self, parent, obj):
         if obj in parent:
             return True
         else:
+            return False
+
+    def check_exists_path(self, parent, path):
+        try:
+            parent.restrictedTraverse(path)
+            return True
+        except:
             return False
 
     def create_option_parser(self):
@@ -174,9 +181,8 @@ class Parse2Plone(object):
             obj = self.get_obj(path)
             parent = self.get_parent(parent,
                 self.utils.join_input(prefix_path, '/'))
-
             if self.utils.is_legal(obj, self.illegal_chars):
-                if self.utils.check_exists(parent, obj):
+                if self.utils.check_exists_obj(parent, obj):
                     self.logger.info("object '%s' exists inside '%s'" % (
                         obj, self.utils.obj_to_path(parent)))
                 else:
@@ -209,14 +215,20 @@ class Parse2Plone(object):
         return self.utils.split_input(path, '/')[-1:][0]
 
     def get_parent(self, current_parent, prefix_path):
-#        if self.utils.obj_to_path(current_parent) == prefix_path:
-#            return current_parent
-#        else:
         updated_parent = current_parent.restrictedTraverse(prefix_path)
         self.logger.info("updating parent from '%s' to '%s'" % (
              self.utils.obj_to_path(current_parent),
              self.utils.obj_to_path(updated_parent)))
         return updated_parent
+
+
+
+#        if self.utils.obj_to_path(current_parent) == prefix_path:
+#            return current_parent
+#        else:
+
+
+
 
 #            except KeyError:
 #                if prefix_path.startswith('/'):
@@ -356,16 +368,18 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     logger = setup_logger()
     count = {'folders': 0, 'images': 0, 'pages': 0}
 
+    # Process command line args
+    option_parser = utils.create_option_parser()
+    options, args = option_parser.parse_args()
+
     # Clean up input
     utils = Utils()
     illegal_chars = utils.split_input(illegal_chars, ',')
     html_extensions = utils.split_input(html_extensions, ',')
     image_extensions = utils.split_input(image_extensions, ',')
     target_tags = utils.split_input(target_tags, ',')
-
-    # Process command line args
-    option_parser = utils.create_option_parser()
-    options, args = option_parser.parse_args()
+    if path.startswith('/'):
+        path = path[1:]
 
     # Override settings w/command line args
     import_dir = args[0]
@@ -388,7 +402,11 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     parse2plone.base = parse2plone.get_base(files, ignore)
     app = parse2plone.setup_app(app)
 
-    parent = parse2plone.get_parent(app, path)
+    if utils.check_exists_path(app, path):
+        parent = parse2plone.get_parent(app, path)
+    else:
+        parse2plone.create_parts(app, parse2plone.get_parts(path))
+        parent = parse2plone.get_parent(app, path)
 
     files = parse2plone.prep_files(files, ignore)
 
