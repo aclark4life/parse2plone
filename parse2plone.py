@@ -167,6 +167,7 @@ class Parse2Plone(object):
         return parent[obj]
 
     def create_parts(self, parent, parts):
+        self.logger.info("creating parts for '%s'" % self.utils.join_input(parts, '/'))
         for i in range(len(parts)):
             path = self.get_path(parts, i)
             prefix_path = self.get_prefix_path(path)
@@ -184,6 +185,7 @@ class Parse2Plone(object):
                         % (obj, self.utils.obj_to_path(parent)))
                     self.create_content(parent, obj, prefix_path)
             else:
+                self.logger.info("object '%s' has illegal chars" % (
                 break
 
     def get_base(self, files, ignore):
@@ -208,11 +210,17 @@ class Parse2Plone(object):
         if self.utils.obj_to_path(current_parent) == prefix_path:
             return current_parent
         else:
-            updated_parent = current_parent.restrictedTraverse(prefix_path)
-            self.logger.info("updating parent from '%s' to '%s'" % (
-                self.utils.obj_to_path(current_parent),
-                self.utils.obj_to_path(updated_parent)))
-            return updated_parent
+            try:
+                updated_parent = current_parent.restrictedTraverse(prefix_path)
+                self.logger.info("updating parent from '%s' to '%s'" % (
+                    self.utils.obj_to_path(current_parent),
+                    self.utils.obj_to_path(updated_parent)))
+                return updated_parent
+            except KeyError:
+                if prefix_path.startswith('/'):
+                    prefix_path = prefix_path[1:]
+                parts = self.get_parts(prefix_path)
+                updated_parent = self.create_parts(current_parent, parts)
 
 
 #    def get_parent(self, current_parent, prefix_path):
@@ -370,7 +378,9 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     files = parse2plone.get_files(import_dir)
     parse2plone.base = parse2plone.get_base(files, ignore)
     app = parse2plone.setup_app(app)
+
     parent = parse2plone.get_parent(app, path)
+
     files = parse2plone.prep_files(files, ignore)
     results = parse2plone.import_files(parent, files)
 
