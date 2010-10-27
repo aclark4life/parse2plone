@@ -361,7 +361,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     if options.path is not None:
         path = options.path
 
-    # Run parse2plone
+    # Setup parse2plone
     parse2plone = Parse2Plone()
     parse2plone.logger = logger
     parse2plone.utils = utils
@@ -370,9 +370,9 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     parse2plone.image_extensions = image_extensions
     parse2plone.target_tags = target_tags
 
+    # Run parse2plone
     files = parse2plone.get_files(import_dir, illegal_chars)
     parse2plone.base = parse2plone.get_base(files, ignore)
-
     app = parse2plone.setup_app(app)
     parent = parse2plone.get_parent(app, path)
     files = parse2plone.prep_files(files, ignore, illegal_chars)
