@@ -129,22 +129,20 @@ class Utils(object):
 
 class Parse2Plone(object):
 
-    def create_content(self, parent, obj, base,
-        prefix_path, html_extensions, image_extensions,
-        target_tags):
+    def create_content(self, parent, obj, prefix_path):
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
             self.set_title(folder, obj)
             self.count['folders'] += 1
-        elif self.utils.is_html(obj, html_extensions):
+        elif self.utils.is_html(obj, self.html_extensions):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
-            self.set_page(page, obj, base, prefix_path, target_tags)
+            self.set_page(page, obj, prefix_path)
             self.count['pages'] += 1
-        elif self.utils.is_image(obj, image_extensions):
+        elif self.utils.is_image(obj, self.image_extensions):
             image = self.create_image(parent, obj)
             self.set_title(image, obj)
-            self.set_image(image, obj, base, prefix_path)
+            self.set_image(image, obj, prefix_path)
             self.count['images'] += 1
 
     def create_folder(self, parent, obj):
@@ -168,15 +166,14 @@ class Parse2Plone(object):
         commit()
         return parent[obj]
 
-    def create_parent(self, current_parent, prefix_path):
-
-        parts = self.utils.join_input(prefix_path, '/')
+    def create_parent(self, parent, parts):
         for i in range(len(parts)):
             path = self.get_path(parts, i)
             prefix_path = self.get_prefix_path(path)
             obj = self.get_obj(path)
-            parent = self.get_parent(current_parent,
+            parent = self.get_parent(parent,
                 self.utils.join_input(prefix_path, '/'))
+
             if self.utils.check_exists(parent, obj):
                 self.logger.info("object '%s' exists inside '%s'" % (
                     obj, self.utils.obj_to_path(parent)))
@@ -184,8 +181,7 @@ class Parse2Plone(object):
                 self.logger.info(
                     "object '%s' does not exist inside '%s'"
                     % (obj, self.utils.obj_to_path(parent)))
-                self.create_content(parent, obj, base, prefix_path,
-                    html_extensions, image_extensions, target_tags)
+                self.create_content(parent, obj, prefix_path)
 
     def get_base(self, files, ignore):
         return self.utils.join_input(self.utils.split_input(
@@ -211,14 +207,17 @@ class Parse2Plone(object):
                 updated_parent = current_parent.restrictedTraverse(prefix_path)
             except KeyError:
                 self.logger.info('creating parent(s) for %s' % prefix_path)
-                updated_parent = self.create_parent(current_parent,
-                    prefix_path)
+                parts = self.get_parts(prefix_path)
+                updated_parent = self.create_parent(current_parent, parts)
             self.logger.info('updating parent from %s to %s' % (
                 self.utils.obj_to_path(current_parent),
                 self.utils.obj_to_path(updated_parent)))
             return updated_parent
         else:
             return current_parent
+
+    def get_parts(self, path):
+        return self.utils.split_input(path, '/')
 
     def get_path(self, parts, i):
         return self.utils.join_input(parts[:i + 1], '/')
@@ -229,63 +228,63 @@ class Parse2Plone(object):
     def ignore_parts(self, files, ignore):
         results = []
         for f in files:
-            parts = self.utils.split_input(f, '/')
+            parts = self.get_parts(f)
             if ignore is not '':
                 parts = parts[ignore:]
             results.append(parts)
         return results
 
-    def import_files(self, site, files, html_extensions,
-        image_extensions, target_tags):
-        base = files.keys()[0]
-        for f in files[base]:
-            parts = self.utils.split_input(f, '/')
-            parent = site
-            for i in range(len(parts)):
-                path = self.get_path(parts, i)
-                prefix_path = self.get_prefix_path(path)
-                obj = self.get_obj(path)
-                parent = self.get_parent(parent,
-                    self.utils.join_input(prefix_path, '/'))
-                if self.utils.check_exists(parent, obj):
-                    self.logger.info("object '%s' exists inside '%s'" % (
-                        obj, self.utils.obj_to_path(parent)))
-                else:
-                    self.logger.info(
-                        "object '%s' does not exist inside '%s'"
-                        % (obj, self.utils.obj_to_path(parent)))
-                    self.create_content(parent, obj, base, prefix_path,
-                        html_extensions, image_extensions, target_tags)
+    def import_files(self, parent, files):
+        self.base = files.keys()[0]
+        for f in files[self.base]:
+            parts = self.get_parts(f)
+            self.create_parent(parent, parts)
+
+#            for i in range(len(parts)):
+#                path = self.get_path(parts, i)
+#                prefix_path = self.get_prefix_path(path)
+#                obj = self.get_obj(path)
+#                parent = self.get_parent(parent,
+#                    self.utils.join_input(prefix_path, '/'))
+#                if self.utils.check_exists(parent, obj):
+#                    self.logger.info("object '%s' exists inside '%s'" % (
+#                        obj, self.utils.obj_to_path(parent)))
+#                else:
+#                    self.logger.info(
+#                        "object '%s' does not exist inside '%s'"
+#                        % (obj, self.utils.obj_to_path(parent)))
+#                    self.create_content(parent, obj, base, prefix_path,
+#                        html_extensions, image_extensions, target_tags)
 
         results = self.count.values()
-        results.append(self.utils.obj_to_path(site))
+        results.append(self.utils.obj_to_path(parent))
         return results
 
-    def prep_files(self, files, ignore, base, illegal_chars):
-        results = {base: []}
+    def prep_files(self, files, ignore, illegal_chars):
+        results = {self.base: []}
         files = self.ignore_parts(files, ignore)
         for f in files:
-            results[base].append(self.utils.join_input(f, '/'))
+            results[self.base].append(self.utils.join_input(f, '/'))
 
         i = 0
-        for f in results[base]:
+        for f in results[self.base]:
             if not self.utils.is_legal(f, illegal_chars):
-                del results[base][i]
+                del results[self.base][i]
             i += 1
 
         return results
 
-    def set_image(self, image, obj, base, prefix_path):
-        f = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
+    def set_image(self, image, obj, prefix_path):
+        f = open('/'.join([self.base, self.utils.join_input(prefix_path, '/'),
             obj]), 'rb')
         data = f.read()
         f.close()
         image.setImage(data)
         commit()
 
-    def set_page(self, page, obj, base, prefix_path, target_tags):
+    def set_page(self, page, obj, prefix_path):
         results = ''
-        f = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
+        f = open('/'.join([self.base, self.utils.join_input(prefix_path, '/'),
             obj]), 'rb')
         data = f.read()
         f.close()
@@ -293,7 +292,7 @@ class Parse2Plone(object):
         for element in root.iter():
             tag = element.tag
             text = element.text
-            if tag in target_tags and text is not None:
+            if tag in self.target_tags and text is not None:
                 results += '<%s>%s</%s>' % (tag, text, tag)
         page.setText(results)
         commit()
@@ -367,13 +366,17 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     parse2plone.logger = logger
     parse2plone.utils = utils
     parse2plone.count = count
+    parse2plone.html_extensions = html_extensions
+    parse2plone.image_extensions = image_extensions
+    parse2plone.target_tags = target_tags
+
     files = parse2plone.get_files(import_dir, illegal_chars)
-    base = parse2plone.get_base(files, ignore)
+    parse2plone.base = parse2plone.get_base(files, ignore)
+
     app = parse2plone.setup_app(app)
     parent = parse2plone.get_parent(app, path)
-    files = parse2plone.prep_files(files, ignore, base, illegal_chars)
-    results = parse2plone.import_files(parent, files,
-        html_extensions, image_extensions, target_tags)
+    files = parse2plone.prep_files(files, ignore, illegal_chars)
+    results = parse2plone.import_files(parent, files)
 
     # Print results
     msg = "Imported %s folders, %s images, and %s pages into: '%s'."
