@@ -110,6 +110,19 @@ class Utils(object):
     def obj_to_path(self, obj):
         return self.join_input(obj.getPhysicalPath(), '/')
 
+    def parse_options(self, options):
+        results = deepcopy(defaults)
+        join_input = self.join_input
+        split_input = self.split_input
+        for option in results:
+            results[option] = None
+        for option in results:
+            if option in options:
+                results[option] = join_input(options[option], ',')
+            else:
+                results[option] = join_input(defaults[option], ',')
+        return results.values()
+
     def split_input(self, input, delimiter):
         return input.split(delimiter)
 
@@ -302,54 +315,30 @@ class Parse2Plone(object):
 class Recipe(object):
     """zc.buildout recipe"""
 
-    utils = Utils()
-
     def __init__(self, buildout, name, options):
         self.buildout, self.name, self.options = buildout, name, options
 
     def install(self):
         """Installer"""
-        bindir = self.buildout['buildout']['bin-directory']
 
+        utils = Utils()
+        bindir = self.buildout['buildout']['bin-directory']
         [force, html_extensions, target_tags, path, illegal_chars,
-            image_extensions] = self.parse_options(self.options)
+            image_extensions] = utils.parse_options(self.options)
 
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', target_tags='%s', force='%s'"
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
-        # http://goo.gl/qm3f
-        create_scripts(
-            # A sequence of distribution requirements
-            [('import', 'parse2plone', 'main')],
-            # A working set
-            working_set,
-            # The Python executable to use
-            executable,
-            # The destination directory
-            bindir,
-            # The value passed is a source string to be placed between the
-            # parentheses in the call
-            arguments=arguments % (path, illegal_chars, html_extensions,
-                image_extensions, target_tags, force))
+        create_scripts([('import', 'parse2plone', 'main')],
+            working_set, executable, bindir, arguments=arguments % (
+            path, illegal_chars, html_extensions, image_extensions,
+            target_tags, force))
         return tuple()
 
     def update(self):
         """Updater"""
         pass
-
-    def parse_options(self, options):
-        results = deepcopy(defaults)
-        join_input = self.utils.join_input
-        split_input = self.utils.split_input
-        for option in results:
-            results[option] = None
-        for option in results:
-            if option in options:
-                results[option] = join_input(options[option], ',')
-            else:
-                results[option] = join_input(defaults[option], ',')
-        return results.values()
 
 
 def main(app, path=None, illegal_chars=None, html_extensions=None,
