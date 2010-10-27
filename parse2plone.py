@@ -157,12 +157,15 @@ class Parse2Plone(object):
         return parent[obj]
 
     def create_parent(self, current_parent, prefix_path):
+
         parts = self.utils.join_input(prefix_path, '/')
         for i in range(len(parts)):
             path = self.get_path(parts, i)
             prefix_path = self.get_prefix_path(path)
             obj = self.get_obj(path)
-            if obj[0] not in illegal_chars:
+
+            if self.utils.is_legal(obj, illegal_chars):
+
                 parent = self.get_parent(parent,
                     self.utils.join_input(prefix_path, '/'))
                 if self.utils.check_exists(parent, obj):
@@ -231,7 +234,7 @@ class Parse2Plone(object):
                 path = self.get_path(parts, i)
                 prefix_path = self.get_prefix_path(path)
                 obj = self.get_obj(path)
-                if obj[0] not in illegal_chars:
+                if self.utils.is_legal(obj, illegal_chars):
                     parent = self.get_parent(parent,
                         self.utils.join_input(prefix_path, '/'))
                     if self.utils.check_exists(parent, obj):
