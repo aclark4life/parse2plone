@@ -181,7 +181,7 @@ class Parse2Plone(object):
             except KeyError:
                 self.logger.info('creating parent(s) for %s' % prefix_path)
                 updated_parent = create_parent(current_parent, prefix_path)
-            
+
             self.logger.info('updating parent from %s to %s' % (
                 self.utils.obj_to_path(current_parent),
                 self.utils.obj_to_path(updated_parent)))
@@ -226,14 +226,8 @@ class Parse2Plone(object):
                         self.logger.info(
                             "object '%s' does not exist inside '%s'"
                             % (obj, self.utils.obj_to_path(parent)))
-                        count = self.create_content(
-                                parent,
-                                obj,
-                                count,
-                                base,
-                                prefix_path,
-                                html_extensions,
-                                image_extensions,
+                        count = self.create_content(parent, obj, count, base,
+                                prefix_path, html_extensions, image_extensions,
                                 target_tags)
                 else:
                     break
@@ -280,7 +274,6 @@ class Parse2Plone(object):
         app = makerequest(app)
         newSecurityManager(None, system)
         return app
-
 
 
 class Recipe(object):
