@@ -174,27 +174,30 @@ class Parse2Plone(object):
             parent = self.get_parent(parent,
                 self.utils.join_input(prefix_path, '/'))
 
-            if self.utils.check_exists(parent, obj):
-                self.logger.info("object '%s' exists inside '%s'" % (
-                    obj, self.utils.obj_to_path(parent)))
+            if self.utils.is_legal(obj, self.illegal_chars):
+                if self.utils.check_exists(parent, obj):
+                    self.logger.info("object '%s' exists inside '%s'" % (
+                        obj, self.utils.obj_to_path(parent)))
+                else:
+                    self.logger.info(
+                        "object '%s' does not exist inside '%s'"
+                        % (obj, self.utils.obj_to_path(parent)))
+                    self.create_content(parent, obj, prefix_path)
             else:
-                self.logger.info(
-                    "object '%s' does not exist inside '%s'"
-                    % (obj, self.utils.obj_to_path(parent)))
-                self.create_content(parent, obj, prefix_path)
+                break
 
     def get_base(self, files, ignore):
         return self.utils.join_input(self.utils.split_input(
             files[0], '/')[:ignore], '/')
 
-    def get_files(self, import_dir, illegal_chars):
+    def get_files(self, import_dir):
         results = []
         for path, subdirs, files in walk(import_dir):
             self.logger.info("path '%s', has subdirs '%s', and files '%s'" % (
                 path, self.utils.join_input(subdirs, ' '),
                 self.utils.join_input(files, ' ')))
             for f in fnmatch.filter(files, '*'):
-                if self.utils.is_legal(f, illegal_chars):
+                if self.utils.is_legal(f, self.illegal_chars):
                     results.append(os_path.join(path, f))
         return results
 
@@ -260,18 +263,11 @@ class Parse2Plone(object):
         results.append(self.utils.obj_to_path(parent))
         return results
 
-    def prep_files(self, files, ignore, illegal_chars):
+    def prep_files(self, files, ignore):
         results = {self.base: []}
         files = self.ignore_parts(files, ignore)
         for f in files:
             results[self.base].append(self.utils.join_input(f, '/'))
-
-        i = 0
-        for f in results[self.base]:
-            if not self.utils.is_legal(f, illegal_chars):
-                del results[self.base][i]
-            i += 1
-
         return results
 
     def set_image(self, image, obj, prefix_path):
@@ -368,14 +364,15 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     parse2plone.count = count
     parse2plone.html_extensions = html_extensions
     parse2plone.image_extensions = image_extensions
+    parse2plone.illegal_chars = illegal_chars
     parse2plone.target_tags = target_tags
 
     # Run parse2plone
-    files = parse2plone.get_files(import_dir, illegal_chars)
+    files = parse2plone.get_files(import_dir)
     parse2plone.base = parse2plone.get_base(files, ignore)
     app = parse2plone.setup_app(app)
     parent = parse2plone.get_parent(app, path)
-    files = parse2plone.prep_files(files, ignore, illegal_chars)
+    files = parse2plone.prep_files(files, ignore)
     results = parse2plone.import_files(parent, files)
 
     # Print results
