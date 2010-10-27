@@ -251,11 +251,18 @@ class Parse2Plone(object):
         results.append(self.utils.obj_to_path(site))
         return results
 
-    def prep_files(self, files, ignore, base):
+    def prep_files(self, files, ignore, base, illegal_chars):
         results = {base: []}
         files = self.ignore_parts(files, ignore)
         for f in files:
             results[base].append(self.utils.join_input(f, '/'))
+
+        i = 0
+        for f in results[base]:
+            if not self.utils.is_legal(f, illegal_chars):
+                del results[base][i]
+            i += 1
+
         return results
 
     def set_image(self, image, obj, base, prefix_path):
@@ -377,7 +384,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     base = parse2plone.get_base(files, ignore)
     app = parse2plone.setup_app(app)
     parent = parse2plone.get_parent(app, path)
-    files = parse2plone.prep_files(files, ignore, base)
+    files = parse2plone.prep_files(files, ignore, base, illegal_chars)
     results = parse2plone.import_files(parent, files,
         html_extensions, image_extensions, target_tags, count)
 
