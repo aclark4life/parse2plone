@@ -25,7 +25,7 @@ from optparse import OptionParser
 from os import path as os_path
 from os import walk
 from pkg_resources import working_set
-from sys import executable
+from sys import exc_info, executable
 from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
@@ -213,6 +213,7 @@ class Parse2Plone(object):
                 self.utils.obj_to_path(current_parent),
                 self.utils.obj_to_path(updated_parent)))
             return updated_parent
+
 
 #    def get_parent(self, current_parent, prefix_path):
 #        if not self.utils.obj_to_path(current_parent) == prefix_path:
