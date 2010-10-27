@@ -224,9 +224,7 @@ class Parse2Plone(object):
 
     def import_files(self, site, files, illegal_chars, html_extensions,
         image_extensions, target_tags, count):
-
         base = files.keys()[0]
-
         for file in files[base]:
             parts = self.utils.split_input(file, '/')
             parent = site
