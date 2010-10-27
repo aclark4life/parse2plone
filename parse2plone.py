@@ -183,8 +183,8 @@ class Parse2Plone(object):
     def get_files(self, import_dir, illegal_chars):
         results = []
         for path, subdirs, files in walk(import_dir):
-            self.logger.info("path '%s', has subdirs '%s', and files '%s'" % (path,
-                self.utils.join_input(subdirs, ' '),
+            self.logger.info("path '%s', has subdirs '%s', and files '%s'" % (
+                path, self.utils.join_input(subdirs, ' '),
                 self.utils.join_input(files, ' ')))
             for f in fnmatch.filter(files, '*'):
                 if self.utils.is_legal(f, illegal_chars):
@@ -200,7 +200,8 @@ class Parse2Plone(object):
                 updated_parent = current_parent.restrictedTraverse(prefix_path)
             except KeyError:
                 self.logger.info('creating parent(s) for %s' % prefix_path)
-                updated_parent = self.create_parent(current_parent, prefix_path)
+                updated_parent = self.create_parent(current_parent,
+                    prefix_path)
             self.logger.info('updating parent from %s to %s' % (
                 self.utils.obj_to_path(current_parent),
                 self.utils.obj_to_path(updated_parent)))
@@ -245,7 +246,6 @@ class Parse2Plone(object):
                     count = self.create_content(parent, obj, count, base,
                             prefix_path, html_extensions, image_extensions,
                             target_tags)
-
 
         results = count.values()
         results.append(self.utils.obj_to_path(site))
