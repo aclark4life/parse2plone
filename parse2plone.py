@@ -195,11 +195,9 @@ class Parse2Plone(object):
         if not self.utils.obj_to_path(current_parent) == prefix_path:
             try:
                 updated_parent = current_parent.restrictedTraverse(prefix_path)
-
             except KeyError:
                 self.logger.info('creating parent(s) for %s' % prefix_path)
-                updated_parent = create_parent(current_parent, prefix_path)
-
+                updated_parent = self.create_parent(current_parent, prefix_path)
             self.logger.info('updating parent from %s to %s' % (
                 self.utils.obj_to_path(current_parent),
                 self.utils.obj_to_path(updated_parent)))
