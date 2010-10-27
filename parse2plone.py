@@ -375,7 +375,6 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     """parse2plone"""
 
     utils = Utils()
-
     logger = setup_logger()
     count = {'folders': 0, 'images': 0, 'pages': 0}
 
