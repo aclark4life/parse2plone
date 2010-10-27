@@ -243,22 +243,6 @@ class Parse2Plone(object):
             parts = self.get_parts(f)
             self.create_parent(parent, parts)
 
-#            for i in range(len(parts)):
-#                path = self.get_path(parts, i)
-#                prefix_path = self.get_prefix_path(path)
-#                obj = self.get_obj(path)
-#                parent = self.get_parent(parent,
-#                    self.utils.join_input(prefix_path, '/'))
-#                if self.utils.check_exists(parent, obj):
-#                    self.logger.info("object '%s' exists inside '%s'" % (
-#                        obj, self.utils.obj_to_path(parent)))
-#                else:
-#                    self.logger.info(
-#                        "object '%s' does not exist inside '%s'"
-#                        % (obj, self.utils.obj_to_path(parent)))
-#                    self.create_content(parent, obj, base, prefix_path,
-#                        html_extensions, image_extensions, target_tags)
-
         results = self.count.values()
         results.append(self.utils.obj_to_path(parent))
         return results
