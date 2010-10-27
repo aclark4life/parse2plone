@@ -321,7 +321,7 @@ class Recipe(object):
 
 
 def main(app, path=None, illegal_chars=None, html_extensions=None,
-    image_extensions=None, target_tags=None, force=False):
+    image_extensions=None, target_tags=None, force=None):
     """parse2plone"""
 
     logger = setup_logger()
