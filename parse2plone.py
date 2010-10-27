@@ -209,14 +209,14 @@ class Parse2Plone(object):
         return self.utils.split_input(path, '/')[-1:][0]
 
     def get_parent(self, current_parent, prefix_path):
-        if self.utils.obj_to_path(current_parent) == prefix_path:
-            return current_parent
-        else:
-            updated_parent = current_parent.restrictedTraverse(prefix_path)
-            self.logger.info("updating parent from '%s' to '%s'" % (
-                self.utils.obj_to_path(current_parent),
-                self.utils.obj_to_path(updated_parent)))
-            return updated_parent
+#        if self.utils.obj_to_path(current_parent) == prefix_path:
+#            return current_parent
+#        else:
+        updated_parent = current_parent.restrictedTraverse(prefix_path)
+        self.logger.info("updating parent from '%s' to '%s'" % (
+             self.utils.obj_to_path(current_parent),
+             self.utils.obj_to_path(updated_parent)))
+        return updated_parent
 
 #            except KeyError:
 #                if prefix_path.startswith('/'):
