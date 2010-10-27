@@ -151,9 +151,8 @@ class Utils(object):
     def obj_to_path(self, obj):
         return self.join_input(obj.getPhysicalPath(), '/')
 
-    def process_command_line_args(self, options, illegal_chars, html_extensions,
-        image_extensions, target_tags, path, force):
-
+    def process_command_line_args(self, options, illegal_chars,
+        html_extensions, image_extensions, target_tags, path, force):
         if options.illegal_chars is not None:
             illegal_chars = options.illegal_chars
         if options.html_extensions is not None:
@@ -167,7 +166,6 @@ class Utils(object):
         path = self.clean_path(path)
         if options.force is not None:
             force = options.force
-
         return (illegal_chars, html_extensions, image_extensions,
             target_tags, path, force)
 
@@ -404,7 +402,6 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     ignore = len(utils.split_input(import_dir, '/'))
     parse2plone.base = parse2plone.get_base(files, ignore)
     app = parse2plone.setup_app(app)
-
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:
@@ -415,7 +412,6 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             msg = "object in path '%s' does not exist, use --force to create"
             logger.info(msg % path)
             exit(1)
-
     files = parse2plone.prep_files(files, ignore)
     results = parse2plone.import_files(parent, files)
 
