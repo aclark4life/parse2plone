@@ -223,6 +223,7 @@ class Parse2Plone(object):
                     prefix_path = prefix_path[1:]
                 parts = self.get_parts(prefix_path)
                 updated_parent = self.create_parts(current_parent, parts)
+                return updated_parent
 
 
 #    def get_parent(self, current_parent, prefix_path):
@@ -384,6 +385,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     parent = parse2plone.get_parent(app, path)
 
     files = parse2plone.prep_files(files, ignore)
+
     results = parse2plone.import_files(parent, files)
 
     # Print results
