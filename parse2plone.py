@@ -140,10 +140,11 @@ class Utils(object):
         return result
 
     def is_legal(self, obj, illegal_chars):
-        if obj[0] not in illegal_chars:
-            return True
-        else:
-            return False
+        result = True
+        for c in obj:
+            if c in illegal_chars:
+                result = False
+        return result
 
     def join_input(self, input, delimiter):
         return delimiter.join(input)
