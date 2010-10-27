@@ -369,11 +369,11 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     count = {'folders': 0, 'images': 0, 'pages': 0}
 
     # Process command line args
+    utils = Utils()
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
 
     # Clean up input
-    utils = Utils()
     illegal_chars = utils.split_input(illegal_chars, ',')
     html_extensions = utils.split_input(html_extensions, ',')
     image_extensions = utils.split_input(image_extensions, ',')
@@ -386,6 +386,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     ignore = len(utils.split_input(import_dir, '/'))
     if options.path is not None:
         path = options.path
+    if path.startswith('/'):
+        path = path[1:]
 
     # Setup parse2plone
     parse2plone = Parse2Plone()
