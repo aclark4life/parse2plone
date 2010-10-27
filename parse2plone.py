@@ -159,9 +159,9 @@ class Parse2Plone(object):
     def create_parent(self, current_parent, prefix_path):
         parts = self.utils.join_input(prefix_path, '/')
         for i in range(len(parts)):
-            path = self.utils.get_path(parts)
-            prefix_path = self.utils.get_prefix_path(path)
-            obj = self.utils.get_obj(path)
+            path = self.get_path(parts, i)
+            prefix_path = self.get_prefix_path(path)
+            obj = self.get_obj(path)
             if obj[0] not in illegal_chars:
                 parent = self.get_parent(parent,
                     self.utils.join_input(prefix_path, '/'))
