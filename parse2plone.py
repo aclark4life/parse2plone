@@ -201,6 +201,8 @@ class Parse2Plone(object):
             for f in fnmatch.filter(files, '*'):
                 if self.utils.is_legal(f, self.illegal_chars):
                     results.append(os_path.join(path, f))
+                else:
+                    self.logger.info("object '%s' has illegal chars" % f)
         return results
 
     def get_obj(self, path):
