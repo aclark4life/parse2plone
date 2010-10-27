@@ -184,8 +184,8 @@ class Parse2Plone(object):
     def get_files(self, import_dir):
         results = []
         for path, subdirs, files in walk(import_dir):
-            for file in fnmatch.filter(files, '*'):
-                results.append(os_path.join(path, file))
+            for f in fnmatch.filter(files, '*'):
+                results.append(os_path.join(path, f))
         return results
 
     def get_obj(self, path):
@@ -215,8 +215,8 @@ class Parse2Plone(object):
 
     def ignore_parts(self, files, ignore):
         results = []
-        for file in files:
-            parts = self.utils.split_input(file, '/')
+        for f in files:
+            parts = self.utils.split_input(f, '/')
             if ignore is not '':
                 parts = parts[ignore:]
             results.append(parts)
@@ -225,8 +225,8 @@ class Parse2Plone(object):
     def import_files(self, site, files, illegal_chars, html_extensions,
         image_extensions, target_tags, count):
         base = files.keys()[0]
-        for file in files[base]:
-            parts = self.utils.split_input(file, '/')
+        for f in files[base]:
+            parts = self.utils.split_input(f, '/')
             parent = site
             for i in range(len(parts)):
                 path = self.get_path(parts, i)
@@ -254,24 +254,24 @@ class Parse2Plone(object):
     def prep_files(self, files, ignore, base):
         results = {base: []}
         files = self.ignore_parts(files, ignore)
-        for file in files:
-            results[base].append(self.utils.join_input(file, '/'))
+        for f in files:
+            results[base].append(self.utils.join_input(f, '/'))
         return results
 
     def set_image(self, image, obj, base, prefix_path):
-        file = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
+        f = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
             obj]), 'rb')
-        data = file.read()
-        file.close()
+        data = f.read()
+        f.close()
         image.setImage(data)
         commit()
 
     def set_page(self, page, obj, base, prefix_path, target_tags):
         results = ''
-        file = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
+        f = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
             obj]), 'rb')
-        data = file.read()
-        file.close()
+        data = f.read()
+        f.close()
         root = fromstring(data)
         for element in root.iter():
             tag = element.tag
