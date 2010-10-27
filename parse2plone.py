@@ -76,7 +76,6 @@ class Utils(object):
     def clean_recipe_input(self, illegal_chars, html_extensions,
         image_extensions, target_tags, path, force):
 
-        results = []
         illegal_chars = self.split_input(illegal_chars, ',')
         html_extensions = self.split_input(html_extensions, ',')
         image_extensions = self.split_input(image_extensions, ',')
@@ -103,6 +102,22 @@ class Utils(object):
             action="store_true", dest="force", default=False,
             help="Force creation of folders")
         return option_parser
+
+    def convert_recipe_options(self, options):
+        """
+        Convert recipe options into csv
+        """
+        results = deepcopy(defaults)
+        join_input = self.join_input
+        split_input = self.split_input
+        for option in results:
+            results[option] = None
+        for option in results:
+            if option in options:
+                results[option] = join_input(options[option], ',')
+            else:
+                results[option] = join_input(defaults[option], ',')
+        return results.values()
 
     def is_folder(self, obj):
         if len(obj.split('.')) == 1:
@@ -136,21 +151,25 @@ class Utils(object):
     def obj_to_path(self, obj):
         return self.join_input(obj.getPhysicalPath(), '/')
 
-    def convert_recipe_options(self, options):
-        """
-        Convert recipe options into csv
-        """
-        results = deepcopy(defaults)
-        join_input = self.join_input
-        split_input = self.split_input
-        for option in results:
-            results[option] = None
-        for option in results:
-            if option in options:
-                results[option] = join_input(options[option], ',')
-            else:
-                results[option] = join_input(defaults[option], ',')
-        return results.values()
+    def process_command_line_args(self, options, illegal_chars, html_extensions,
+        image_extensions, target_tags, path, force):
+
+        if options.illegal_chars is not None:
+            illegal_chars = options.illegal_chars
+        if options.html_extensions is not None:
+            html_extensions = options.html_extensions
+        if options.image_extensions is not None:
+            image_extensions = options.image_extensions
+        if options.target_tags is not None:
+            target_tags = options.target_tags
+        if options.path is not None:
+            path = options.path
+        path = self.clean_path(path)
+        if options.force is not None:
+            force = options.force
+
+        return (illegal_chars, html_extensions, image_extensions,
+            target_tags, path, force)
 
     def split_input(self, input, delimiter):
         return input.split(delimiter)
@@ -347,6 +366,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     """parse2plone"""
 
     utils = Utils()
+
     logger = setup_logger()
     count = {'folders': 0, 'images': 0, 'pages': 0}
 
@@ -355,28 +375,14 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         path, force] = utils.clean_recipe_input(illegal_chars,
         html_extensions, image_extensions, target_tags, path, force)
 
-    # Override settings with command line args as needed
+    # Process command line args
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
     import_dir = args[0]
-    if options.illegal_chars is not None:
-        illegal_chars = options.illegal_chars
-
-    if options.html_extensions is not None:
-        html_extensions = options.html_extensions
-
-    if options.image_extensions is not None:
-        image_extensions = options.image_extensions
-
-    if options.target_tags is not None:
-        target_tags = options.target_tags
-
-    if options.path is not None:
-        path = options.path
-    path = utils.clean_path(path)
-
-    if options.force is not None:
-        force = options.force
+    [illegal_chars, html_extensions, image_extensions, target_tags,
+        path, force] = utils.process_command_line_args(options,
+        illegal_chars, html_extensions, image_extensions, target_tags,
+        path, force)
 
     # Setup parse2plone
     parse2plone = Parse2Plone()
