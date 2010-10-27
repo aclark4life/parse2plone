@@ -364,6 +364,9 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         path = options.path
     path = utils.clean_path(path)
 
+    if options.force is not None:
+        force = options.force
+
     # Setup parse2plone
     parse2plone = Parse2Plone()
     parse2plone.logger = logger
