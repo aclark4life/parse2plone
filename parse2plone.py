@@ -163,7 +163,8 @@ class Utils(object):
         return self.join_input(obj.getPhysicalPath(), '/')
 
     def process_command_line_args(self, options, illegal_chars,
-        html_extensions, image_extensions, target_tags, path, force):
+        html_extensions, image_extensions, file_extensions,
+        target_tags, path, force):
         if options.illegal_chars is not None:
             illegal_chars = options.illegal_chars
         if options.html_extensions is not None:
