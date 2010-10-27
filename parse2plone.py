@@ -166,7 +166,7 @@ class Parse2Plone(object):
         commit()
         return parent[obj]
 
-    def create_parent(self, parent, parts):
+    def create_parts(self, parent, parts):
         for i in range(len(parts)):
             path = self.get_path(parts, i)
             prefix_path = self.get_prefix_path(path)
@@ -211,7 +211,7 @@ class Parse2Plone(object):
             except KeyError:
                 self.logger.info('creating parent(s) for %s' % prefix_path)
                 parts = self.get_parts(prefix_path)
-                updated_parent = self.create_parent(current_parent, parts)
+                updated_parent = self.create_parts(current_parent, parts)
             self.logger.info('updating parent from %s to %s' % (
                 self.utils.obj_to_path(current_parent),
                 self.utils.obj_to_path(updated_parent)))
@@ -241,7 +241,7 @@ class Parse2Plone(object):
         self.base = files.keys()[0]
         for f in files[self.base]:
             parts = self.get_parts(f)
-            self.create_parent(parent, parts)
+            self.create_parts(parent, parts)
 
         results = self.count.values()
         results.append(self.utils.obj_to_path(parent))
