@@ -73,6 +73,20 @@ class Utils(object):
         if path.startswith('/'):
             return path[1:]
 
+    def clean_recipe_input(self, illegal_chars, html_extensions,
+        image_extensions, target_tags, path, force):
+
+        results = []
+        illegal_chars = self.split_input(illegal_chars, ',')
+        html_extensions = self.split_input(html_extensions, ',')
+        image_extensions = self.split_input(image_extensions, ',')
+        target_tags = self.split_input(target_tags, ',')
+        path = self.clean_path(path)
+        force = literal_eval(force)
+
+        return (illegal_chars, html_extensions, image_extensions,
+            target_tags, path, force)
+
     def create_option_parser(self):
         option_parser = OptionParser()
         option_parser.add_option("-p", "--path", dest="path",
@@ -336,13 +350,10 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     logger = setup_logger()
     count = {'folders': 0, 'images': 0, 'pages': 0}
 
-    # Clean up recipe input
-    illegal_chars = utils.split_input(illegal_chars, ',')
-    html_extensions = utils.split_input(html_extensions, ',')
-    image_extensions = utils.split_input(image_extensions, ',')
-    target_tags = utils.split_input(target_tags, ',')
-    path = utils.clean_path(path)
-    force = literal_eval(force)
+    # Clean recipe input
+    [illegal_chars, html_extensions, image_extensions, target_tags,
+        path, force] = utils.clean_recipe_input(illegal_chars,
+        html_extensions, image_extensions, target_tags, path, force)
 
     # Override settings with command line args as needed
     option_parser = utils.create_option_parser()
