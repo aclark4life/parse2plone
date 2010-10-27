@@ -156,6 +156,9 @@ class Parse2Plone(object):
         commit()
         return parent[obj]
 
+    def create_parent():
+        pass
+
     def get_base(self, files, ignore):
         return self.utils.join_input(self.utils.split_input(
             files[0], '/')[:ignore], '/')
@@ -172,7 +175,13 @@ class Parse2Plone(object):
 
     def get_parent(self, current_parent, prefix_path):
         if not self.utils.obj_to_path(current_parent) == prefix_path:
-            updated_parent = current_parent.restrictedTraverse(prefix_path)
+            try:
+                updated_parent = current_parent.restrictedTraverse(prefix_path)
+
+            except KeyError:
+                self.logger.info('creating parent(s) for %s' % prefix_path)
+                updated_parent = create_parent(current_parent, prefix_path)
+            
             self.logger.info('updating parent from %s to %s' % (
                 self.utils.obj_to_path(current_parent),
                 self.utils.obj_to_path(updated_parent)))
@@ -272,28 +281,6 @@ class Parse2Plone(object):
         newSecurityManager(None, system)
         return app
 
-    def traverse_create(self, parts, parent, count, illegal_chars,
-        base, html_extensions, image_extensions, target_tags):
-        for i in range(len(parts)):
-            path = self.get_path(parts, i)
-            prefix_path = self.get_prefix_path(path)
-            obj = self.get_obj(path)
-            if self.utils.is_legal(obj, illegal_chars):
-                parent = self.get_parent(parent,
-                    self.utils.join_input(prefix_path, '/'))
-                if self.utils.check_exists(parent, obj):
-                    self.logger.info("object '%s' exists inside '%s'" % (
-                        obj, self.utils.obj_to_path(parent)))
-                else:
-                    self.logger.info(
-                        "object '%s' does not exist inside '%s'"
-                        % (obj, self.utils.obj_to_path(parent)))
-                    count = self.create_content(parent, obj, count,
-                        base, prefix_path, html_extensions,
-                        image_extensions, target_tags)
-            else:
-                break
-        return parent, count
 
 
 class Recipe(object):
