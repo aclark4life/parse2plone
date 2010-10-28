@@ -137,7 +137,7 @@ Instead of accepting the default ``parse2plone`` behaviour, in your
 
     [import]
     recipe = parse2plone
-    path = Plone2
+    path = /Plone2
     html_extensions = htm
     image_extensions = png
     target_tags = p
