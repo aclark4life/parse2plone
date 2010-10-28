@@ -378,7 +378,6 @@ class Recipe(object):
 
     def install(self):
         """Installer"""
-
         utils = Utils()
         bindir = self.buildout['buildout']['bin-directory']
         [force, html_extensions, file_extensions, target_tags, path,
