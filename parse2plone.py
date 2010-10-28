@@ -218,9 +218,9 @@ class Parse2Plone(object):
             self.set_image(image, obj, prefix_path, base)
             self.count['images'] += 1
         elif self.utils.is_file(obj, self.file_extensions):
-            file = self.create_file(parent, obj)
-            self.set_title(file, obj)
-            self.set_file(file, obj, prefix_path, base)
+            at_file = self.create_file(parent, obj)
+            self.set_title(at_file, obj)
+            self.set_file(at_file, obj, prefix_path, base)
             self.count['files'] += 1
 
     def create_folder(self, parent, obj):
@@ -343,12 +343,12 @@ class Parse2Plone(object):
         image.setImage(data)
         commit()
 
-    def set_file(self, file, obj, prefix_path, base):
+    def set_file(self, at_file, obj, prefix_path, base):
         f = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
             obj]), 'rb')
         data = f.read()
         f.close()
-        file.setFile(data)
+        at_file.setFile(data)
         commit()
 
     def set_page(self, page, obj, prefix_path, base):
