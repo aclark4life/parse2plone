@@ -343,6 +343,14 @@ class Parse2Plone(object):
         image.setImage(data)
         commit()
 
+    def set_file(self, file, obj, prefix_path, base):
+        f = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
+            obj]), 'rb')
+        data = f.read()
+        f.close()
+        file.setFile(data)
+        commit()
+
     def set_page(self, page, obj, prefix_path, base):
         results = ''
         f = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
@@ -406,7 +414,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
 
     utils = Utils()
     logger = setup_logger()
-    count = {'folders': 0, 'images': 0, 'pages': 0}
+    count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
 
     # Clean recipe input
     [illegal_chars, html_extensions, image_extensions, file_extensions,
