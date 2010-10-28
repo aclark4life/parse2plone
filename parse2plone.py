@@ -181,14 +181,16 @@ class Utils(object):
         if options.force is not None:
             force = options.force
         return (illegal_chars, html_extensions, image_extensions,
-            target_tags, path, force)
+            file_extensions, target_tags, path, force)
 
     def setup_attrs(self, parse2plone, utils, count, illegal_chars,
-        html_extensions, image_extensions, target_tags, logger):
+        html_extensions, image_extensions, file_extensions,
+        target_tags, logger):
         parse2plone.utils = utils
         parse2plone.count = count
         parse2plone.html_extensions = html_extensions
         parse2plone.image_extensions = image_extensions
+        parse2plone.file_extensions = file_extensions
         parse2plone.illegal_chars = illegal_chars
         parse2plone.target_tags = target_tags
         parse2plone.logger = logger
@@ -215,10 +217,10 @@ class Parse2Plone(object):
             self.set_title(image, obj)
             self.set_image(image, obj, prefix_path, base)
             self.count['images'] += 1
-        elif self.utils.is_image(obj, self.file_extensions):
+        elif self.utils.is_file(obj, self.file_extensions):
             file = self.create_file(parent, obj)
             self.set_title(file, obj)
-            self.set_image(file, obj, prefix_path, base)
+            self.set_file(file, obj, prefix_path, base)
             self.count['files'] += 1
 
     def create_folder(self, parent, obj):
