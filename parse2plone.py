@@ -119,6 +119,10 @@ class Utils(object):
                 # Don't do csv on strings
                 if option not in ['path','force','publish']:
                     settings[option] = join_input(options[option], ',')
+                else:
+                    # Capitalize if boolean
+                    if option in ['force','publish']:
+                        settings[option] = options[option].capitalize()
             else:
                 settings[option] = join_input(settings[option], ',')
 
