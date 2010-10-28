@@ -126,8 +126,12 @@ Options
   files that contain these characters.
 - ``image_extensions``: Specify image file extensions. ``parse2plone`` will
   import image files with these extensions.
+- ``file_extensions``: Specify image file extensions. ``parse2plone`` will
+  import image files with these extensions.
 - ``target_tags``: Specify target tags. ``parse2plone`` will parse the
   contents of HTML tags listed.
+- ``force``: Force create folders that do not exist
+- ``publish``: Publish newly created content
 
 Example
 '''''''
@@ -183,12 +187,29 @@ You can specify image file extensions with the ``--image-extensions`` option::
 
     $ bin/plone run bin/import /path/to/files --image-extensions=png
 
+Image file extensions (``'--file-extensions'``)
+************************************************
+
+You can specify generic file extensions with the ``--file-extensions`` option::
+
+    $ bin/plone run bin/import /path/to/files --file-extensions=pdf
+
 Target tags (``'--target-tags'``)
 *********************************
 
 You can specify the target tags to parse with the ``--target-tags`` option::
 
     $ bin/plone run bin/import /path/to/files --target-tags=p
+
+Force (``'--force'``)
+*********************************
+
+Force create folders that do not exist.
+
+Publish (``'--publish'``)
+*********************************
+
+Publish newly created content.
 
 Example
 '''''''
