@@ -54,7 +54,6 @@ def setup_logger():
 
 
 class Utils(object):
-
     def check_exists_obj(self, parent, obj):
         if obj in parent:
             return True
@@ -74,7 +73,6 @@ class Utils(object):
 
     def clean_recipe_input(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force):
-
         illegal_chars = self.split_input(illegal_chars, ',')
         html_extensions = self.split_input(html_extensions, ',')
         image_extensions = self.split_input(image_extensions, ',')
@@ -82,7 +80,6 @@ class Utils(object):
         target_tags = self.split_input(target_tags, ',')
         path = self.clean_path(path)
         force = literal_eval(force)
-
         return (illegal_chars, html_extensions, image_extensions,
             file_extensions, target_tags, path, force)
 
@@ -377,7 +374,6 @@ class Parse2Plone(object):
 
 class Recipe(object):
     """zc.buildout recipe"""
-
     def __init__(self, buildout, name, options):
         self.buildout, self.name, self.options = buildout, name, options
 
@@ -410,7 +406,6 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
     force=None):
     """parse2plone"""
-
     utils = Utils()
     logger = setup_logger()
     count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
