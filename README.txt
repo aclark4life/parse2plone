@@ -2,8 +2,8 @@ Introduction
 ============
 
 ``Parse2Plone`` is an HTML parser (in the form of a Buildout recipe that
-creates a script for you) you can use to easily get content from static HTML
-files on the file system into Plone.
+creates a script for you) to easily get content from static HTML
+files into Plone.
 
 Warning
 -------
@@ -21,14 +21,17 @@ here they are::
     [import]
     recipe = parse2plone
     path = Plone
+    illegal_chars = _ .
     html_extensions = html
     image_extensions = gif jpg jpeg png
+    file_extensiosn = mp3
     target_tags = a div h1 h2 p
-    illegal_chars = _ .
+    force = false
+    publish = false
 
 The parameters listed are configured with their default values. Edit these if you 
-would like to change the default behavior; they are (hopefully) self-explanatory.
-Now you can just cut and paste to get started or keep reading if you would like
+would like to change the default behavior; they are (mostly) self-explanatory.
+Now just cut and paste to get started or keep reading if you would like
 to know more.
 
 Explanation

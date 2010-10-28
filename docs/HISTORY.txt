@@ -2,9 +2,10 @@
 History
 -------
 
-0.8.1 ()
+0.8.1 (10/28/2010)
 ~~~~~~~~
 
+- Add support to optionally publish content after creation
 - Add support for generic files
 
 0.8 (10/27/2010)

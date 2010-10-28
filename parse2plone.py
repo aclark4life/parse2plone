@@ -231,18 +231,23 @@ class Parse2Plone(object):
         parent.invokeFactory('Folder', obj)
         folder = parent[obj]
         if self.publish:
-            self.set_state(folder)
-            self.logger.info("publishing folder '%s'" % obj)
+            try:
+                self.set_state(folder)
+                self.logger.info("publishing folder '%s'" % obj)
         return folder
+
+    def create_file(self, parent, obj):
+        self.logger.info("creating file '%s' inside parent folder '%s'" % (obj,
+            self.utils.obj_to_path(parent)))
+        parent.invokeFactory('File', obj)
+        file = parent[obj]
+        return file
 
     def create_image(self, parent, obj):
         self.logger.info("creating image '%s' inside parent folder '%s'" % (
             obj, self.utils.obj_to_path(parent)))
         parent.invokeFactory('Image', obj)
         image = parent[obj]
-        if self.publish:
-            self.set_state(image)
-            self.logger.info("publishing image '%s'" % obj)
         return image
 
     def create_page(self, parent, obj):
@@ -254,16 +259,6 @@ class Parse2Plone(object):
             self.set_state(page)
             self.logger.info("publishing page '%s'" % obj)
         return page
-
-    def create_file(self, parent, obj):
-        self.logger.info("creating file '%s' inside parent folder '%s'" % (obj,
-            self.utils.obj_to_path(parent)))
-        parent.invokeFactory('File', obj)
-        file = parent[obj]
-        if self.publish:
-            self.set_state(file)
-            self.logger.info("publishing file '%s'" % obj)
-        return file
 
     def create_parts(self, parent, parts, base):
         self.logger.info("creating parts for '%s'" % self.utils.join_input(
