@@ -19,13 +19,12 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SpecialUsers import system
 from Testing.makerequest import makerequest
 from ast import literal_eval
-from copy import deepcopy
 from lxml.html import fromstring
 from optparse import OptionParser
 from os import path as os_path
 from os import walk
 from pkg_resources import working_set
-from sys import exc_info, executable
+from sys import executable
 from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
