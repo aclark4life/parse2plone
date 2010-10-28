@@ -196,7 +196,6 @@ class Utils(object):
 
 
 class Parse2Plone(object):
-
     def create_content(self, parent, obj, prefix_path, base):
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
