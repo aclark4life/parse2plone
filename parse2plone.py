@@ -29,7 +29,7 @@ from sys import exc_info, executable
 from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
-defaults = {
+settings = {
     'path': ['/Plone'],
     'illegal_chars': ['_', '.'],
     'html_extensions': ['html'],
@@ -109,21 +109,18 @@ class Utils(object):
 
     def convert_recipe_options(self, options):
         """
-        Convert recipe options into csv. Returns a list e.g.
-        ['False', 'html', 'mp3', 'a,div,h1,h2,p', '/Plone', '_,.',
-        'gif,jpg,jpeg,png']
+        Convert recipe options to csv; save in settings dict
         """
-        results = deepcopy(defaults)
         join_input = self.join_input
         split_input = self.split_input
-        for option in results:
-            results[option] = None
-        for option in results:
+
+        for option in settings:
             if option in options:
-                results[option] = join_input(options[option], ',')
+                # Don't do csv on strings
+                if option not in ['path','force','publish']:
+                    settings[option] = join_input(options[option], ',')
             else:
-                results[option] = join_input(defaults[option], ',')
-        return results.values()
+                settings[option] = join_input(settings[option], ',')
 
     def is_folder(self, obj):
         if len(obj.split('.')) == 1:
@@ -388,10 +385,7 @@ class Recipe(object):
         """Installer"""
         utils = Utils()
         bindir = self.buildout['buildout']['bin-directory']
-
-        [force, html_extensions, file_extensions, target_tags, path, publish,
-            illegal_chars, image_extensions] = utils.convert_recipe_options(
-            self.options)
+        utils.convert_recipe_options(self.options)
 
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
@@ -400,8 +394,15 @@ class Recipe(object):
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([('import', 'parse2plone', 'main')],
             working_set, executable, bindir, arguments=arguments % (
-            path, illegal_chars, html_extensions, image_extensions,
-            file_extensions, target_tags, force, publish))
+            settings['path'],
+            settings['illegal_chars'],
+            settings['html_extensions'],
+            settings['image_extensions'],
+            settings['file_extensions'],
+            settings['target_tags'],
+            settings['force'],
+            settings['publish'],
+            ))
         return tuple()
 
     def update(self):
