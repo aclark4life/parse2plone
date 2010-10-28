@@ -429,9 +429,9 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     options, args = option_parser.parse_args()
     import_dir = args[0]
     [illegal_chars, html_extensions, image_extensions, file_extensions,
-        target_tags, path, force, publish] = utils.process_command_line_args(options,
-        illegal_chars, html_extensions, image_extensions, file_extensions,
-        target_tags, path, force, publish)
+        target_tags, path, force, publish] = utils.process_command_line_args(
+        options, illegal_chars, html_extensions, image_extensions,
+        file_extensions, target_tags, path, force, publish)
 
     # Run parse2plone
     parse2plone = Parse2Plone()
