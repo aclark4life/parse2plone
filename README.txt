@@ -20,7 +20,7 @@ here they are::
 
     [import]
     recipe = parse2plone
-    path = Plone
+    path = /Plone
     illegal_chars = _ .
     html_extensions = html
     image_extensions = gif jpg jpeg png
@@ -167,11 +167,10 @@ Options
 Path (``'--path'``, ``'-p'``)
 *****************************
 
-You can specify an alternate path to the Plone site object located within
-the database ('/Plone' by default) with ``--path`` or ``-p``::
+You can specify an alternate import path ('/Plone' by default)
+with ``--path`` or ``-p``::
 
-    $ bin/plone run bin/import /path/to/files --path=Plone2
-    $ bin/plone run bin/import /path/to/files -p Plone2
+    $ bin/plone run bin/import /path/to/files --path=/Plone/foo
 
 HTML file extensions (``'--html-extensions'``)
 **********************************************
