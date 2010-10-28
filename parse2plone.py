@@ -380,6 +380,7 @@ class Recipe(object):
         """Installer"""
         utils = Utils()
         bindir = self.buildout['buildout']['bin-directory']
+
         [force, html_extensions, file_extensions, target_tags, path,
             illegal_chars, image_extensions] = utils.convert_recipe_options(
             self.options)
