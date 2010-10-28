@@ -18,7 +18,6 @@ import logging
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SpecialUsers import system
 from Testing.makerequest import makerequest
-
 from ast import literal_eval
 from copy import deepcopy
 from lxml.html import fromstring
@@ -388,8 +387,9 @@ class Recipe(object):
 
         utils = Utils()
         bindir = self.buildout['buildout']['bin-directory']
-        [force, html_extensions, file_extensions, target_tags, path, illegal_chars,
-            image_extensions] = utils.convert_recipe_options(self.options)
+        [force, html_extensions, file_extensions, target_tags, path,
+            illegal_chars, image_extensions] = utils.convert_recipe_options(
+            self.options)
 
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
@@ -419,7 +419,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Clean recipe input
     [illegal_chars, html_extensions, image_extensions, file_extensions,
         target_tags, path, force] = utils.clean_recipe_input(
-        illegal_chars, html_extensions, image_extensions, file_extensions, 
+        illegal_chars, html_extensions, image_extensions, file_extensions,
         target_tags, path, force)
 
     # Process command line args
