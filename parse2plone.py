@@ -174,11 +174,11 @@ class Utils(object):
             target_tags = options.target_tags
         if options.path is not None:
             path = options.path
-        path = self.clean_path(path)
         if options.force is not None:
             force = options.force
         if options.publish is not None:
             publish = options.publish
+        path = self.clean_path(path)
         return (illegal_chars, html_extensions, image_extensions,
             file_extensions, target_tags, path, force, publish)
 
@@ -206,49 +206,65 @@ class Parse2Plone(object):
             folder = self.create_folder(parent, obj)
             self.set_title(folder, obj)
             self.count['folders'] += 1
+            commit()
         elif self.utils.is_html(obj, self.html_extensions):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
             self.set_page(page, obj, prefix_path, base)
             self.count['pages'] += 1
+            commit()
         elif self.utils.is_image(obj, self.image_extensions):
             image = self.create_image(parent, obj)
             self.set_title(image, obj)
             self.set_image(image, obj, prefix_path, base)
             self.count['images'] += 1
+            commit()
         elif self.utils.is_file(obj, self.file_extensions):
             at_file = self.create_file(parent, obj)
             self.set_title(at_file, obj)
             self.set_file(at_file, obj, prefix_path, base)
             self.count['files'] += 1
+            commit()
 
     def create_folder(self, parent, obj):
         self.logger.info("creating folder '%s' inside parent folder '%s'" % (
             obj, self.utils.obj_to_path(parent)))
         parent.invokeFactory('Folder', obj)
-        commit()
-        return parent[obj]
+        folder = parent[obj]
+        if self.publish:
+            self.set_state(folder)
+            self.logger.info("publishing folder '%s'" % obj)
+        return folder
 
     def create_image(self, parent, obj):
         self.logger.info("creating image '%s' inside parent folder '%s'" % (
             obj, self.utils.obj_to_path(parent)))
         parent.invokeFactory('Image', obj)
-        commit()
-        return parent[obj]
+        image = parent[obj]
+        if self.publish:
+            self.set_state(image)
+            self.logger.info("publishing image '%s'" % obj)
+        return image
 
     def create_page(self, parent, obj):
         self.logger.info("creating page '%s' inside parent folder '%s'" % (obj,
             self.utils.obj_to_path(parent)))
         parent.invokeFactory('Document', obj)
-        commit()
-        return parent[obj]
+        page = parent[obj]
+        if self.publish:
+            self.set_state(page)
+            self.logger.info("publishing page '%s'" % obj)
+        return page
 
     def create_file(self, parent, obj):
         self.logger.info("creating file '%s' inside parent folder '%s'" % (obj,
             self.utils.obj_to_path(parent)))
         parent.invokeFactory('File', obj)
-        commit()
-        return parent[obj]
+        file = parent[obj]
+        if self.publish:
+            self.set_state(file)
+            self.logger.info("publishing file '%s'" % obj)
+        return file
 
     def create_parts(self, parent, parts, base):
         self.logger.info("creating parts for '%s'" % self.utils.join_input(
@@ -340,7 +356,6 @@ class Parse2Plone(object):
         data = f.read()
         f.close()
         image.setImage(data)
-        commit()
 
     def set_file(self, at_file, obj, prefix_path, base):
         f = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
@@ -348,7 +363,6 @@ class Parse2Plone(object):
         data = f.read()
         f.close()
         at_file.setFile(data)
-        commit()
 
     def set_page(self, page, obj, prefix_path, base):
         results = ''
@@ -363,12 +377,13 @@ class Parse2Plone(object):
             if tag in self.target_tags and text is not None:
                 results += '<%s>%s</%s>' % (tag, text, tag)
         page.setText(results)
-        commit()
+
+    def set_state(self, obj):
+        obj.portal_workflow.doActionFor(obj, 'publish')
 
     def set_title(self, obj, title):
         obj.setTitle(title.title())
         obj.reindexObject()
-        commit()
 
     def setup_app(self, app):
         app = makerequest(app)
@@ -438,6 +453,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     parse2plone = utils.setup_attrs(parse2plone, utils, count,
         illegal_chars, html_extensions, image_extensions, file_extensions,
         target_tags, logger, publish)
+
     files = parse2plone.get_files(import_dir)
     ignore = len(utils.split_input(import_dir, '/'))
     app = parse2plone.setup_app(app)
@@ -456,6 +472,6 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     results = parse2plone.import_files(parent, files, base)
 
     # Print results
-    msg = "Imported %s folders, %s images, and %s pages into: '%s'."
+    msg = "Imported %s folders, %s images, %s pages, and %s files into: '%s'."
     logger.info(msg % tuple(results))
     exit(0)
