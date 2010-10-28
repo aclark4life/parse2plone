@@ -231,9 +231,8 @@ class Parse2Plone(object):
         parent.invokeFactory('Folder', obj)
         folder = parent[obj]
         if self.publish:
-            try:
-                self.set_state(folder)
-                self.logger.info("publishing folder '%s'" % obj)
+            self.set_state(folder)
+            self.logger.info("publishing folder '%s'" % obj)
         return folder
 
     def create_file(self, parent, obj):

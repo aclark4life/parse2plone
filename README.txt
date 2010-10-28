@@ -40,9 +40,9 @@ Explanation
 Why did you create ``Parse2Plone`` when the following packages (and probably many
 more) already exist:
 
-    - http://pypi.python.org/pypi/collective.transmogrifier
-        - http://pypi.python.org/pypi/transmogrify.filesystem
-        - http://pypi.python.org/pypi/transmogrify.htmlcontentextractor
+- http://pypi.python.org/pypi/collective.transmogrifier
+    - http://pypi.python.org/pypi/transmogrify.filesystem
+    - http://pypi.python.org/pypi/transmogrify.htmlcontentextractor
 
 Here are a few reasons:
 
@@ -62,14 +62,12 @@ Installation
 ------------
 
 You can install ``Parse2Plone`` by editing your ``buildout.cfg`` file like
-so:
-
-- First, add an ``import`` section::
+so. First add an ``import`` section::
 
     [import]
     recipe = parse2plone
 
-- Then, add the ``import`` section to the list of parts::
+Then add the ``import`` section to the list of parts::
 
     [buildout]
     ...
@@ -77,7 +75,7 @@ so:
         ...
         import
 
-- Now run ``bin/buildout`` as usual.
+Now run ``bin/buildout`` as usual.
 
 Execution
 ---------
@@ -100,8 +98,8 @@ You should run::
 
 And the following will be created:
 
-    - http://localhost:8080/Plone/index.html
-    - http://localhost:8080/Plone/about/index.html
+- http://localhost:8080/Plone/index.html
+- http://localhost:8080/Plone/about/index.html
 
 Modification
 ------------
@@ -137,24 +135,22 @@ Example
 Instead of accepting the default ``parse2plone`` behaviour, in your
 ``buildout.cfg`` file you may specify the following::
 
-    ...
     [import]
     recipe = parse2plone
     path = Plone2
     html_extensions = htm
     image_extensions = png
     target_tags = p
-    ...
 
 This will configure ``parse2plone`` to (only) import content *from*:
 
-    - Images ending in ``.png``
-    - HTML files ending in ``.htm``
-    - Text within ``p`` tags
+- Images ending in ``.png``
+- HTML files ending in ``.htm``
+- Text within ``p`` tags
 
 *to*: 
 
-    - A Plone site object named ``Plone2``.
+- A Plone site object named ``Plone2``.
 
 Command line options
 ~~~~~~~~~~~~~~~~~~~~
@@ -205,13 +201,13 @@ may specify the following::
 
 This will configure ``parse2plone`` to (only) import content *from*:
 
-    - Images ending in ``.png``
-    - HTML files ending in ``.htm``
-    - Text within ``p`` tags
+- Images ending in ``.png``
+- HTML files ending in ``.htm``
+- Text within ``p`` tags
 
 *to*: 
 
-    - A Plone site object named ``Plone2``.
+- A Plone site object named ``Plone2``.
 
 Consternation
 -------------
