@@ -116,7 +116,7 @@ class Utils(object):
 
         for option in settings:
             if option in options:
-                # Don't do csv on strings
+                # Don't do csv on single value settings
                 if option not in ['path','force','publish']:
                     settings[option] = join_input(options[option], ',')
                 else:
