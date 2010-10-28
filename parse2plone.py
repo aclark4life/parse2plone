@@ -29,7 +29,7 @@ from sys import exc_info, executable
 from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
-settings = {
+_SETTINGS = {
     'path': ['/Plone'],
     'illegal_chars': ['_', '.'],
     'html_extensions': ['html'],
@@ -109,22 +109,18 @@ class Utils(object):
 
     def convert_recipe_options(self, options):
         """
-        Convert recipe options to csv; save in settings dict
+        Convert recipe options to csv; save in _SETTINGS dict
         """
-        join_input = self.join_input
-        split_input = self.split_input
-
-        for option in settings:
+        for option, existing_value in _SETTINGS.items():
             if option in options:
-                # Don't do csv on single value settings
-                if option not in ['path','force','publish']:
-                    settings[option] = join_input(options[option], ',')
-                else:
-                    # Capitalize if boolean
-                    if option in ['force','publish']:
-                        settings[option] = options[option].capitalize()
+                if option in ('force', 'publish'):
+                    value = options[option].capitalize()
+                elif option != 'path':
+                    value = ','.join(options[option])
             else:
-                settings[option] = join_input(settings[option], ',')
+                value = ','.join(existing_value)
+
+            _SETTINGS[option] = value
 
     def is_folder(self, obj):
         if len(obj.split('.')) == 1:
@@ -398,14 +394,14 @@ class Recipe(object):
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([('import', 'parse2plone', 'main')],
             working_set, executable, bindir, arguments=arguments % (
-            settings['path'],
-            settings['illegal_chars'],
-            settings['html_extensions'],
-            settings['image_extensions'],
-            settings['file_extensions'],
-            settings['target_tags'],
-            settings['force'],
-            settings['publish'],
+            _SETTINGS['path'],
+            _SETTINGS['illegal_chars'],
+            _SETTINGS['html_extensions'],
+            _SETTINGS['image_extensions'],
+            _SETTINGS['file_extensions'],
+            _SETTINGS['target_tags'],
+            _SETTINGS['force'],
+            _SETTINGS['publish'],
             ))
         return tuple()
 
