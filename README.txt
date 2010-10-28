@@ -141,7 +141,7 @@ Instead of accepting the default ``parse2plone`` behaviour, in your
 
     [import]
     recipe = parse2plone
-    path = /Plone2
+    path = /Plone/foo
     html_extensions = htm
     image_extensions = png
     target_tags = p
@@ -154,7 +154,7 @@ This will configure ``parse2plone`` to (only) import content *from*:
 
 *to*: 
 
-- A Plone site object named ``Plone2``.
+- A folder named ``/Plone/foo``.
 
 Command line options
 ~~~~~~~~~~~~~~~~~~~~
@@ -164,49 +164,49 @@ The following ``parse2plone`` command line options are supported.
 Options
 '''''''
 
-Path (``'--path'``, ``'-p'``)
-*****************************
+``'--path'``, ``'-p'``
+**********************
 
 You can specify an alternate import path ('/Plone' by default)
 with ``--path`` or ``-p``::
 
     $ bin/plone run bin/import /path/to/files --path=/Plone/foo
 
-HTML file extensions (``'--html-extensions'``)
-**********************************************
+``'--html-extensions'``
+***********************
 
 You can specify HTML file extensions with the ``--html-extensions`` option::
 
     $ bin/plone run bin/import /path/to/files --html-extensions=htm
 
-Image file extensions (``'--image-extensions'``)
-************************************************
+``'--image-extensions'``
+************************
 
 You can specify image file extensions with the ``--image-extensions`` option::
 
     $ bin/plone run bin/import /path/to/files --image-extensions=png
 
-Image file extensions (``'--file-extensions'``)
-************************************************
+``'--file-extensions'``
+***********************
 
 You can specify generic file extensions with the ``--file-extensions`` option::
 
     $ bin/plone run bin/import /path/to/files --file-extensions=pdf
 
-Target tags (``'--target-tags'``)
-*********************************
+``'--target-tags'``
+*******************
 
 You can specify the target tags to parse with the ``--target-tags`` option::
 
     $ bin/plone run bin/import /path/to/files --target-tags=p
 
-Force (``'--force'``)
-*********************************
+``'--force'``
+*************
 
 Force create folders that do not exist.
 
-Publish (``'--publish'``)
-*********************************
+``'--publish'``
+***************
 
 Publish newly created content.
 
