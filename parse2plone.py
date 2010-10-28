@@ -29,7 +29,6 @@ from sys import exc_info, executable
 from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
-
 defaults = {
     'path': ['/Plone'],
     'illegal_chars': ['_', '.'],
