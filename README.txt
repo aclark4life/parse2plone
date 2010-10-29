@@ -2,8 +2,8 @@ Introduction
 ============
 
 ``Parse2Plone`` is an HTML parser (in the form of a Buildout recipe that
-creates a script for you) to easily get content from static HTML
-files into Plone.
+creates a script for you) to easily get content from static HTML websites
+into Plone.
 
 Warning
 -------
@@ -29,10 +29,10 @@ here they are::
     force = false
     publish = false
 
-The parameters listed are configured with their default values. Edit these if you 
-would like to change the default behavior; they are (mostly) self-explanatory.
-Now just cut and paste to get started or keep reading if you would like
-to know more.
+The parameters listed above are configured with their default values. Edit these
+values if you would like to change the default behavior; they are (mostly)
+self-explanatory. Now you can just cut and paste to get started or keep reading if
+you would like to know more.
 
 Explanation
 -----------
@@ -62,10 +62,8 @@ Here are some reasons:
   ``Parse2Plone`` to be an "end user's tool".
 
 If you are a developer looking to create repeatable migrations, you probably want to be
-using ``collective.transmogrifier``. 
-
-If you are an end user that just wants to see your static site in Plone, then
-you might want to give ``Parse2Plone`` a try.
+using ``collective.transmogrifier``. If you are an end user that just wants to see your
+static website in Plone, then you might want to give ``Parse2Plone`` a try.
 
 Installation
 ------------
@@ -225,7 +223,7 @@ Example
 Instead of accepting the default ``parse2plone`` behaviour, on the command line you
 may specify the following::
 
-    $ bin/plone run bin/import /path/to/files -p Plone2 --html-extensions=html \
+    $ bin/plone run bin/import /path/to/files -p /Plone/foo --html-extensions=html \
         --image-extensions=png --target-tags=p
 
 This will configure ``parse2plone`` to (only) import content *from*:
@@ -236,7 +234,7 @@ This will configure ``parse2plone`` to (only) import content *from*:
 
 *to*: 
 
-- A Plone site object named ``Plone2``.
+- A Plone site folder named ``/Plone/foo``.
 
 Consternation
 -------------
