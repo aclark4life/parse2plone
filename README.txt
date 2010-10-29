@@ -142,7 +142,7 @@ Options
 +---------------------+-------------+----------------------------------------+
 | ``image_extensions``| png, gif,   | Specify image file extensions.         |
 |                     | jpg, jpeg,  | ``parse2plone`` will import image files|
-|                     | jpg, jpeg,  | with these extensions.                 |
+|                     |             | with these extensions.                 |
 +---------------------+-------------+----------------------------------------+
 | ``file_extensions`` | mp3         | Specify image file extensions.         |
 |                     |             | ``parse2plone`` will import files with |
