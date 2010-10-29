@@ -44,7 +44,7 @@ more) already exist:
     - http://pypi.python.org/pypi/transmogrify.filesystem
     - http://pypi.python.org/pypi/transmogrify.htmlcontentextractor
 
-Here are a few reasons:
+Here are some reasons:
 
 - Because ``Parse2Plone`` is aimed at lowering the bar for folks who don't already
   know (or want to know) what a "transmogrifier blueprint" is but can update
@@ -57,6 +57,15 @@ Here are a few reasons:
 
 - The author had an itch to scratch; it will be nice for him to be able to say
   "just go write a script" and then point to an example.
+
+- Transmogrifier and friends appear to be "developer's tools", while the author wants
+  ``Parse2Plone`` to be an "end user's tool".
+
+If you are a developer looking to create repeatable migrations, you probably want to be
+using ``collective.transmogrifier``. 
+
+If you are an end user that just wants to see your static site in Plone, then
+you might want to give ``Parse2Plone`` a try.
 
 Installation
 ------------
