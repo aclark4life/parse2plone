@@ -132,13 +132,13 @@ Options
 | ``path``            | /Plone      | Specify an alternate location in the   |
 |                     |             | database for the import to occur.      |
 +---------------------+-------------+----------------------------------------+
-| ``html_extensions`` | html        | Specify HTML file extensions.          |
-|                     |             | ``parse2plone`` will import HTML files |
-|                     |             | with these extensions                  |
-+---------------------+-------------+----------------------------------------+
 | ``illegal_chars``   | _ .         | Specify illegal characters.            |
 |                     |             | ``parse2plone`` will ignore files that |
 |                     |             | contain these characters.              |
++---------------------+-------------+----------------------------------------+
+| ``html_extensions`` | html        | Specify HTML file extensions.          |
+|                     |             | ``parse2plone`` will import HTML files |
+|                     |             | with these extensions                  |
 +---------------------+-------------+----------------------------------------+
 | ``image_extensions``| png, gif,   | Specify image file extensions.         |
 |                     | jpg, jpeg,  | ``parse2plone`` will import image files|
