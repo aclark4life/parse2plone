@@ -120,25 +120,42 @@ to modify settings is to edit your ``buildout.cfg`` file.
 Buildout options
 ~~~~~~~~~~~~~~~~
 
-You can configure the following parameters in your ``buildout.cfg`` file.
+You can configure the following parameters in your ``buildout.cfg`` file in
+the ``parse2plone`` recipe section.
 
 Options
 '''''''
-
-- ``path``: Specify an alternate location for the Plone site object in the
-  database.
-- ``html_extensions``: Specify HTML file extensions. ``parse2plone`` will
-  import HTML files with these extensions.
-- ``illegal_chars``: Specify illegal characters. ``parse2plone`` will ignore
-  files that contain these characters.
-- ``image_extensions``: Specify image file extensions. ``parse2plone`` will
-  import image files with these extensions.
-- ``file_extensions``: Specify image file extensions. ``parse2plone`` will
-  import image files with these extensions.
-- ``target_tags``: Specify target tags. ``parse2plone`` will parse the
-  contents of HTML tags listed.
-- ``force``: Force create folders that do not exist
-- ``publish``: Publish newly created content
++---------------------+-------------+----------------------------------------+
+| **Parameter**       | **Default** | **Description**                        |
+|                     | **value**   |                                        |
++---------------------+-------------+----------------------------------------+
+| ``path``            | /Plone      | Specify an alternate location in the   |
+|                     |             | database for the import to occur.      |
++---------------------+-------------+----------------------------------------+
+| ``html_extensions`` | html        | Specify HTML file extensions.          |
+|                     |             | ``parse2plone`` will import HTML files |
+|                     |             | with these extensions                  |
++---------------------+-------------+----------------------------------------+
+| ``illegal_chars``   | _ .         | Specify illegal characters.            |
+|                     |             | ``parse2plone`` will ignore files that |
+|                     |             | contain these characters.              |
++---------------------+-------------+----------------------------------------+
+| ``image_extensions``| png, gif,   | Specify image file extensions.         |
+|                     | jpg, jpeg,  | ``parse2plone`` will import image files|
+|                     | jpg, jpeg,  | with these extensions.                 |
++---------------------+-------------+----------------------------------------+
+| ``file_extensions`` | mp3         | Specify image file extensions.         |
+|                     |             | ``parse2plone`` will import files with |
+|                     |             | with these extensions.                 |
++---------------------+-------------+----------------------------------------+
+| ``target_tags``     | a h1 h2 p   | Specify target tags. ``parse2plone``   |
+|                     |             | will parse the contents of HTML tags   |
+|                     |             | listed.                                |
++---------------------+-------------+----------------------------------------+
+| ``force``           | false       | Force create folders that do not exist.|
++---------------------+-------------+----------------------------------------+
+| ``publish``         | false       | Publish newly created content.         |
++---------------------+-------------+----------------------------------------+
 
 Example
 '''''''
