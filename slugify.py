@@ -16,13 +16,21 @@
 
 from re import compile
 
-slug = compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
+slug = compile('(.+)(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 
-def path_to_slug(files):
+def path_to_slug(files, slug_ref, base):
     """
     Returns a slug_ref which is mapping of paths to slugified paths. E.g.
     slug_ref{'/var/www/html/2000/01/01/foo/index.html':
              '/var/www/html/foo-20000101.html'}
     """
-    pass
+
+    for f in files[base]:
+        result = slug.match(f)
+        if result:
+            groups = result.groups()
+            slug_ref[f] = '%s%s-%s%s%s.html' % (groups[0], groups[4],
+                groups[1], groups[2], groups[3])
+
+    return slug_ref

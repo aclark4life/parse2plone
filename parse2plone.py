@@ -466,7 +466,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             exit(1)
     files = parse2plone.prep_files(files, ignore, base)
     if parse2plone.slugify:
-        slug_ref = path_to_slug(files)
+        slug_ref = path_to_slug(files, slug_ref, base)
     results = parse2plone.import_files(parent, files, base, slug_ref)
 
     # Print results
