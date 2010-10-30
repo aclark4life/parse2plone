@@ -403,7 +403,8 @@ class Recipe(object):
 
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
-        arguments += " target_tags='%s', force='%s', publish='%s', slugify='%s'"
+        arguments += " target_tags='%s', force='%s', publish='%s',"
+        arguments += " slugify='%s'"
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([('import', 'parse2plone', 'main')],
@@ -442,7 +443,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
     import_dir = args[0]
-    utils.process_command_line_args(options, illegal_chars, 
+    utils.process_command_line_args(options, illegal_chars,
         html_extensions, image_extensions, file_extensions,
         target_tags, path, force, publish, slugify)
 
