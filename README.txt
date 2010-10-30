@@ -44,6 +44,7 @@ more) already exist:
 - http://pypi.python.org/pypi/collective.transmogrifier
     - http://pypi.python.org/pypi/transmogrify.filesystem
     - http://pypi.python.org/pypi/transmogrify.htmlcontentextractor
+    - http://pypi.python.org/pypi/transmogrify.webcrawler
 
 Here are some reasons:
 
