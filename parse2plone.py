@@ -148,11 +148,8 @@ class Utils(object):
         else:
             return False
 
-    def join_input(self, input, delimiter):
-        return delimiter.join(input)
-
     def obj_to_path(self, obj):
-        return self.join_input(obj.getPhysicalPath(), '/')
+        return '/'.join(obj.getPhysicalPath())
 
     def convert_recipe_options(self, options):
         """
@@ -207,9 +204,6 @@ class Utils(object):
         parse2plone.logger = logger
         parse2plone.utils = utils
         return parse2plone
-
-    def split_input(self, input, delimiter):
-        return input.split(delimiter)
 
 
 class Parse2Plone(object):
@@ -278,8 +272,7 @@ class Parse2Plone(object):
             path = self.get_path(parts, i)
             prefix_path = self.get_prefix_path(path)
             obj = self.get_obj(path)
-            parent = self.get_parent(parent,
-                self.utils.join_input(prefix_path, '/'))
+            parent = self.get_parent(parent, '/'.join(prefix_path))
             if self.utils.is_legal(obj, self.illegal_chars):
                 if self.utils.check_exists_obj(parent, obj):
                     self.logger.info("object '%s' exists inside '%s'" % (
@@ -294,16 +287,13 @@ class Parse2Plone(object):
                 break
 
     def get_base(self, files, ignore):
-        join_input = self.utils.join_input
-        split_input = self.utils.split_input
-        return join_input(split_input(files[0], '/')[:ignore], '/')
+        return '/'.join(files[0].split('/')[:ignore])
 
     def get_files(self, import_dir):
         results = []
         for path, subdirs, files in walk(import_dir):
             self.logger.info("path '%s', has subdirs '%s', and files '%s'" % (
-                path, self.utils.join_input(subdirs, ' '),
-                self.utils.join_input(files, ' ')))
+                path, ' '.join(subdirs), ' '.join(files)))
             for f in fnmatch.filter(files, '*'):
                 if self.utils.is_legal(f, self.illegal_chars):
                     results.append(os_path.join(path, f))
@@ -312,7 +302,7 @@ class Parse2Plone(object):
         return results
 
     def get_obj(self, path):
-        return self.utils.split_input(path, '/')[-1:][0]
+        return path.split('/')[-1:][0]
 
     def get_parent(self, current_parent, prefix_path):
         updated_parent = current_parent.restrictedTraverse(prefix_path)
@@ -328,7 +318,7 @@ class Parse2Plone(object):
         return '/'.join(parts[:i + 1])
 
     def get_prefix_path(self, path):
-        return self.utils.split_input(path, '/')[:-1]
+        return path.split('/')[:-1]
 
     def get_slugified_parts(self, path, slug_ref):
         pass
@@ -359,27 +349,24 @@ class Parse2Plone(object):
         results = {base: []}
         files = self.ignore_parts(files, ignore)
         for f in files:
-            results[base].append(self.utils.join_input(f, '/'))
+            results[base].append('/'.join(f))
         return results
 
     def set_image(self, image, obj, prefix_path, base):
-        f = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
-            obj]), 'rb')
+        f = open('/'.join([base, '/'.join(prefix_path), obj]), 'rb')
         data = f.read()
         f.close()
         image.setImage(data)
 
     def set_file(self, at_file, obj, prefix_path, base):
-        f = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
-            obj]), 'rb')
+        f = open('/'.join([base, '/'.join(prefix_path), obj]), 'rb')
         data = f.read()
         f.close()
         at_file.setFile(data)
 
     def set_page(self, page, obj, prefix_path, base):
+        f = open('/'.join([base, '/'.join(prefix_path), obj]), 'rb')
         results = ''
-        f = open('/'.join([base, self.utils.join_input(prefix_path, '/'),
-            obj]), 'rb')
         data = f.read()
         f.close()
         root = fromstring(data)
@@ -463,7 +450,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     parse2plone = Parse2Plone()
     parse2plone = utils.setup_attrs(parse2plone, count, logger, utils)
     files = parse2plone.get_files(import_dir)
-    ignore = len(utils.split_input(import_dir, '/'))
+    ignore = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
     base = parse2plone.get_base(files, ignore)
     if utils.check_exists_path(app, path):
