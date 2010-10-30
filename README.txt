@@ -87,7 +87,7 @@ Now run ``bin/buildout`` as usual.
 Execution
 ---------
 
-You can run ``Parse2Plone`` like so::
+You can run ``Parse2Plone`` like this::
 
     $ bin/plone run bin/import /path/to/files
 
