@@ -115,8 +115,7 @@ Modification
 Modifying the default behavior of ``parse2plone`` is easy; just use the command
 line options or add parameters to your ``buildout.cfg`` file. Both approaches
 allow customization of the same set of options, but the command line arguments
-will trump any settings found in your ``buildout.cfg`` file. The easiest way
-to modify settings is to edit your ``buildout.cfg`` file.
+will trump any settings found in your ``buildout.cfg`` file.
 
 Buildout options
 ~~~~~~~~~~~~~~~~
