@@ -6,10 +6,10 @@ History
 ~~~~~~~~~~~~~~~~~~
 
 - Refactor options/parameters functionality to universally support _SETTINGS dict
-- Add "slugify" support
+- Add "slugify" feature
 - Doc fixes
 - Add support to optionally publish content after creation
-- Add support for generic files
+- Add support for generic file import
 
 0.8 (10/27/2010)
 ~~~~~~~~~~~~~~~~
