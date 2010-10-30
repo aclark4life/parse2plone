@@ -26,6 +26,7 @@ from os import path as os_path
 from os import walk
 from pkg_resources import working_set
 from sys import executable
+from slugify import path_to_slug
 from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
@@ -109,6 +110,9 @@ class Utils(object):
         option_parser.add_option("--publish",
             action="store_true", dest="publish", default=False,
             help="Optionally publish everything")
+        option_parser.add_option("--slugify",
+            action="store_true", dest="slugify", default=False,
+            help="Optionally slugify content")
         return option_parser
 
     def is_folder(self, obj):
@@ -187,8 +191,8 @@ class Utils(object):
             _SETTINGS['force'] = options.force
         if options.publish is not None:
             _SETTINGS['publish'] = options.publish
-        if options.publish is not None:
-            _SETTINGS['slugify'] = options.publish
+        if options.slugify is not None:
+            _SETTINGS['slugify'] = options.slugify
 
         _SETTINGS['path'] = self.clean_path(path)
 
@@ -269,8 +273,7 @@ class Parse2Plone(object):
         return page
 
     def create_parts(self, parent, parts, base):
-        self.logger.info("creating parts for '%s'" % self.utils.join_input(
-            parts, '/'))
+        self.logger.info("creating parts for '%s'" % '/'.join(parts))
         for i in range(len(parts)):
             path = self.get_path(parts, i)
             prefix_path = self.get_prefix_path(path)
@@ -291,8 +294,9 @@ class Parse2Plone(object):
                 break
 
     def get_base(self, files, ignore):
-        return self.utils.join_input(self.utils.split_input(
-            files[0], '/')[:ignore], '/')
+        join_input = self.utils.join_input
+        split_input = self.utils.split_input
+        return join_input(split_input(files[0], '/')[:ignore], '/')
 
     def get_files(self, import_dir):
         results = []
@@ -318,13 +322,16 @@ class Parse2Plone(object):
         return updated_parent
 
     def get_parts(self, path):
-        return self.utils.split_input(path, '/')
+        return path.split('/')
 
     def get_path(self, parts, i):
-        return self.utils.join_input(parts[:i + 1], '/')
+        return '/'.join(parts[:i + 1])
 
     def get_prefix_path(self, path):
         return self.utils.split_input(path, '/')[:-1]
+
+    def get_slugified_parts(self, path, slug_ref):
+        pass
 
     def ignore_parts(self, files, ignore):
         results = []
@@ -335,10 +342,13 @@ class Parse2Plone(object):
             results.append(parts)
         return results
 
-    def import_files(self, parent, files, base):
+    def import_files(self, parent, files, base, slug_ref):
         base = files.keys()[0]
         for f in files[base]:
-            parts = self.get_parts(f)
+            if self.slugify:
+                parts = self.get_slugified_parts(f, slug_ref)
+            else:
+                parts = self.get_parts(f)
             self.create_parts(parent, parts, base)
 
         results = self.count.values()
@@ -435,6 +445,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     utils = Utils()
     logger = setup_logger()
     count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
+    slug_ref = {}
 
     # Clean recipe input; save results in _SETTINGS
     utils.clean_recipe_input(illegal_chars, html_extensions, image_extensions,
@@ -466,7 +477,9 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             logger.info(msg % path)
             exit(1)
     files = parse2plone.prep_files(files, ignore, base)
-    results = parse2plone.import_files(parent, files, base)
+    if parse2plone.slugify:
+        slug_ref = path_to_slug(files)
+    results = parse2plone.import_files(parent, files, base, slug_ref)
 
     # Print results
     msg = "Imported %s folders, %s images, %s pages, and %s files into: '%s'."

@@ -18,6 +18,10 @@ from re import compile
 
 slug = compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
-
-def slugify():
+def path_to_slug(files):
+    """
+    Returns a slug_ref which is mapping of paths to slugified paths. E.g.
+    slug_ref{'/var/www/html/2000/01/01/foo/index.html':
+             '/var/www/html/foo-20000101.html'}
+    """
     pass
