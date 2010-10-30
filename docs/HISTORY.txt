@@ -5,7 +5,8 @@ History
 0.8.1 (10/29/2010)
 ~~~~~~~~~~~~~~~~~~
 
-- Add 'slugify' support
+- Refactor options/parameters functionality to universally support _SETTINGS dict
+- Add "slugify" support
 - Doc fixes
 - Add support to optionally publish content after creation
 - Add support for generic files
