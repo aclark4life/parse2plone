@@ -237,6 +237,11 @@ Force create folders that do not exist.
 
 Publish newly created content.
 
+``'--slugify'``
+***************
+
+Slugify content.
+
 Example
 '''''''
 
