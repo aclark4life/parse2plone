@@ -28,6 +28,7 @@ here they are::
     target_tags = a div h1 h2 p
     force = false
     publish = false
+    slugify = false
 
 The parameters listed above are configured with their default values. Edit these
 values if you would like to change the default behavior; they are (mostly)
