@@ -397,8 +397,8 @@ class Recipe(object):
 
     def install(self):
         """Installer"""
-        utils = Utils()
         bindir = self.buildout['buildout']['bin-directory']
+        utils = Utils()
         utils.convert_recipe_options(self.options)
 
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
@@ -430,10 +430,10 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
     force=None, publish=None, slugify=None):
     """parse2plone"""
-    utils = Utils()
-    logger = setup_logger()
     count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
+    logger = setup_logger()
     slug_ref = {}
+    utils = Utils()
 
     # Clean recipe input; save results in _SETTINGS
     utils.clean_recipe_input(illegal_chars, html_extensions, image_extensions,
