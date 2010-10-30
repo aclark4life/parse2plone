@@ -207,7 +207,10 @@ class Utils(object):
 
 
 class Parse2Plone(object):
-    def create_content(self, parent, obj, prefix_path, base):
+    """
+    Parse2Plone
+    """
+    def create_content(self, parent, obj, prefix_path, base, slug_ref):
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
             self.set_title(folder, obj)
@@ -216,7 +219,7 @@ class Parse2Plone(object):
         elif self.utils.is_html(obj, self.html_extensions):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
-            self.set_page(page, obj, prefix_path, base)
+            self.set_page(page, obj, prefix_path, base, slug_ref)
             self.count['pages'] += 1
             commit()
         elif self.utils.is_image(obj, self.image_extensions):
@@ -266,7 +269,7 @@ class Parse2Plone(object):
             self.logger.info("publishing page '%s'" % obj)
         return page
 
-    def create_parts(self, parent, parts, base):
+    def create_parts(self, parent, parts, base, slug_ref):
         self.logger.info("creating parts for '%s'" % '/'.join(parts))
         for i in range(len(parts)):
             path = self.get_path(parts, i)
@@ -281,7 +284,7 @@ class Parse2Plone(object):
                     self.logger.info(
                         "object '%s' does not exist inside '%s'"
                         % (obj, self.utils.obj_to_path(parent)))
-                    self.create_content(parent, obj, prefix_path, base)
+                    self.create_content(parent, obj, prefix_path, base, slug_ref)
             else:
                 self.logger.info("object '%s' has illegal chars" % obj)
                 break
@@ -335,11 +338,11 @@ class Parse2Plone(object):
     def import_files(self, parent, files, base, slug_ref):
         base = files.keys()[0]
         for f in files[base]:
-            if self.slugify:
-                parts = self.get_slugified_parts(f, slug_ref)
+            if self.slugify and f in slug_ref['forward']:
+                parts = slug_ref['forward'][f].split('/')
             else:
                 parts = self.get_parts(f)
-            self.create_parts(parent, parts, base)
+            self.create_parts(parent, parts, base, slug_ref)
 
         results = self.count.values()
         results.append(self.utils.obj_to_path(parent))
@@ -364,8 +367,15 @@ class Parse2Plone(object):
         f.close()
         at_file.setFile(data)
 
-    def set_page(self, page, obj, prefix_path, base):
-        f = open('/'.join([base, '/'.join(prefix_path), obj]), 'rb')
+    def set_page(self, page, obj, prefix_path, base, slug_ref):
+        if self.slugify:
+            key = '/'.join(prefix_path)
+            key += '/'
+            key += obj
+            value = slug_ref['reverse'][key]
+            f = open('/'.join([base, value]), 'rb')
+        else:
+            f = open('/'.join([base, '/'.join(prefix_path), obj]), 'rb')
         results = ''
         data = f.read()
         f.close()
@@ -432,7 +442,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     """parse2plone"""
     count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
     logger = setup_logger()
-    slug_ref = {}
+    slug_ref = {'forward': {}, 'reverse': {}}
     utils = Utils()
 
     # Clean recipe input; save results in _SETTINGS

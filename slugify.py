@@ -30,7 +30,9 @@ def path_to_slug(files, slug_ref, base):
         result = slug.match(f)
         if result:
             groups = result.groups()
-            slug_ref[f] = '%s%s-%s%s%s.html' % (groups[0], groups[4],
+            slug_ref['forward'][f] = '%s%s-%s%s%s.html' % (groups[0], groups[4],
                 groups[1], groups[2], groups[3])
+            slug_ref['reverse']['%s%s-%s%s%s.html' % (groups[0], groups[4],
+                groups[1], groups[2], groups[3])] = f
 
     return slug_ref
