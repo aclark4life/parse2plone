@@ -117,7 +117,7 @@ class Utils(object):
             action="store_true", dest="slugify", default=False,
             help="Optionally slugify content")
         option_parser.add_option("--rename",
-            dest="slugify", help="Optionally rename content")
+            dest="rename", help="Optionally rename content")
         return option_parser
 
     def is_folder(self, obj):
@@ -164,7 +164,7 @@ class Utils(object):
             if option in options:
                 if option in ('force', 'publish'):
                     value = options[option].capitalize()
-                elif option != 'path':
+                elif option != 'path' or option != 'rename':
                     value = ','.join(options[option])
             else:
                 value = ','.join(existing_value)
@@ -173,7 +173,7 @@ class Utils(object):
 
     def process_command_line_args(self, options, illegal_chars,
         html_extensions, image_extensions, file_extensions,
-        target_tags, path, force, publish, slugify):
+        target_tags, path, force, publish, slugify, rename):
         """
         Process command line args; save results in _SETTINGS dict
         """
@@ -195,6 +195,8 @@ class Utils(object):
             _SETTINGS['publish'] = options.publish
         if options.slugify is not None:
             _SETTINGS['slugify'] = options.slugify
+        if options.rename is not None:
+            _SETTINGS['rename'] = options.rename
 
         _SETTINGS['path'] = self.clean_path(path)
 
@@ -419,7 +421,7 @@ class Recipe(object):
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
         arguments += " target_tags='%s', force='%s', publish='%s',"
-        arguments += " slugify='%s'"
+        arguments += " slugify='%s', rename='%s'"
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([('import', 'parse2plone', 'main')],
@@ -433,6 +435,7 @@ class Recipe(object):
             _SETTINGS['force'],
             _SETTINGS['publish'],
             _SETTINGS['slugify'],
+            _SETTINGS['rename'],
             ))
         return tuple()
 
@@ -443,7 +446,7 @@ class Recipe(object):
 
 def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
-    force=None, publish=None, slugify=None):
+    force=None, publish=None, slugify=None, rename=None):
     """parse2plone"""
     count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
     logger = setup_logger()
@@ -452,7 +455,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
 
     # Clean recipe input; save results in _SETTINGS
     utils.clean_recipe_input(illegal_chars, html_extensions, image_extensions,
-        file_extensions, target_tags, path, force, publish, slugify)
+        file_extensions, target_tags, path, force, publish, slugify, rename)
 
     # Process command line args; save results in _SETTINGS
     option_parser = utils.create_option_parser()
@@ -460,7 +463,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     import_dir = args[0]
     utils.process_command_line_args(options, illegal_chars,
         html_extensions, image_extensions, file_extensions,
-        target_tags, path, force, publish, slugify)
+        target_tags, path, force, publish, slugify, rename)
 
     # Run parse2plone
     parse2plone = Parse2Plone()
