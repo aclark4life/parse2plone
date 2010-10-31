@@ -38,8 +38,7 @@ you would like to know more.
 Explanation
 -----------
 
-Why did you create ``Parse2Plone`` when the following packages (and probably many
-more) already exist:
+Why did you create ``Parse2Plone`` when the following packages already exist:
 
 - http://pypi.python.org/pypi/collective.transmogrifier
     - http://pypi.python.org/pypi/transmogrify.filesystem

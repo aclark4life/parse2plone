@@ -27,6 +27,7 @@ from os import walk
 from pkg_resources import working_set
 from sys import executable
 from slugify import path_to_slug
+from rename import old_to_new
 from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
@@ -40,6 +41,7 @@ _SETTINGS = {
     'force': ['False'],
     'publish': ['False'],
     'slugify': ['False'],
+    'rename': [],
 }
 
 
@@ -76,7 +78,7 @@ class Utils(object):
 
     def clean_recipe_input(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
-        publish, slugify):
+        publish, slugify, rename):
         """
         Convert recipe parameter value from csv; save results in _SETTINGS dict
         """
@@ -89,20 +91,21 @@ class Utils(object):
         _SETTINGS['force'] = literal_eval(force)
         _SETTINGS['publish'] = literal_eval(publish)
         _SETTINGS['slugify'] = literal_eval(slugify)
+        _SETTINGS['rename'] = rename.split(',')
 
     def create_option_parser(self):
         option_parser = OptionParser()
         option_parser.add_option("-p", "--path", dest="path",
             help="Path to Plone site object or sub-folder")
-        option_parser.add_option("", "--html-extensions",
+        option_parser.add_option("--html-extensions",
             dest="html_extensions", help="Specify HTML file extensions")
-        option_parser.add_option("", "--illegal-chars", dest="illegal_chars",
+        option_parser.add_option("--illegal-chars", dest="illegal_chars",
             help="Specify characters to ignore")
-        option_parser.add_option("", "--image-extensions",
+        option_parser.add_option("--image-extensions",
             dest="image_extensions", help="Specify image file extensions")
-        option_parser.add_option("", "--file-extensions",
+        option_parser.add_option("--file-extensions",
             dest="file_extensions", help="Specify generic file extensions")
-        option_parser.add_option("", "--target-tags", dest="target_tags",
+        option_parser.add_option("--target-tags", dest="target_tags",
             help="Specify HTML tags to parse")
         option_parser.add_option("--force",
             action="store_true", dest="force", default=False,
@@ -113,6 +116,8 @@ class Utils(object):
         option_parser.add_option("--slugify",
             action="store_true", dest="slugify", default=False,
             help="Optionally slugify content")
+        option_parser.add_option("--rename",
+            dest="slugify", help="Optionally rename content")
         return option_parser
 
     def is_folder(self, obj):
