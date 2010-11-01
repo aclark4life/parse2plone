@@ -48,9 +48,9 @@ Why did you create ``Parse2Plone`` when the following packages already exist:
 Here are some reasons:
 
 - Because ``Parse2Plone`` is aimed at lowering the bar for folks who don't already
-  know (or want to know) what a "transmogrifier blueprint" is but can update
-  their ``buildout.cfg`` file, run ``Buildout``, and then run a single import command
-  to import static content from the file system all without having to think very much.
+  know (or want to know) what a "transmogrifier blueprint" is but are able to update
+  their ``buildout.cfg`` file; run ``Buildout``; then run a single command all
+  without having to think too much.
 
 - collective.transmogrify provides a framework for creating reusable pipes
   (whose definitions are called blueprints). ``Parse2Plone`` provides 
@@ -65,6 +65,14 @@ Here are some reasons:
 If you are a developer looking to create repeatable migrations, you probably want to be
 using ``collective.transmogrifier``. If you are an end user that just wants to see your
 static website in Plone, then you might want to give ``Parse2Plone`` a try.
+
+There is also this user comment, which captures the author's sentiment::
+
+    Parse2Plone's release was very timely as I need either this or something very
+    similar - and while I've no doubt I could make transmogrify do the job, it's a
+    lot of work for a one-shot loading of legacy pages.
+
+                                                    -Derek Broughton
 
 Installation
 ------------
@@ -166,6 +174,8 @@ Options
 | ``publish``         | false       | Publish newly created content.         |
 +---------------------+-------------+----------------------------------------+
 | ``slugify``         | false       | "Slugify" content. (see slugify.py)    |
++---------------------+-------------+----------------------------------------+
+| ``rename``          | false       | "Rename" content. (see rename.py)      |
 +---------------------+-------------+----------------------------------------+
 
 Example
