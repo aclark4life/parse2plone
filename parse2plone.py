@@ -76,7 +76,7 @@ class Utils(object):
         if path.startswith('/'):
             return path[1:]
 
-    def clean_recipe_input(self, illegal_chars, html_extensions,
+    def convert_arg_values(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
         publish, slugify, rename):
         """
@@ -164,7 +164,9 @@ class Utils(object):
             if option in options:
                 if option in ('force', 'publish'):
                     value = options[option].capitalize()
-                elif option != 'path' or option != 'rename':
+                elif option in ('rename'):
+                    value = options[option]
+                elif option not in ('path'):
                     value = ','.join(options[option])
             else:
                 value = ','.join(existing_value)
@@ -450,8 +452,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     slug_ref = {'forward': {}, 'reverse': {}}
     utils = Utils()
 
-    # Clean recipe input; save results in _SETTINGS
-    utils.clean_recipe_input(illegal_chars, html_extensions, image_extensions,
+    # Convert arg values from csv to list; save results in _SETTINGS
+    utils.convert_arg_values(illegal_chars, html_extensions, image_extensions,
         file_extensions, target_tags, path, force, publish, slugify, rename)
 
     # Process command line args; save results in _SETTINGS
