@@ -18,11 +18,14 @@
 
 from re import compile
 
-path = compile('\n(\S+)\s+(\s+)$')
+paths = compile('\n(\S+)\s+(\S+)')
+
 
 def get_paths_to_rename(value):
-    import pdb; pdb.set_trace()
-    return '/foo/bar:/foo/baz'
+    old = paths.match(value).groups[0]
+    new = paths.match(value).groups[1]
+    return '%s:%s' % (old, new)
+
 
 def rename_old_to_new():
     pass
