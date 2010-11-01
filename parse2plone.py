@@ -330,9 +330,6 @@ class Parse2Plone(object):
     def get_prefix_path(self, path):
         return path.split('/')[:-1]
 
-    def get_slugified_parts(self, path, slug_ref):
-        pass
-
     def ignore_parts(self, files, ignore):
         results = []
         for f in files:
