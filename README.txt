@@ -29,6 +29,7 @@ here they are::
     force = false
     publish = false
     slugify = false
+    rename = false
 
 The parameters listed above are configured with their default values. Edit these
 values if you would like to change the default behavior; they are (mostly)
@@ -259,6 +260,11 @@ Publish newly created content.
 ***************
 
 Slugify content.
+
+``'--rename'``
+***************
+
+Rename content.
 
 Example
 '''''''
