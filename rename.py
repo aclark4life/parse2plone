@@ -16,8 +16,12 @@
 #                                                                             #
 ###############################################################################
 
+from re import compile
 
-def get_paths_to_rename():
+path = compile('\n(.*)( +)(.*)$')
+
+def get_paths_to_rename(value):
+    import pdb; pdb.set_trace()
     return '/foo/bar:/foo/baz'
 
 def rename_old_to_new():
