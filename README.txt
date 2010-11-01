@@ -92,6 +92,15 @@ You can run ``Parse2Plone`` like this::
 
     $ bin/plone run bin/import /path/to/files
 
+.. Note:: 
+    In the example above and examples below, ``bin/plone`` refers to a *Zope 2
+    instance* script created by `plone.recipe.zope2instance`_.
+
+    Your ``bin/plone`` script may be called ``bin/instance`` or
+    ``bin/client``, etc. instead.
+
+.. _`plone.recipe.zope2instance`: http://pypi.python.org/pypi/plone.recipe.zope2instance
+
 Demonstration
 -------------
 

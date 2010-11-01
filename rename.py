@@ -18,7 +18,7 @@
 
 from re import compile
 
-path = compile('\n(.*)( +)(.*)$')
+path = compile('\n(\S+)\s+(\s+)$')
 
 def get_paths_to_rename(value):
     import pdb; pdb.set_trace()
