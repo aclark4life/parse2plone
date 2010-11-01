@@ -27,7 +27,7 @@ from os import walk
 from pkg_resources import working_set
 from sys import executable
 from slugify import path_to_slug
-from rename import old_to_new
+from rename import get_paths_to_rename, rename_old_to_new
 from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
@@ -165,7 +165,7 @@ class Utils(object):
                 if option in ('force', 'publish'):
                     value = options[option].capitalize()
                 elif option in ('rename'):
-                    value = options[option]
+                    value = get_paths_to_rename((options[option]))
                 elif option not in ('path'):
                     value = ','.join(options[option])
             else:

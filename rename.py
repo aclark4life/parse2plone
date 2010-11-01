@@ -17,7 +17,8 @@
 ###############################################################################
 
 
-def clean_rename_recipe_input()
+def get_paths_to_rename():
+    return '/foo/bar:/foo/baz'
 
-def old_to_new():
+def rename_old_to_new():
     pass
