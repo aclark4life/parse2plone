@@ -156,9 +156,9 @@ class Utils(object):
     def obj_to_path(self, obj):
         return '/'.join(obj.getPhysicalPath())
 
-    def convert_recipe_options(self, options):
+    def convert_parameter_values(self, options):
         """
-        Convert recipe parameter value to csv; save in _SETTINGS dict
+        Convert recipe parameter values to csv; save in _SETTINGS dict
         """
         for option, existing_value in _SETTINGS.items():
             if option in options:
@@ -415,7 +415,7 @@ class Recipe(object):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
         utils = Utils()
-        utils.convert_recipe_options(self.options)
+        utils.convert_parameter_values(self.options)
 
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
