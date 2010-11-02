@@ -113,12 +113,12 @@ class Utils(object):
             help="Force creation of folders")
         option_parser.add_option("--publish",
             action="store_true", dest="publish", default=False,
-            help="Optionally publish everything")
+            help="Optionally publish newly created content")
         option_parser.add_option("--slugify",
             action="store_true", dest="slugify", default=False,
-            help="Optionally 'slugify' content")
+            help="""Optionally "slugify" content (see slugify.py)""")
         option_parser.add_option("--rename",
-            dest="rename", help="Optionally rename content")
+            dest="/old:/new", help="Optionally rename content (see rename.py)")
         return option_parser
 
     def is_file(self, obj, extensions):

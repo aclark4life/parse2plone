@@ -260,12 +260,39 @@ Publish newly created content.
 ``'--slugify'``
 ***************
 
-"Slugify" content.
+"Slugify" content (see slugify.py).
 
 ``'--rename'``
 ***************
 
-Rename content.
+Rename content (see rename.py).
+
+``'--help'``
+************
+
+You can ask ``parse2plone`` to tell you about its options with the ``--help``
+option::
+
+    $ bin/plone run bin/import -h
+    Usage: import [options]
+
+    Options:
+      -h, --help            show this help message and exit
+      -p PATH, --path=PATH  Path to Plone site object or sub-folder
+      --html-extensions=HTML_EXTENSIONS
+                            Specify HTML file extensions
+      --illegal-chars=ILLEGAL_CHARS
+                            Specify characters to ignore
+      --image-extensions=IMAGE_EXTENSIONS
+                            Specify image file extensions
+      --file-extensions=FILE_EXTENSIONS
+                            Specify generic file extensions
+      --target-tags=TARGET_TAGS
+                            Specify HTML tags to parse
+      --force               Force creation of folders
+      --publish             Optionally publish newly created content
+      --slugify             Optionally "slugify" content (see slugify.py)
+      --rename=/OLD:/NEW    Optionally rename content (see rename.py)
 
 Example
 '''''''
