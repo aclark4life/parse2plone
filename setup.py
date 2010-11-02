@@ -26,7 +26,7 @@ setup(
         'lxml',
         'BeautifulSoup',
     ],
-    py_modules=['parse2plone','slugify'],
+    py_modules=['parse2plone','slugify','rename'],
     classifiers=[
         'Framework :: Buildout',
         'Framework :: Plone'
