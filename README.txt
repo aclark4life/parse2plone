@@ -41,27 +41,27 @@ Explanation
 
 Why did you create ``Parse2Plone`` when the following packages already exist:
 
-- http://pypi.python.org/pypi/collective.transmogrifier
+* http://pypi.python.org/pypi/collective.transmogrifier
 
-  - http://pypi.python.org/pypi/transmogrify.filesystem
-  - http://pypi.python.org/pypi/transmogrify.htmlcontentextractor
-  - http://pypi.python.org/pypi/transmogrify.webcrawler
+  * http://pypi.python.org/pypi/transmogrify.filesystem
+  * http://pypi.python.org/pypi/transmogrify.htmlcontentextractor
+  * http://pypi.python.org/pypi/transmogrify.webcrawler
 
 Here are some reasons:
 
-- Because ``Parse2Plone`` is aimed at lowering the bar for folks who don't already
+* Because ``Parse2Plone`` is aimed at lowering the bar for folks who don't already
   know (or want to know) what a "transmogrifier blueprint" is but are able to update
   their ``buildout.cfg`` file; run ``Buildout``; then run a single command all
   without having to think too much.
 
-- collective.transmogrify provides a framework for creating reusable pipes
+* collective.transmogrify provides a framework for creating reusable pipes
   (whose definitions are called blueprints). ``Parse2Plone`` provides 
   a single, non-reusable "pipe/blueprint".
 
-- The author had an itch to scratch; it will be nice for him to be able to say
+* The author had an itch to scratch; it will be nice for him to be able to say
   "just go write a script" and then point to an example.
 
-- Transmogrifier and friends appear to be "developer's tools", while the author wants
+* Transmogrifier and friends appear to be "developer's tools", while the author wants
   ``Parse2Plone`` to be an "end user's tool".
 
 If you are a developer looking to create repeatable migrations, you probably want to be
@@ -125,8 +125,8 @@ You should run::
 
 And the following will be created:
 
-- http://localhost:8080/Plone/index.html
-- http://localhost:8080/Plone/about/index.html
+* http://localhost:8080/Plone/index.html
+* http://localhost:8080/Plone/about/index.html
 
 Modification
 ------------
@@ -195,13 +195,13 @@ Instead of accepting the default ``parse2plone`` behaviour, in your
 
 This will configure ``parse2plone`` to (only) import content *from*:
 
-- Images ending in ``.png``
-- HTML files ending in ``.htm``
-- Text within ``p`` tags
+* Images ending in ``.png``
+* HTML files ending in ``.htm``
+* Text within ``p`` tags
 
 *to*: 
 
-- A folder named ``/Plone/foo``.
+* A folder named ``/Plone/foo``.
 
 Command line options
 ~~~~~~~~~~~~~~~~~~~~
@@ -278,13 +278,13 @@ may specify the following::
 
 This will configure ``parse2plone`` to (only) import content *from*:
 
-- Images ending in ``.png``
-- HTML files ending in ``.htm``
-- Text within ``p`` tags
+* Images ending in ``.png``
+* HTML files ending in ``.htm``
+* Text within ``p`` tags
 
 *to*: 
 
-- A Plone site folder named ``/Plone/foo``.
+* A Plone site folder named ``/Plone/foo``.
 
 Consternation
 -------------
