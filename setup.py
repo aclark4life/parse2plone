@@ -2,7 +2,7 @@
 from setuptools import setup
 
 name = 'parse2plone'
-description = 'Easily import static HTML files into Plone.' 
+description = 'Easily import static HTML websites into Plone.' 
 version = '0.9'
 
 def read(file):
