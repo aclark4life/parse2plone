@@ -121,32 +121,40 @@ class Utils(object):
             dest="rename", help="Optionally rename content")
         return option_parser
 
+    def is_file(self, obj, extensions):
+        result = False
+        for ext in extensions:
+            if obj.endswith(ext):
+                result = True
+        return result
+
     def is_folder(self, obj):
         if len(obj.split('.')) == 1:
             return True
         else:
             return False
 
-    def is_file(self, obj, file_extensions):
-        result = False
-        for ext in file_extensions:
-            if obj.endswith(ext):
-                result = True
-        return result
+#    def is_file(self, obj, file_extensions):
+#        result = False
+#        for ext in file_extensions:
+#            if obj.endswith(ext):
+#                result = True
+#        return result
+#
+#    def is_html(self, obj, html_extensions):
+#        result = False
+#        for ext in html_extensions:
+#            if obj.endswith(ext):
+#                result = True
+#        return result
+#
+#    def is_image(self, obj, image_extensions):
+#        result = False
+#        for ext in image_extensions:
+#            if obj.endswith(ext):
+#                result = True
+#        return result
 
-    def is_html(self, obj, html_extensions):
-        result = False
-        for ext in html_extensions:
-            if obj.endswith(ext):
-                result = True
-        return result
-
-    def is_image(self, obj, image_extensions):
-        result = False
-        for ext in image_extensions:
-            if obj.endswith(ext):
-                result = True
-        return result
 
     def is_legal(self, obj, illegal_chars):
         if not obj[0] in illegal_chars:
@@ -226,13 +234,13 @@ class Parse2Plone(object):
             self.set_title(folder, obj)
             self.count['folders'] += 1
             commit()
-        elif self.utils.is_html(obj, self.html_extensions):
+        elif self.utils.is_file(obj, self.html_extensions):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
             self.set_page(page, obj, prefix_path, base, slug_ref)
             self.count['pages'] += 1
             commit()
-        elif self.utils.is_image(obj, self.image_extensions):
+        elif self.utils.is_file(obj, self.image_extensions):
             image = self.create_image(parent, obj)
             self.set_title(image, obj)
             self.set_image(image, obj, prefix_path, base)
