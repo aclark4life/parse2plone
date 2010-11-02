@@ -28,15 +28,15 @@ def get_paths_to_rename(value):
     return ','.join(results)
 
 
-def rename_old_to_new(files, slug_ref, base):
+def rename_old_to_new(files, rename_map, base):
     """
-    Returns a rename_ref which is forward/reverse mapping of old paths to
+    Returns a rename_map which is forward/reverse mapping of old paths to
     new paths and vice versa. E.g.:
 
-        rename_ref{'forward': {'/var/www/html/old/2000/01/01/foo/index.html':
+        rename_map{'forward': {'/var/www/html/old/2000/01/01/foo/index.html':
             '/var/www/html/new/2000/01/01/foo/index.html'}}
 
-        rename_ref{'reverse': {'/var/www/html/new/2000/01/01/foo/index.html':
+        rename_map{'reverse': {'/var/www/html/new/2000/01/01/foo/index.html':
             '/var/www/html/old/2000/01/01/foo/index.html'}}
     """
 

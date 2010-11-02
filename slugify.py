@@ -19,15 +19,15 @@ from re import compile
 slug = compile('(.+)(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 
-def convert_path_to_slug(files, slug_ref, base):
+def convert_path_to_slug(files, slug_map, base):
     """
-    Returns a slug_ref which is forward/reverse mapping of paths to slugified
+    Returns a slug_map which is forward/reverse mapping of paths to slugified
     paths and vice versa. E.g.:
 
-        slug_ref{'forward': {'/var/www/html/2000/01/01/foo/index.html':
+        slug_map{'forward': {'/var/www/html/2000/01/01/foo/index.html':
             '/var/www/html/foo-20000101.html'}}
 
-        slug_ref{'reverse': {'/var/www/html/foo-20000101.html':
+        slug_map{'reverse': {'/var/www/html/foo-20000101.html':
             '/var/www/html/2000/01/01/foo/index.html'}}
     """
 
@@ -35,9 +35,9 @@ def convert_path_to_slug(files, slug_ref, base):
         result = slug.match(f)
         if result:
             groups = result.groups()
-            slug_ref['forward'][f] = '%s%s-%s%s%s.html' % (groups[0], groups[4],
+            slug_map['forward'][f] = '%s%s-%s%s%s.html' % (groups[0], groups[4],
                 groups[1], groups[2], groups[3])
-            slug_ref['reverse']['%s%s-%s%s%s.html' % (groups[0], groups[4],
+            slug_map['reverse']['%s%s-%s%s%s.html' % (groups[0], groups[4],
                 groups[1], groups[2], groups[3])] = f
 
-    return slug_ref
+    return slug_map
