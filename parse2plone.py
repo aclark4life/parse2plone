@@ -329,9 +329,8 @@ class Parse2Plone(object):
         for f in files[base]:
             if self.slugify and f in slug_map['forward']:
                 parts = slug_map['forward'][f].split('/')
-            elif self.rename: 
-                import pdb; pdb.set_trace()
-                parts = slug_map['forward'][f].split('/')
+            elif self.rename and f in rename_map['forward']:
+                parts = rename_map['forward'][f].split('/')
             else:
                 parts = self.get_parts(f)
             self.create_parts(parent, parts, base, slug_map, rename_map)
@@ -365,6 +364,12 @@ class Parse2Plone(object):
             key += '/'
             key += obj
             value = slug_map['reverse'][key]
+            f = open('/'.join([base, value]), 'rb')
+        elif self.rename:
+            key = '/'.join(prefix_path)
+            key += '/'
+            key += obj
+            value = rename_map['reverse'][key]
             f = open('/'.join([base, value]), 'rb')
         else:
             f = open('/'.join([base, '/'.join(prefix_path), obj]), 'rb')

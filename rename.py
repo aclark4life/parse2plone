@@ -43,12 +43,12 @@ def rename_old_to_new(files, rename_map, base, rename):
             '/var/www/html/old/2000/01/01/foo/index.html'}}
     """
     for f in files[base]:
-        import pdb; pdb.set_trace()
-#        if result:
-#            groups = result.groups()
-#            slug_ref['forward'][f] = '%s%s-%s%s%s.html' % (groups[0],
-#                groups[4], groups[1], groups[2], groups[3])
-#            slug_ref['reverse']['%s%s-%s%s%s.html' % (groups[0], groups[4],
-#                groups[1], groups[2], groups[3])] = f
-#
-#    return slug_ref
+        paths = rename.split(',')
+        for path in paths:
+            parts = path.split(':')
+            old = parts[0]
+            new = parts[1]
+            if f.find(old) >= 0:
+                rename_map['forward'][f] = f.replace(old, new)
+            rename_map['reverse'][f.replace(old, new)] = f
+    return rename_map
