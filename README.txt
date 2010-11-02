@@ -311,4 +311,4 @@ database.
 Communication
 -------------
 
-Questions, comments, or concerns? Email: aclark@aclark.net
+Questions, comments, or concerns? Please e-mail: aclark@aclark.net
