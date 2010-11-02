@@ -260,7 +260,7 @@ Publish newly created content.
 ``'--slugify'``
 ***************
 
-Slugify content.
+"Slugify" content.
 
 ``'--rename'``
 ***************
