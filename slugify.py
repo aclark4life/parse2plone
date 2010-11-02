@@ -19,7 +19,7 @@ from re import compile
 slug = compile('(.+)(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 
-def path_to_slug(files, slug_ref, base):
+def convert_path_to_slug(files, slug_ref, base):
     """
     Returns a slug_ref which is forward/reverse mapping of paths to slugified
     paths and vice versa. E.g.:

@@ -29,7 +29,7 @@ from sys import executable
 from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
-from slugify import path_to_slug
+from slugify import convert_path_to_slug
 from rename import get_paths_to_rename, rename_old_to_new
 
 _SETTINGS = {
@@ -484,7 +484,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             exit(1)
     files = parse2plone.prep_files(files, ignore, base)
     if parse2plone.slugify:
-        slug_ref = path_to_slug(files, slug_ref, base)
+        slug_ref = convert_path_to_slug(files, slug_ref, base)
     results = parse2plone.import_files(parent, files, base, slug_ref)
 
     # Print results
