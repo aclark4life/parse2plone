@@ -202,7 +202,8 @@ class Parse2Plone(object):
     """
     Parse2Plone
     """
-    def create_content(self, parent, obj, prefix_path, base, slug_map, rename_map):
+    def create_content(self, parent, obj, prefix_path, base, slug_map,
+        rename_map):
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
             self.set_title(folder, obj)
@@ -276,7 +277,8 @@ class Parse2Plone(object):
                     self.logger.info(
                         "object '%s' does not exist inside '%s'"
                         % (obj, self.utils.obj_to_path(parent)))
-                    self.create_content(parent, obj, prefix_path, base, slug_map, rename_map)
+                    self.create_content(parent, obj, prefix_path, base,
+                        slug_map, rename_map)
             else:
                 self.logger.info("object '%s' has illegal chars" % obj)
                 break
@@ -440,7 +442,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     """parse2plone"""
     count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
     logger = setup_logger()
-    rename_map, slug_map = {'forward': {}, 'reverse': {}},{'forward': {}, 'reverse': {}}
+    rename_map = {'forward': {}, 'reverse': {}}
+    slug_map = {'forward': {}, 'reverse': {}}
     utils = Utils()
 
     # Convert arg values from csv to list; save results in _SETTINGS
@@ -466,7 +469,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         parent = parse2plone.get_parent(app, path)
     else:
         if force:
-            parse2plone.create_parts(app, parse2plone.get_parts(path), base, slug_map, rename_map)
+            parse2plone.create_parts(app, parse2plone.get_parts(path), base,
+                slug_map, rename_map)
             parent = parse2plone.get_parent(app, path)
         else:
             msg = "object in path '%s' does not exist, use --force to create"
@@ -477,7 +481,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         slug_map = convert_path_to_slug(files, slug_map, base)
     if parse2plone.rename:
         rename_map = rename_old_to_new(files, rename_map, base, rename)
-    results = parse2plone.import_files(parent, files, base, slug_map, rename_map)
+    results = parse2plone.import_files(parent, files, base, slug_map,
+        rename_map)
 
     # Print results
     msg = "Imported %s folders, %s images, %s pages, and %s files into: '%s'."

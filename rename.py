@@ -20,16 +20,19 @@ from re import compile
 
 paths = compile('\n(\S+)\s+(\S+)')
 
+
 # XXX Factor me out of both parse2plone and rename modules
 def clean_path(path):
     if path.startswith('/'):
         return path[1:]
+
 
 def get_paths_to_rename(value):
     results = []
     for group in paths.findall(value):
         results.append('%s:%s' % (clean_path(group[0]), clean_path(group[1])))
     return ','.join(results)
+
 
 def rename_old_to_new(files, rename_map, base, rename):
     """
