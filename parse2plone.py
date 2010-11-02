@@ -134,28 +134,6 @@ class Utils(object):
         else:
             return False
 
-#    def is_file(self, obj, file_extensions):
-#        result = False
-#        for ext in file_extensions:
-#            if obj.endswith(ext):
-#                result = True
-#        return result
-#
-#    def is_html(self, obj, html_extensions):
-#        result = False
-#        for ext in html_extensions:
-#            if obj.endswith(ext):
-#                result = True
-#        return result
-#
-#    def is_image(self, obj, image_extensions):
-#        result = False
-#        for ext in image_extensions:
-#            if obj.endswith(ext):
-#                result = True
-#        return result
-
-
     def is_legal(self, obj, illegal_chars):
         if not obj[0] in illegal_chars:
             return True
