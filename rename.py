@@ -20,15 +20,18 @@ from re import compile
 
 paths = compile('\n(\S+)\s+(\S+)')
 
+# XXX Factor me out of both parse2plone and rename modules
+def clean_path(path):
+    if path.startswith('/'):
+        return path[1:]
 
 def get_paths_to_rename(value):
     results = []
     for group in paths.findall(value):
-        results.append('%s:%s' % (group[0], group[1]))
+        results.append('%s:%s' % (clean_path(group[0]), clean_path(group[1])))
     return ','.join(results)
 
-
-def rename_old_to_new(files, rename_map, base):
+def rename_old_to_new(files, rename_map, base, rename):
     """
     Returns a rename_map which is forward/reverse mapping of old paths to
     new paths and vice versa. E.g.:
@@ -39,11 +42,8 @@ def rename_old_to_new(files, rename_map, base):
         rename_map{'reverse': {'/var/www/html/new/2000/01/01/foo/index.html':
             '/var/www/html/old/2000/01/01/foo/index.html'}}
     """
-
-    pass
-
-#    for f in files[base]:
-#        result = slug.match(f)
+    for f in files[base]:
+        import pdb; pdb.set_trace()
 #        if result:
 #            groups = result.groups()
 #            slug_ref['forward'][f] = '%s%s-%s%s%s.html' % (groups[0],

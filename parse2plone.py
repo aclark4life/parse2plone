@@ -329,6 +329,9 @@ class Parse2Plone(object):
         for f in files[base]:
             if self.slugify and f in slug_map['forward']:
                 parts = slug_map['forward'][f].split('/')
+            elif self.rename: 
+                import pdb; pdb.set_trace()
+                parts = slug_map['forward'][f].split('/')
             else:
                 parts = self.get_parts(f)
             self.create_parts(parent, parts, base, slug_map, rename_map)
@@ -468,7 +471,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     if parse2plone.slugify:
         slug_map = convert_path_to_slug(files, slug_map, base)
     if parse2plone.rename:
-        rename_map = convert_path_to_slug(files, rename_map, base)
+        rename_map = rename_old_to_new(files, rename_map, base, rename)
     results = parse2plone.import_files(parent, files, base, slug_map, rename_map)
 
     # Print results
