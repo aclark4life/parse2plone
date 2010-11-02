@@ -270,7 +270,7 @@ Rename content (see rename.py).
 ``'--help'``
 ************
 
-You can ask ``parse2plone`` to tell you about its options with the ``--help``
+You can ask ``parse2plone`` to tell you about its available options with the ``--help``
 option::
 
     $ bin/plone run bin/import -h
