@@ -22,10 +22,10 @@ paths = compile('\n(\S+)\s+(\S+)')
 
 
 def get_paths_to_rename(value):
-    old = paths.match(value).groups()[0]
-    new = paths.match(value).groups()[1]
-    return '%s:%s' % (old, new)
-
+    results = []
+    for group in paths.findall(value):
+        results.append('%s:%s' % (group[0], group[1]))
+    return ','.join(results)
 
 def rename_old_to_new():
     pass
