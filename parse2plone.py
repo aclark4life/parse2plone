@@ -118,7 +118,7 @@ class Utils(object):
             action="store_true", dest="slugify", default=False,
             help="""Optionally "slugify" content (see slugify.py)""")
         option_parser.add_option("--rename",
-            dest="/old:/new", help="Optionally rename content (see rename.py)")
+            dest="rename", help="Optionally rename content (see rename.py)")
         return option_parser
 
     def is_file(self, obj, extensions):
@@ -188,6 +188,7 @@ class Utils(object):
         """
         Process command line args; save results in _SETTINGS dict
         """
+        import pdb; pdb.set_trace()
         if options.path is not None:
             _SETTINGS['path'] = options.path
         if options.illegal_chars is not None:

@@ -292,7 +292,7 @@ option::
       --force               Force creation of folders
       --publish             Optionally publish newly created content
       --slugify             Optionally "slugify" content (see slugify.py)
-      --rename=/OLD:/NEW    Optionally rename content (see rename.py)
+      --rename=RENAME       Optionally rename content (see rename.py)
 
 Example
 '''''''
