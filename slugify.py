@@ -22,8 +22,10 @@ slug = compile('(.+)(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 def path_to_slug(files, slug_ref, base):
     """
     Returns a slug_ref which is mapping of paths to slugified paths. E.g.
-    slug_ref{'/var/www/html/2000/01/01/foo/index.html':
-             '/var/www/html/foo-20000101.html'}
+    slug_ref{'forward': {'/var/www/html/2000/01/01/foo/index.html':
+        '/var/www/html/foo-20000101.html'}}
+    slug_ref{'reverse': {'/var/www/html/foo-20000101.html':
+        '/var/www/html/2000/01/01/foo/index.html'}}
     """
 
     for f in files[base]:

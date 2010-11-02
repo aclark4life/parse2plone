@@ -27,5 +27,26 @@ def get_paths_to_rename(value):
         results.append('%s:%s' % (group[0], group[1]))
     return ','.join(results)
 
-def rename_old_to_new():
-    pass
+
+def rename_old_to_new(files, slug_ref, base):
+    """
+    Returns a rename_ref which is forward/reverse mapping of old paths to
+    new paths and vice versa. E.g.:
+
+        rename_ref{'forward': {'/var/www/html/old/2000/01/01/foo/index.html':
+            '/var/www/html/new/2000/01/01/foo/index.html'}}
+
+        rename_ref{'reverse': {'/var/www/html/new/2000/01/01/foo/index.html':
+            '/var/www/html/old/2000/01/01/foo/index.html'}}
+    """
+
+    for f in files[base]:
+        result = slug.match(f)
+        if result:
+            groups = result.groups()
+            slug_ref['forward'][f] = '%s%s-%s%s%s.html' % (groups[0],
+                groups[4], groups[1], groups[2], groups[3])
+            slug_ref['reverse']['%s%s-%s%s%s.html' % (groups[0], groups[4],
+                groups[1], groups[2], groups[3])] = f
+
+    return slug_ref
