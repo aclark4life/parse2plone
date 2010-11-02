@@ -26,10 +26,11 @@ from os import path as os_path
 from os import walk
 from pkg_resources import working_set
 from sys import executable
-from slugify import path_to_slug
-from rename import get_paths_to_rename, rename_old_to_new
 from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
+
+from slugify import path_to_slug
+from rename import get_paths_to_rename, rename_old_to_new
 
 _SETTINGS = {
     'path': ['/Plone'],
