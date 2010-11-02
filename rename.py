@@ -40,13 +40,15 @@ def rename_old_to_new(files, slug_ref, base):
             '/var/www/html/old/2000/01/01/foo/index.html'}}
     """
 
-    for f in files[base]:
-        result = slug.match(f)
-        if result:
-            groups = result.groups()
-            slug_ref['forward'][f] = '%s%s-%s%s%s.html' % (groups[0],
-                groups[4], groups[1], groups[2], groups[3])
-            slug_ref['reverse']['%s%s-%s%s%s.html' % (groups[0], groups[4],
-                groups[1], groups[2], groups[3])] = f
+    pass
 
-    return slug_ref
+#    for f in files[base]:
+#        result = slug.match(f)
+#        if result:
+#            groups = result.groups()
+#            slug_ref['forward'][f] = '%s%s-%s%s%s.html' % (groups[0],
+#                groups[4], groups[1], groups[2], groups[3])
+#            slug_ref['reverse']['%s%s-%s%s%s.html' % (groups[0], groups[4],
+#                groups[1], groups[2], groups[3])] = f
+#
+#    return slug_ref
