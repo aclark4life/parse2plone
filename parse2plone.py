@@ -182,15 +182,12 @@ class Utils(object):
 
             _SETTINGS[option] = value
 
-    def process_command_line_args(self, options, illegal_chars,
-        html_extensions, image_extensions, file_extensions,
-        target_tags, path, force, publish, slugify, rename):
+    def process_command_line_args(self, options):
         """
         Process command line args; save results in _SETTINGS dict
         """
-        import pdb; pdb.set_trace()
         if options.path is not None:
-            _SETTINGS['path'] = options.path
+            _SETTINGS['path'] = self.clean_path(options.path)
         if options.illegal_chars is not None:
             _SETTINGS['illegal_chars'] = options.illegal_chars
         if options.html_extensions is not None:
@@ -209,8 +206,6 @@ class Utils(object):
             _SETTINGS['slugify'] = options.slugify
         if options.rename is not None:
             _SETTINGS['rename'] = options.rename
-
-        _SETTINGS['path'] = self.clean_path(path)
 
     def setup_attrs(self, parse2plone, count, logger, utils):
         """
@@ -470,9 +465,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
     import_dir = args[0]
-    utils.process_command_line_args(options, illegal_chars,
-        html_extensions, image_extensions, file_extensions,
-        target_tags, path, force, publish, slugify, rename)
+    utils.process_command_line_args(options)
 
     # Run parse2plone
     parse2plone = Parse2Plone()
@@ -481,11 +474,13 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     ignore = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
     base = parse2plone.get_base(files, ignore)
+    path = _SETTINGS['path']
+    force = _SETTINGS['force']
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:
         if force:
-            parse2plone.create_parts(app, parse2plone.get_parts(path), base)
+            parse2plone.create_parts(app, parse2plone.get_parts(path), base, slug_ref, rename_ref)
             parent = parse2plone.get_parent(app, path)
         else:
             msg = "object in path '%s' does not exist, use --force to create"
