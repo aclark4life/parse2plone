@@ -49,8 +49,7 @@ def rename_old_to_new(files, rename_map, base, rename):
             '/var/www/html/old/2000/01/01/foo/index.html'}}
     """
     for f in files[base]:
-        paths = rename.split(',')
-        for path in paths:
+        for path in rename:
             parts = path.split(':')
             old = parts[0]
             new = parts[1]
