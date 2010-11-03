@@ -22,6 +22,7 @@ from Testing.makerequest import makerequest
 
 from ast import literal_eval
 from lxml.html import fromstring
+from lxml.etree import XMLSyntaxError
 from optparse import OptionParser
 from os import path as os_path
 from os import walk
@@ -371,19 +372,29 @@ class Parse2Plone(object):
         at_file.setFile(data)
 
     def set_page(self, page, obj, prefix_path, base, slug_map, rename_map):
+
         key = '/'.join(prefix_path) + '/' + obj
+
         if self.slugify and key in slug_map['reverse']:
             value = slug_map['reverse'][key]
-            f = open('/'.join([base, value]), 'rb')
+            filename = '/'.join([base, value])
+            f = open(filename, 'rb')
         elif self.rename and key in rename_map['reverse']:
             value = rename_map['reverse'][key]
-            f = open('/'.join([base, value]), 'rb')
+            filename = '/'.join([base, value])
+            f = open(filename, 'rb')
         else:
-            f = open('/'.join([base, '/'.join(prefix_path), obj]), 'rb')
+            filename = '/'.join([base, '/'.join(prefix_path), obj])
+            f = open(filename, 'rb')
         results = ''
         data = f.read()
         f.close()
-        root = fromstring(data)
+        try:
+            root = fromstring(data)
+        except XMLSyntaxError:
+            msg = "unable to import data from '%s', make sure file contains HTML"
+            self.logger.error(msg % filename)
+            exit(1)
         for element in root.iter():
             tag = element.tag
             text = element.text
@@ -481,7 +492,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             parent = parse2plone.get_parent(app, path)
         else:
             msg = "object in path '%s' does not exist, use --force to create"
-            logger.info(msg % path)
+            logger.error(msg % path)
             exit(1)
     files = parse2plone.prep_files(files, ignore, base)
     if slugify:
