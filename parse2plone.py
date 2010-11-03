@@ -43,7 +43,7 @@ _SETTINGS = {
 }
 
 
-def fake_literal_eval(input)
+def fake_literal_eval(input):
     if input = 'False':
         return False
     elif input = 'True':
