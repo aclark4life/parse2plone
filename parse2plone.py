@@ -16,7 +16,6 @@ import fnmatch
 import logging
 import re
 
-from ast import literal_eval
 from lxml.html import fromstring
 from lxml.etree import XMLSyntaxError
 from optparse import OptionParser
@@ -42,6 +41,15 @@ _SETTINGS = {
     'slugify': False,
     'rename': None,
 }
+
+
+def fake_literal_eval(input)
+    if input = 'False':
+        return False
+    elif input = 'True':
+        return True
+    elif input = 'None':
+        return None
 
 
 def setup_logger():
@@ -152,7 +160,7 @@ class Utils(object):
         for option, existing_value in _SETTINGS.items():
             if option in options:
                 if option in ('force', 'publish', 'slugify'):
-                    value = literal_eval(options[option].capitalize())
+                    value = fake_literal_eval(options[option].capitalize())
                 elif option in ('rename'):
                     value = get_paths_to_rename((options[option]))
                 elif option in ('path'):
