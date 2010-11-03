@@ -154,6 +154,8 @@ class Utils(object):
                     value = options[option].capitalize()
                 elif option in ('rename'):
                     value = get_paths_to_rename((options[option]))
+                elif option in ('path'):
+                    value = options[option]
                 elif option not in ('path'):
                     value = ','.join(re.split('\s+', options[option]))
             else:

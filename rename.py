@@ -28,10 +28,12 @@ def clean_path(path):
 
 
 def get_paths_to_rename(value):
-    results = []
-    for group in paths.findall(value):
-        results.append('%s:%s' % (clean_path(group[0]), clean_path(group[1])))
-    return ','.join(results)
+    results = None
+    if paths.findall(value):
+        for group in paths.findall(value):
+            results.append('%s:%s' % (clean_path(group[0]), clean_path(group[1])))
+        results = ','.join(results)
+    return results
 
 
 def rename_old_to_new(files, rename_map, base, rename):
