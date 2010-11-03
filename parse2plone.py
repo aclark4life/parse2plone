@@ -76,7 +76,6 @@ class Utils(object):
 
     def clean_path(self, path):
         if path.startswith('/'):
-            import pdb; pdb.set_trace()
             return path[1:]
 
     def convert_arg_values(self, illegal_chars, html_extensions,
