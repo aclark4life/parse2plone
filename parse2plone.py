@@ -369,7 +369,7 @@ class Parse2Plone(object):
 
     def set_page(self, page, obj, prefix_path, base, slug_map, rename_map):
         key = '/'.join(prefix_path) + '/' + obj
-        if self.slugify:
+        if self.slugify and key in slug_map['reverse']:
             value = slug_map['reverse'][key]
             f = open('/'.join([base, value]), 'rb')
         elif self.rename and key in rename_map['reverse']:
