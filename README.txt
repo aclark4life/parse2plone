@@ -24,7 +24,7 @@ here they are::
     illegal_chars = _ .
     html_extensions = html
     image_extensions = gif jpg jpeg png
-    file_extensiosn = mp3
+    file_extensions = mp3
     target_tags = a div h1 h2 p
     force = false
     publish = false
