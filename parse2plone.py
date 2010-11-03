@@ -23,7 +23,6 @@ from os import path as os_path
 from os import walk
 from pkg_resources import working_set
 from sys import executable
-from transaction import commit
 from zc.buildout.easy_install import scripts as create_scripts
 
 from slugify import convert_path_to_slug
@@ -219,6 +218,7 @@ class Parse2Plone(object):
     """
     def create_content(self, parent, obj, prefix_path, base, slug_map,
         rename_map):
+        from transaction import commit
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
             self.set_title(folder, obj)
