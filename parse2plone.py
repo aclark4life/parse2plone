@@ -364,16 +364,11 @@ class Parse2Plone(object):
         at_file.setFile(data)
 
     def set_page(self, page, obj, prefix_path, base, slug_map, rename_map):
+        key = '/'.join(prefix_path)+'/'+obj
         if self.slugify:
-            key = '/'.join(prefix_path)
-            key += '/'
-            key += obj
             value = slug_map['reverse'][key]
             f = open('/'.join([base, value]), 'rb')
-        elif self.rename:
-            key = '/'.join(prefix_path)
-            key += '/'
-            key += obj
+        elif self.rename and key in rename_map['reverse']:
             value = rename_map['reverse'][key]
             f = open('/'.join([base, value]), 'rb')
         else:
