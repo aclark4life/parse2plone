@@ -16,10 +16,6 @@ import fnmatch
 import logging
 import re
 
-from AccessControl.SecurityManagement import newSecurityManager
-from AccessControl.SpecialUsers import system
-from Testing.makerequest import makerequest
-
 from ast import literal_eval
 from lxml.html import fromstring
 from lxml.etree import XMLSyntaxError
@@ -404,6 +400,9 @@ class Parse2Plone(object):
         obj.reindexObject()
 
     def setup_app(self, app):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SpecialUsers import system
+        from Testing.makerequest import makerequest
         app = makerequest(app)
         newSecurityManager(None, system)
         return app
