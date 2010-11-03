@@ -7,6 +7,8 @@ History
 
 - Fix regressions introduced (or unresolved as of) 0.8.2. Thanks Derek
   Broughton for the bug report(s).
+    - Many fixes to convert_parameter_values() method, which turns buildout
+      recipe parameters into arguments to pass to main()
 
 0.8.2 (11/02/2010)
 ~~~~~~~~~~~~~~~~~~
