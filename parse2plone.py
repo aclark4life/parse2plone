@@ -14,6 +14,7 @@
 
 import fnmatch
 import logging
+import re
 
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SpecialUsers import system
@@ -33,15 +34,15 @@ from slugify import convert_path_to_slug
 from rename import get_paths_to_rename, rename_old_to_new
 
 _SETTINGS = {
-    'path': ['/Plone'],
+    'path': '/Plone',
     'illegal_chars': ['_', '.'],
     'html_extensions': ['html'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
     'file_extensions': ['mp3'],
     'target_tags': ['a', 'div', 'h1', 'h2', 'p'],
-    'force': ['False'],
-    'publish': ['False'],
-    'slugify': ['False'],
+    'force': False,
+    'publish': False,
+    'slugify': False,
     'rename': [],
 }
 
@@ -75,6 +76,7 @@ class Utils(object):
 
     def clean_path(self, path):
         if path.startswith('/'):
+            import pdb; pdb.set_trace()
             return path[1:]
 
     def convert_arg_values(self, illegal_chars, html_extensions,
@@ -149,15 +151,15 @@ class Utils(object):
         """
         for option, existing_value in _SETTINGS.items():
             if option in options:
-                if option in ('force', 'publish'):
+                if option in ('force', 'publish', 'slugify'):
                     value = options[option].capitalize()
                 elif option in ('rename'):
                     value = get_paths_to_rename((options[option]))
                 elif option not in ('path'):
-                    value = ','.join(options[option])
+                    value = ','.join(re.split('\s+', options[option]))
             else:
                 value = ','.join(existing_value)
-
+        
             _SETTINGS[option] = value
 
     def process_command_line_args(self, options):
