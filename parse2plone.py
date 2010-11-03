@@ -163,7 +163,7 @@ class Utils(object):
                 elif option not in ('path'):
                     value = ','.join(re.split('\s+', options[option]))
             else:
-                if option in ('force', 'publish', 'slugify', 'rename'):
+                if option in ('force', 'publish', 'slugify', 'rename', 'path'):
                     value = existing_value
                 else:
                     value = ','.join(existing_value)
