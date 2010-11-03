@@ -66,7 +66,7 @@ def setup_logger():
 
 class Utils(object):
     def check_exists_obj(self, parent, obj):
-        if obj in parent:
+        if obj in parent.objectIds():
             return True
         else:
             return False
