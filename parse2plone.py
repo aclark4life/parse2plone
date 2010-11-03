@@ -82,7 +82,7 @@ class Utils(object):
         image_extensions, file_extensions, target_tags, path, force,
         publish, slugify, rename):
         """
-        Convert recipe parameter value from csv; save results in _SETTINGS dict
+        Convert most recipe parameter values from csv; save results in _SETTINGS dict
         """
         _SETTINGS['illegal_chars'] = illegal_chars.split(',')
         _SETTINGS['html_extensions'] = html_extensions.split(',')
@@ -90,10 +90,13 @@ class Utils(object):
         _SETTINGS['file_extensions'] = file_extensions.split(',')
         _SETTINGS['target_tags'] = target_tags.split(',')
         _SETTINGS['path'] = self.clean_path(path)
-        _SETTINGS['force'] = literal_eval(force)
-        _SETTINGS['publish'] = literal_eval(publish)
-        _SETTINGS['slugify'] = literal_eval(slugify)
-        _SETTINGS['rename'] = rename.split(',')
+        _SETTINGS['force'] = force
+        _SETTINGS['publish'] = publish
+        _SETTINGS['slugify'] = slugify
+        if rename is not None:  
+            _SETTINGS['rename'] = rename.split(',')
+        else:
+            _SETTINGS['rename'] = rename
 
     def create_option_parser(self):
         option_parser = OptionParser()
@@ -146,12 +149,12 @@ class Utils(object):
 
     def convert_parameter_values(self, options):
         """
-        Convert recipe parameter values to csv; save in _SETTINGS dict
+        Convert most recipe parameter values to csv; save in _SETTINGS dict
         """
         for option, existing_value in _SETTINGS.items():
             if option in options:
                 if option in ('force', 'publish', 'slugify'):
-                    value = options[option].capitalize()
+                    value = literal_eval(options[option].capitalize())
                 elif option in ('rename'):
                     value = get_paths_to_rename((options[option]))
                 elif option in ('path'):
@@ -410,8 +413,8 @@ class Recipe(object):
 
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
-        arguments += " target_tags='%s', force='%s', publish='%s',"
-        arguments += " slugify='%s', rename='%s'"
+        arguments += " target_tags='%s', force=%s, publish=%s,"
+        arguments += " slugify=%s, rename=%s"
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([('import', 'parse2plone', 'main')],
