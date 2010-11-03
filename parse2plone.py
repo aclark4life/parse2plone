@@ -186,7 +186,7 @@ class Utils(object):
         if options.slugify is not None:
             _SETTINGS['slugify'] = options.slugify
         if options.rename is not None:
-            _SETTINGS['rename'] = options.rename
+            _SETTINGS['rename'] = (options.rename).split(',')
 
     def setup_attrs(self, parse2plone, count, logger, utils):
         """
