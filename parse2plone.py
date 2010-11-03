@@ -44,11 +44,11 @@ _SETTINGS = {
 
 
 def fake_literal_eval(input):
-    if input = 'False':
+    if input == 'False':
         return False
-    elif input = 'True':
+    elif input == 'True':
         return True
-    elif input = 'None':
+    elif input == 'None':
         return None
 
 
