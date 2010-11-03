@@ -176,7 +176,7 @@ class Utils(object):
         if options.image_extensions is not None:
             _SETTINGS['image_extensions'] = options.image_extensions
         if options.file_extensions is not None:
-            _SETTINGS['file_extensions'] = options.image_extensions
+            _SETTINGS['file_extensions'] = options.file_extensions
         if options.target_tags is not None:
             _SETTINGS['target_tags'] = options.target_tags
         if options.force is not None:
