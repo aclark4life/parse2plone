@@ -23,8 +23,9 @@ setup(
         'zc.buildout': ['default = %s:Recipe' % name],
     },
     install_requires=[
-        'lxml',
         'BeautifulSoup',
+        'lxml',
+        'zc.buildout',
     ],
     py_modules=['parse2plone','slugify','rename'],
     classifiers=[
