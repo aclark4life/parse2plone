@@ -5,11 +5,14 @@ History
 0.9 ()
 ~~~~~~
 
+- Fix regressions introduced (or unresolved as of) 0.8.2. Thanks Derek
+  Broughton for the bug report(s).
+
 0.8.2 (11/02/2010)
 ~~~~~~~~~~~~~~~~~~
 
 - Add rename feature
-- Fix regressions that occured in 0.8.1
+- Fix regressions introduced in 0.8.1
 
 0.8.1 (10/29/2010)
 ~~~~~~~~~~~~~~~~~~
