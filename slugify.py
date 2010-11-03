@@ -16,7 +16,7 @@
 
 from re import compile
 
-slug = compile('(.+)(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
+slug = compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 
 def convert_path_to_slug(files, slug_map, base):
@@ -32,12 +32,11 @@ def convert_path_to_slug(files, slug_map, base):
     """
 
     for f in files[base]:
-        result = slug.match(f)
+        result = slug.search(f)
         if result:
             groups = result.groups()
-            slug_map['forward'][f] = '%s%s-%s%s%s.html' % (groups[0],
-                groups[4], groups[1], groups[2], groups[3])
-            slug_map['reverse']['%s%s-%s%s%s.html' % (groups[0], groups[4],
-                groups[1], groups[2], groups[3])] = f
+            slugfile = '%s-%s%s%s.html' % (groups[3], groups[0], groups[1], groups[2])
+            slug_map['forward'][f] = slugfile
+            slug_map['reverse'][slugfile] = f
 
     return slug_map

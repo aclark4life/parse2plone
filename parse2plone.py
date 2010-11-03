@@ -340,14 +340,12 @@ class Parse2Plone(object):
     def import_files(self, parent, files, base, slug_map, rename_map):
         base = files.keys()[0]
         for f in files[base]:
+            parts = self.get_parts(f)
+            if self.rename and f in rename_map['forward']:
+                parts = rename_map['forward'][f].split('/')
             if self.slugify and f in slug_map['forward']:
                 parts = slug_map['forward'][f].split('/')
-            elif self.rename and f in rename_map['forward']:
-                parts = rename_map['forward'][f].split('/')
-            else:
-                parts = self.get_parts(f)
             self.create_parts(parent, parts, base, slug_map, rename_map)
-
         results = self.count.values()
         results.append(self.utils.obj_to_path(parent))
         return results
@@ -372,20 +370,15 @@ class Parse2Plone(object):
         at_file.setFile(data)
 
     def set_page(self, page, obj, prefix_path, base, slug_map, rename_map):
-
+        filename = '/'.join([base, '/'.join(prefix_path), obj])
         key = '/'.join(prefix_path) + '/' + obj
-
-        if self.slugify and key in slug_map['reverse']:
-            value = slug_map['reverse'][key]
-            filename = '/'.join([base, value])
-            f = open(filename, 'rb')
-        elif self.rename and key in rename_map['reverse']:
+        if self.rename and key in rename_map['reverse']:
             value = rename_map['reverse'][key]
             filename = '/'.join([base, value])
-            f = open(filename, 'rb')
-        else:
-            filename = '/'.join([base, '/'.join(prefix_path), obj])
-            f = open(filename, 'rb')
+        if self.slugify and obj in slug_map['reverse']:
+            value = slug_map['reverse'][obj]
+            filename = '/'.join([base, value])
+        f = open(filename, 'rb')
         results = ''
         data = f.read()
         f.close()
