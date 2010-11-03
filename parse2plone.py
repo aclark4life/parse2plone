@@ -82,7 +82,8 @@ class Utils(object):
         image_extensions, file_extensions, target_tags, path, force,
         publish, slugify, rename):
         """
-        Convert most recipe parameter values from csv; save results in _SETTINGS dict
+        Convert most recipe parameter values from csv; save results
+        in _SETTINGS dict
         """
         _SETTINGS['illegal_chars'] = illegal_chars.split(',')
         _SETTINGS['html_extensions'] = html_extensions.split(',')
@@ -93,7 +94,7 @@ class Utils(object):
         _SETTINGS['force'] = force
         _SETTINGS['publish'] = publish
         _SETTINGS['slugify'] = slugify
-        if rename is not None:  
+        if rename is not None:
             _SETTINGS['rename'] = rename.split(',')
         else:
             _SETTINGS['rename'] = rename
@@ -163,7 +164,7 @@ class Utils(object):
                     value = ','.join(re.split('\s+', options[option]))
             else:
                 value = ','.join(existing_value)
-        
+
             _SETTINGS[option] = value
 
     def process_command_line_args(self, options):
@@ -367,7 +368,7 @@ class Parse2Plone(object):
         at_file.setFile(data)
 
     def set_page(self, page, obj, prefix_path, base, slug_map, rename_map):
-        key = '/'.join(prefix_path)+'/'+obj
+        key = '/'.join(prefix_path) + '/' + obj
         if self.slugify:
             value = slug_map['reverse'][key]
             f = open('/'.join([base, value]), 'rb')
