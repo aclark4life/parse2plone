@@ -30,6 +30,7 @@ def clean_path(path):
 def get_paths_to_rename(value):
     results = None
     if paths.findall(value):
+        results = []
         for group in paths.findall(value):
             results.append('%s:%s' % (clean_path(group[0]), clean_path(group[1])))
         results = ','.join(results)
