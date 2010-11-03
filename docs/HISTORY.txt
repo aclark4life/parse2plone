@@ -5,63 +5,64 @@ History
 0.9.0 (11/03/2010)
 ~~~~~~~~~~~~~~~~~~
 
-- Fix regressions introduced (or unresolved as of) 0.8.2. Thanks Derek
-  Broughton for the bug report(s).
-    - Many fixes to convert_parameter_values() method which converts
-      recipe parameters to arguments passed to main()
-    - Fix slugify feature
+* Fix regressions introduced (or unresolved as of) 0.8.2. Thanks Derek
+  Broughton for the bug report(s)
+
+  * Many fixes to convert_parameter_values() method which converts
+    recipe parameters to arguments passed to main()
+  * Fix slugify feature
 
 0.8.2 (11/02/2010)
 ~~~~~~~~~~~~~~~~~~
 
-- Add rename feature
-- Fix regressions introduced in 0.8.1
+* Add rename feature
+* Fix regressions introduced in 0.8.1
 
 0.8.1 (10/29/2010)
 ~~~~~~~~~~~~~~~~~~
 
-- Refactor options/parameters functionality to universally support _SETTINGS dict
-- Add "slugify" feature
-- Doc fixes
-- Add support to optionally publish content after creation
-- Add support for generic file import
+* Refactor options/parameters functionality to universally support _SETTINGS dict
+* Add "slugify" feature
+* Doc fixes
+* Add support to optionally publish content after creation
+* Add support for generic file import
 
 0.8 (10/27/2010)
 ~~~~~~~~~~~~~~~~
 
-- Support the importing of content to folders within the Plone site object
+* Support the importing of content to folders within the Plone site object
 
 0.7 (10/25/2010)
 ~~~~~~~~~~~~~~~~
 
-- Documentation fixes
+* Documentation fixes
 
 0.6 (10/25/2010)
 ~~~~~~~~~~~~~~~~
 
-- Support customization via recipe parameters and command line arguments
+* Support customization via recipe parameters and command line arguments
 
 0.5 (10/22/2010)
 ~~~~~~~~~~~~~~~~
 
-- Revert 'Add Plone to install_requires'
+* Revert 'Add Plone to install_requires'
 
 0.4 (10/22/2010)
 ~~~~~~~~~~~~~~~~
 
-- Add 'Plone' to install_requires
+* Add 'Plone' to install_requires
 
 0.3 (10/22/2010)
 ~~~~~~~~~~~~~~~~
 
-- Another setuptools fix
+* Another setuptools fix
 
 0.2 (10/22/2010)
 ~~~~~~~~~~~~~~~~
 
-- Setuptools fix
+* Setuptools fix
 
 0.1 (10/21/2010)
 ~~~~~~~~~~~~~~~~
 
-- Initial release
+* Initial release
