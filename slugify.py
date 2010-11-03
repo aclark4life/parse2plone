@@ -35,7 +35,8 @@ def convert_path_to_slug(files, slug_map, base):
         result = slug.search(f)
         if result:
             groups = result.groups()
-            slugfile = '%s-%s%s%s.html' % (groups[3], groups[0], groups[1], groups[2])
+            slugfile = '%s-%s%s%s.html' % (groups[3], groups[0], groups[1],
+                groups[2])
             slug_map['forward'][f] = slugfile
             slug_map['reverse'][slugfile] = f
 

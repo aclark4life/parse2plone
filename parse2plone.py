@@ -385,7 +385,8 @@ class Parse2Plone(object):
         try:
             root = fromstring(data)
         except XMLSyntaxError:
-            msg = "unable to import data from '%s', make sure file contains HTML"
+            msg = "unable to import data from '%s', "
+            msg = "make sure file contains HTML"
             self.logger.error(msg % filename)
             exit(1)
         for element in root.iter():
