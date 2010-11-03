@@ -465,6 +465,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     base = parse2plone.get_base(files, ignore)
     path = _SETTINGS['path']
     force = _SETTINGS['force']
+    slugify = _SETTINGS['slugify']
+    rename = _SETTINGS['rename']
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:
@@ -477,9 +479,9 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             logger.info(msg % path)
             exit(1)
     files = parse2plone.prep_files(files, ignore, base)
-    if parse2plone.slugify:
+    if slugify:
         slug_map = convert_path_to_slug(files, slug_map, base)
-    if parse2plone.rename:
+    if rename:
         rename_map = rename_old_to_new(files, rename_map, base, rename)
     results = parse2plone.import_files(parent, files, base, slug_map,
         rename_map)
