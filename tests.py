@@ -1,12 +1,12 @@
 import unittest
-import zc.buildout.testing
 
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(TestCase('test_path_input'))
-    return suite
+class IntegerArithmenticTestCase(unittest.TestCase):
+    def testAdd(self):  ## test method names begin 'test*'
+        self.assertEquals((1 + 2), 3)
+        self.assertEquals(0 + 1, 1)
+    def testMultiply(self):
+        self.assertEquals((0 * 10), 0)
+        self.assertEquals((5 * 8), 40)
 
-class TestCase(unittest.TestCase):
-
-    def test_path_input(self):
-        pass
+if __name__ == '__main__':
+    unittest.main()
