@@ -9,5 +9,4 @@ def test_suite():
 class TestCase(unittest.TestCase):
 
     def test_path_input(self):
-        import pdb; pdb.set_trace()
-    
+        pass
