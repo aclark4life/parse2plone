@@ -43,7 +43,7 @@ _SETTINGS = {
     'force': False,
     'publish': False,
     'slugify': False,
-    'rename': [],
+    'rename': None,
 }
 
 
@@ -163,7 +163,10 @@ class Utils(object):
                 elif option not in ('path'):
                     value = ','.join(re.split('\s+', options[option]))
             else:
-                value = ','.join(existing_value)
+                if option in ('force', 'publish', 'slugify', 'rename'):
+                    value = existing_value
+                else:
+                    value = ','.join(existing_value)
 
             _SETTINGS[option] = value
 
