@@ -43,6 +43,10 @@ _SETTINGS = {
 
 
 def fake_literal_eval(input):
+    """
+    Because the ast module is not included with Python 2.4, we include this
+    function to produce similar results (with our limited input set).
+    """
     if input == 'False':
         return False
     elif input == 'True':
