@@ -41,10 +41,11 @@ _SETTINGS = {
 }
 
 
+# BBB Because the ast module is not included with Python 2.4, we include this
+# function to produce similar results (with our limited input set).
 def fake_literal_eval(input):
     """
-    Because the ast module is not included with Python 2.4, we include this
-    function to produce similar results (with our limited input set).
+    Returns False when 'False' is passed in, and so on.
     """
     if input == 'False':
         return False
@@ -221,6 +222,8 @@ class Parse2Plone(object):
     """
     def create_content(self, parent, obj, prefix_path, base, slug_map,
         rename_map):
+        # BBB Move imports here to avoid calling them on script installation,
+        # makes parse2plone work with Plone 2.5 (non-egg release).
         from transaction import commit
         if self.utils.is_folder(obj):
             folder = self.create_folder(parent, obj)
@@ -411,6 +414,8 @@ class Parse2Plone(object):
         obj.reindexObject()
 
     def setup_app(self, app):
+        # BBB Move imports here to avoid calling them on script installation,
+        # makes parse2plone work with Plone 2.5 (non-egg release).
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SpecialUsers import system
         from Testing.makerequest import makerequest
