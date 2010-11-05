@@ -15,8 +15,8 @@ what Buildout is, please see: http://www.buildout.org/.
 Getting started
 ---------------
 
-Because it drives the author insane when he must search for a recipe's options,
-here are ``parse2plone``'s options::
+Because it drives the author nuts when he has to search for a recipe's options,
+here are this recipe's options::
 
     [import]
     recipe = parse2plone
