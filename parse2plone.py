@@ -457,7 +457,7 @@ class Recipe(object):
             _SETTINGS['slugify'],
             _SETTINGS['rename'],
             ))
-        return tuple()
+        return tuple((bindir + '/' + 'import',))
 
     def update(self):
         """Updater"""
