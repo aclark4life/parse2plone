@@ -169,7 +169,16 @@ Options
 +---------------------+-------------+----------------------------------------+
 | ``target_tags``     | a h1 h2 p   | Specify target tags. ``parse2plone``   |
 |                     |             | will parse the contents of HTML tags   |
-|                     |             | listed.                                |
+|                     |             | listed. If any tag is provided as an   |
+|                     |             | XPath expression (any expression       |
+|                     |             | begining with /) the matching elements |
+|                     |             | will first be extracted from the root  |
+|                     |             | document.  Selections for the contents |
+|                     |             | of other tags will then be performed   |
+|                     |             | only on the document subset.           |
+|                     |             | If only XPath expressions are given,   |
+|                     |             | then the entire subtree of the matched |
+|                     |             | elements are returned (including HTML) |
 +---------------------+-------------+----------------------------------------+
 | ``force``           | false       | Force create folders that do not exist.|
 +---------------------+-------------+----------------------------------------+
