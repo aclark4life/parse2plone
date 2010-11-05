@@ -84,7 +84,10 @@ class Utils(object):
 
     def clean_path(self, path):
         if path.startswith('/'):
-            return path[1:]
+            path = path[1:]
+        if path.endswith('/'):
+            path = path[1:-1]
+        return path
 
     def convert_arg_values(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
@@ -304,8 +307,9 @@ class Parse2Plone(object):
                 self.logger.info("object '%s' has illegal chars" % obj)
                 break
 
-    def get_base(self, files, num_parts):
-        return '/'.join(files[0].split('/')[:num_parts])
+    def get_base(self, import_dir, num_parts):
+        import_dir = self.utils.clean_path(import_dir)
+        return '/'.join(import_dir.split('/')[:num_parts])
 
     def get_files(self, import_dir):
         results = []
@@ -487,7 +491,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     files = parse2plone.get_files(import_dir)
     num_parts = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
-    base = parse2plone.get_base(files, num_parts)
+    base = parse2plone.get_base(import_dir, num_parts)
     path = _SETTINGS['path']
     force = _SETTINGS['force']
     slugify = _SETTINGS['slugify']
