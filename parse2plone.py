@@ -304,8 +304,8 @@ class Parse2Plone(object):
                 self.logger.info("object '%s' has illegal chars" % obj)
                 break
 
-    def get_base(self, files, ignore):
-        return '/'.join(files[0].split('/')[:ignore])
+    def get_base(self, files, num_parts):
+        return '/'.join(files[0].split('/')[:num_parts])
 
     def get_files(self, import_dir):
         results = []
@@ -338,12 +338,12 @@ class Parse2Plone(object):
     def get_prefix_path(self, path):
         return path.split('/')[:-1]
 
-    def ignore_parts(self, files, ignore):
+    def ignore_parts(self, files, num_parts):
         results = []
         for f in files:
             parts = self.get_parts(f)
-            if ignore is not '':
-                parts = parts[ignore:]
+            if num_parts is not '':
+                parts = parts[num_parts:]
             results.append(parts)
         return results
 
@@ -360,9 +360,9 @@ class Parse2Plone(object):
         results.append(self.utils.obj_to_path(parent))
         return results
 
-    def prep_files(self, files, ignore, base):
+    def prep_files(self, files, num_parts, base):
         results = {base: []}
-        files = self.ignore_parts(files, ignore)
+        files = self.ignore_parts(files, num_parts)
         for f in files:
             results[base].append('/'.join(f))
         return results
@@ -485,9 +485,9 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     parse2plone = Parse2Plone()
     parse2plone = utils.setup_attrs(parse2plone, count, logger, utils)
     files = parse2plone.get_files(import_dir)
-    ignore = len(import_dir.split('/'))
+    num_parts = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
-    base = parse2plone.get_base(files, ignore)
+    base = parse2plone.get_base(files, num_parts)
     path = _SETTINGS['path']
     force = _SETTINGS['force']
     slugify = _SETTINGS['slugify']
@@ -503,7 +503,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             msg = "object in path '%s' does not exist, use --force to create"
             logger.error(msg % path)
             exit(1)
-    files = parse2plone.prep_files(files, ignore, base)
+    files = parse2plone.prep_files(files, num_parts, base)
     if slugify:
         slug_map = convert_path_to_slug(files, slug_map, base)
     if rename:
