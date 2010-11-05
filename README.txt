@@ -20,12 +20,16 @@ here are ``parse2plone``'s options::
 
     [import]
     recipe = parse2plone
+
+    # core features
     path = /Plone
     illegal_chars = _ .
     html_extensions = html
     image_extensions = gif jpg jpeg png
     file_extensions = mp3
     target_tags = a div h1 h2 p
+   
+    # additional bells & whistles
     force = false
     publish = false
     slugify = false
