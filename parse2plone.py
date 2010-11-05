@@ -86,7 +86,7 @@ class Utils(object):
         if path.startswith('/'):
             path = path[1:]
         if path.endswith('/'):
-            path = path[1:-1]
+            path = path[0:-1]
         return path
 
     def convert_arg_values(self, illegal_chars, html_extensions,
@@ -151,10 +151,10 @@ class Utils(object):
             return False
 
     def is_legal(self, obj, illegal_chars):
-        if not obj[0] in illegal_chars:
-            return True
-        else:
-            return False
+        results = True
+        if obj[:1] in illegal_chars:
+            results = False
+        return results
 
     def obj_to_path(self, obj):
         return '/'.join(obj.getPhysicalPath())
@@ -317,7 +317,7 @@ class Parse2Plone(object):
             self.logger.info("path '%s', has subdirs '%s', and files '%s'" % (
                 path, ' '.join(subdirs), ' '.join(files)))
             for f in fnmatch.filter(files, '*'):
-                if self.utils.is_legal(f, self.illegal_chars):
+                if self.utils.is_legal(f, self.illegal_chars): 
                     results.append(os_path.join(path, f))
                 else:
                     self.logger.info("object '%s' has illegal chars" % f)
@@ -346,13 +346,11 @@ class Parse2Plone(object):
         results = []
         for f in files:
             parts = self.get_parts(f)
-            if num_parts is not '':
-                parts = parts[num_parts:]
+            parts = parts[num_parts:]
             results.append(parts)
         return results
 
     def import_files(self, parent, files, base, slug_map, rename_map):
-        base = files.keys()[0]
         for f in files[base]:
             parts = self.get_parts(f)
             if self.rename and f in rename_map['forward']:
@@ -360,6 +358,7 @@ class Parse2Plone(object):
             if self.slugify and f in slug_map['forward']:
                 parts = slug_map['forward'][f].split('/')
             self.create_parts(parent, parts, base, slug_map, rename_map)
+
         results = self.count.values()
         results.append(self.utils.obj_to_path(parent))
         return results
@@ -482,7 +481,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Process command line args; save results in _SETTINGS
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
-    import_dir = args[0]
+    import_dir = utils.clean_path(args[0])
     utils.process_command_line_args(options)
 
     # Run parse2plone
@@ -508,10 +507,12 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             logger.error(msg % path)
             exit(1)
     files = parse2plone.prep_files(files, num_parts, base)
+
     if slugify:
         slug_map = convert_path_to_slug(files, slug_map, base)
     if rename:
         rename_map = rename_old_to_new(files, rename_map, base, rename)
+
     results = parse2plone.import_files(parent, files, base, slug_map,
         rename_map)
 
