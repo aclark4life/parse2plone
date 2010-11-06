@@ -26,6 +26,7 @@ from zc.buildout.easy_install import scripts as create_scripts
 
 from slugify import convert_path_to_slug
 from rename import get_paths_to_rename, rename_old_to_new
+from typeswap import get_types_to_swap, swap_types
 
 _SETTINGS = {
     'path': '/Plone',
@@ -38,6 +39,7 @@ _SETTINGS = {
     'publish': False,
     'slugify': False,
     'rename': None,
+    'typeswap': None,
 }
 
 
@@ -91,7 +93,7 @@ class Utils(object):
 
     def convert_arg_values(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
-        publish, slugify, rename):
+        publish, slugify, rename, typeswap):
         """
         Convert most recipe parameter values from csv; save results
         in _SETTINGS dict
@@ -109,6 +111,10 @@ class Utils(object):
             _SETTINGS['rename'] = rename.split(',')
         else:
             _SETTINGS['rename'] = rename
+        if typeswap is not None:
+            _SETTINGS['typeswap'] = typeswap.split(',')
+        else:
+            _SETTINGS['typeswap'] = typeswap
 
     def create_option_parser(self):
         option_parser = OptionParser()
@@ -135,6 +141,8 @@ class Utils(object):
             help="""Optionally "slugify" content (see slugify.py)""")
         option_parser.add_option("--rename",
             dest="rename", help="Optionally rename content (see rename.py)")
+        option_parser.add_option("--typeswap", dest="typeswap",
+            help="Optionally swap content types (see typeswap.py)")
         return option_parser
 
     def is_file(self, obj, extensions):
@@ -169,12 +177,15 @@ class Utils(object):
                     value = fake_literal_eval(options[option].capitalize())
                 elif option in ('rename'):
                     value = get_paths_to_rename((options[option]))
+                elif option in ('typeswap'):
+                    value = get_types_to_swap((options[option]))
                 elif option in ('path'):
                     value = options[option]
                 elif option not in ('path'):
                     value = ','.join(re.split('\s+', options[option]))
             else:
-                if option in ('force', 'publish', 'slugify', 'rename', 'path'):
+                if option in ('force', 'publish', 'slugify', 'rename',
+                    'typeswap', 'path'):
                     value = existing_value
                 else:
                     value = ','.join(existing_value)
@@ -205,6 +216,8 @@ class Utils(object):
             _SETTINGS['slugify'] = options.slugify
         if options.rename is not None:
             _SETTINGS['rename'] = (options.rename).split(',')
+        if options.typeswap is not None:
+            _SETTINGS['typeswap'] = (options.typeswap).split(',')
 
     def setup_attrs(self, parse2plone, count, logger, utils):
         """
@@ -230,7 +243,7 @@ class Parse2Plone(object):
     Parse2Plone
     """
     def create_content(self, parent, obj, prefix_path, base, slug_map,
-        rename_map):
+        rename_map, types_map):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
         from transaction import commit
@@ -242,7 +255,8 @@ class Parse2Plone(object):
         elif self.utils.is_file(obj, self.html_extensions):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
-            self.set_page(page, obj, prefix_path, base, slug_map, rename_map)
+            self.set_page(page, obj, prefix_path, base, slug_map, rename_map,
+                types_map)
             self.count['pages'] += 1
             commit()
         elif self.utils.is_file(obj, self.image_extensions):
@@ -292,7 +306,8 @@ class Parse2Plone(object):
             self.logger.info("publishing page '%s'" % obj)
         return page
 
-    def create_parts(self, parent, parts, base, slug_map, rename_map):
+    def create_parts(self, parent, parts, base, slug_map, rename_map,
+        types_map):
         self.logger.info("creating parts for '%s'" % '/'.join(parts))
         for i in range(len(parts)):
             path = self.get_path(parts, i)
@@ -308,7 +323,7 @@ class Parse2Plone(object):
                         "object '%s' does not exist inside '%s'"
                         % (obj, self.utils.obj_to_path(parent)))
                     self.create_content(parent, obj, prefix_path, base,
-                        slug_map, rename_map)
+                        slug_map, rename_map, types_map)
             else:
                 self.logger.info("object '%s' has illegal chars" % obj)
                 break
@@ -356,14 +371,18 @@ class Parse2Plone(object):
             results.append(parts)
         return results
 
-    def import_files(self, parent, files, base, slug_map, rename_map):
+    def import_files(self, parent, files, base, slug_map, rename_map,
+        types_map):
         for f in files[base]:
             parts = self.get_parts(f)
             if self.rename and f in rename_map['forward']:
                 parts = rename_map['forward'][f].split('/')
             if self.slugify and f in slug_map['forward']:
                 parts = slug_map['forward'][f].split('/')
-            self.create_parts(parent, parts, base, slug_map, rename_map)
+            if self.typeswap and f in types_map['forward']:
+                parts = types_map['forward'][f].split('/')
+            self.create_parts(parent, parts, base, slug_map, rename_map,
+                types_map)
 
         results = self.count.values()
         results.append(self.utils.obj_to_path(parent))
@@ -425,6 +444,9 @@ class Parse2Plone(object):
         if self.slugify and obj in slug_map['reverse']:
             value = slug_map['reverse'][obj]
             filename = '/'.join([base, value])
+        if self.typeswap and obj in types_map['reverse']:
+            value = types_map['reverse'][obj]
+            filename = '/'.join([base, value])
         f = open(filename, 'rb')
         results = ''
         data = f.read()
@@ -470,7 +492,7 @@ class Recipe(object):
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
         arguments += " target_tags='%s', force=%s, publish=%s,"
-        arguments += " slugify=%s, rename=%s"
+        arguments += " slugify=%s, rename=%s, typeswap=%s"
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([('import', 'parse2plone', 'main')],
@@ -485,6 +507,7 @@ class Recipe(object):
             _SETTINGS['publish'],
             _SETTINGS['slugify'],
             _SETTINGS['rename'],
+            _SETTINGS['typeswap'],
             ))
         return tuple((bindir + '/' + 'import',))
 
@@ -495,17 +518,19 @@ class Recipe(object):
 
 def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
-    force=None, publish=None, slugify=None, rename=None):
+    force=False, publish=False, slugify=False, rename=None, typeswap=None):
     """parse2plone"""
     count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
     logger = setup_logger()
     rename_map = {'forward': {}, 'reverse': {}}
     slug_map = {'forward': {}, 'reverse': {}}
+    types_map = {'forward': {}, 'reverse': {}}
     utils = Utils()
 
     # Convert arg values from csv to list; save results in _SETTINGS
     utils.convert_arg_values(illegal_chars, html_extensions, image_extensions,
-        file_extensions, target_tags, path, force, publish, slugify, rename)
+        file_extensions, target_tags, path, force, publish, slugify, rename,
+        typeswap)
 
     # Process command line args; save results in _SETTINGS
     option_parser = utils.create_option_parser()
@@ -521,13 +546,13 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     app = parse2plone.setup_app(app)
     base = parse2plone.get_base(import_dir, num_parts)
     path, force, slugify, rename = utils.setup_locals('path','force','slugify',
-        'rename')
+        'rename', 'typeswap')
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:
         if force:
             parse2plone.create_parts(app, parse2plone.get_parts(path), base,
-                slug_map, rename_map)
+                slug_map, rename_map, types_map)
             parent = parse2plone.get_parent(app, path)
         else:
             msg = "object in path '%s' does not exist, use --force to create"
@@ -538,8 +563,10 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         slug_map = convert_path_to_slug(files, slug_map, base)
     if rename:
         rename_map = rename_old_to_new(files, rename_map, base, rename)
+    if typeswap:
+        types_map = swap_types(files, types_map, base, typeswap)
     results = parse2plone.import_files(parent, files, base, slug_map,
-        rename_map)
+        rename_map, typesmap)
 
     # Print results
     msg = "Imported %s folders, %s images, %s pages, and %s files into: '%s'."
