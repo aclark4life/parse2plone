@@ -15,7 +15,7 @@ what Buildout is, please see: http://www.buildout.org/.
 Getting started
 ---------------
 
-Because it drives the author nuts when he has to search for a recipe's options,
+Because it drives the author nuts whenever he has to dig for a recipe's options,
 here are this recipe's options::
 
     [import]
@@ -73,7 +73,7 @@ If you are a developer looking to create repeatable migrations, you probably wan
 using ``collective.transmogrifier``. If you are an end user that just wants to see your
 static website in Plone, then you might want to give ``Parse2Plone`` a try.
 
-There is also this user comment, which captures the author's sentiment::
+There is also this user/contributor comment, which captures the author's sentiment::
 
     Parse2Plone's release was very timely as I need either this or something very
     similar - and while I've no doubt I could make transmogrify do the job, it's a
