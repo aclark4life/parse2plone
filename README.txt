@@ -199,9 +199,9 @@ Options
 +---------------------+-------------+----------------------------------------+
 | ``slugify``         | false       | "Slugify" content. (see slugify.py)    |
 +---------------------+-------------+----------------------------------------+
-| ``rename``          | false       | Rename content. (see rename.py)        |
+| ``rename``          |             | Rename content. (see rename.py)        |
 +---------------------+-------------+----------------------------------------+
-| ``typeswap``        | false       | Swap types. (see typeswap.py)          |
+| ``typeswap``        |             | Swap types. (see typeswap.py)          |
 +---------------------+-------------+----------------------------------------+
 
 Example
