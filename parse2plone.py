@@ -48,6 +48,7 @@ _CONTENT = {
     'Folder': 'Folder',
 }
 
+
 # BBB Because the ast module is not included with Python 2.4, we include this
 # function to produce similar results (with our limited input set).
 def fake_literal_eval(input):
@@ -543,8 +544,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     num_parts = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
     base = parse2plone.get_base(import_dir, num_parts)
-    path, force, slugify, rename, typeswap = utils.setup_locals('path', 'force',
-        'slugify', 'rename', 'typeswap')
+    path, force, slugify, rename, typeswap = utils.setup_locals('path',
+        'force', 'slugify', 'rename', 'typeswap')
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:

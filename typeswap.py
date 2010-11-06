@@ -44,7 +44,8 @@ def swap_types(typeswap, _CONTENT, logger):
         if old in _CONTENT:
             _CONTENT[old] = new
         else:
-            logger.error("Can't swap '%s' with unknown type: '%s'" % (new, old))
+            logger.error("Can't swap '%s' with unknown type: '%s'" % (new,
+                old))
             exit(1)
 
     return _CONTENT
