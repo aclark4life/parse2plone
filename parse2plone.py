@@ -383,7 +383,6 @@ class Parse2Plone(object):
                 root.append(x)
         else:
             elements = []
-
         # if there are non-XPath tags, we will select just the Text
         # nodes from within them
         if tags:
