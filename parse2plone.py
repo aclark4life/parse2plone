@@ -486,7 +486,15 @@ class Recipe(object):
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
         arguments += " target_tags='%s', force=%s, publish=%s,"
-        arguments += " slugify=%s, rename=%s, typeswap=%s"
+        arguments += " slugify=%s,"
+        if _SETTINGS['rename']:
+            arguments += " rename='%s',"
+        else:
+            arguments += " rename=%s,"
+        if _SETTINGS['typeswap']:
+            arguments += " typeswap='%s'"
+        else:
+            arguments += " typeswap=%s"
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([('import', 'parse2plone', 'main')],
@@ -539,8 +547,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     num_parts = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
     base = parse2plone.get_base(import_dir, num_parts)
-    path, force, slugify, rename = utils.setup_locals('path','force','slugify',
-        'rename', 'typeswap')
+    path, force, slugify, rename = utils.setup_locals('path', 'force',
+        'slugify', 'rename', 'typeswap')
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:

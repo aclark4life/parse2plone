@@ -33,7 +33,8 @@ here are this recipe's options::
     force = false
     publish = false
     slugify = false
-    rename = false
+    rename =
+    typeswap =
 
 The parameters listed above are configured with their default values. Edit these
 values if you would like to change the default behavior; they are (mostly)
