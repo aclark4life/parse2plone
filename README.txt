@@ -78,7 +78,8 @@ There is also this user comment, which captures the author's sentiment::
     similar - and while I've no doubt I could make transmogrify do the job, it's a
     lot of work for a one-shot loading of legacy pages.
 
-                                                    -Derek Broughton
+                                                    -Derek Broughton, Pointer
+                                                     Stop Consulting, Inc.
 
 Installation
 ------------

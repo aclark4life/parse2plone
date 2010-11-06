@@ -317,7 +317,7 @@ class Parse2Plone(object):
             self.logger.info("path '%s', has subdirs '%s', and files '%s'" % (
                 path, ' '.join(subdirs), ' '.join(files)))
             for f in fnmatch.filter(files, '*'):
-                if self.utils.is_legal(f, self.illegal_chars): 
+                if self.utils.is_legal(f, self.illegal_chars):
                     results.append(os_path.join(path, f))
                 else:
                     self.logger.info("object '%s' has illegal chars" % f)
@@ -370,6 +370,35 @@ class Parse2Plone(object):
             results[base].append('/'.join(f))
         return results
 
+    def process_root(self, results, root):
+        # separate out the XPath selectors and ordinary tags
+        selectors = [x for x in self.target_tags if '/' in x]
+        tags = [x for x in self.target_tags if '/' not in x]
+        # if we have selectors, replace the "root" document with a tree
+        # containing only the matched elements
+        if selectors:
+            elements = root.xpath('|'.join(selectors))
+            root = etree.Element('fragment')
+            for x in elements:
+                root.append(x)
+        else:
+            elements = []
+
+        # if there are non-XPath tags, we will select just the Text
+        # nodes from within them
+        if tags:
+            for element in root.iter():
+                tag = element.tag
+                text = element.text
+                if tag in self.target_tags and text is not None:
+                    results += '<%s>%s</%s>' % (tag, text, tag)
+        else:
+            # if we have XPath selectors, but no other tags, return the
+            # entire contents of the selected elements
+            for element in elements:
+                results += etree.tostring(element)
+        return results
+
     def set_image(self, image, obj, prefix_path, base):
         f = open('/'.join([base, '/'.join(prefix_path), obj]), 'rb')
         data = f.read()
@@ -402,32 +431,7 @@ class Parse2Plone(object):
             msg = "make sure file contains HTML"
             self.logger.error(msg % filename)
             exit(1)
-        # separate out the XPath selectors and ordinary tags
-        selectors = [x for x in self.target_tags if '/' in x]
-        tags      = [x for x in self.target_tags if '/' not in x]
-        # if we have selectors, replace the "root" document with a tree containing only 
-        # the matched elements
-        if selectors:
-            elements = root.xpath('|'.join(selectors))
-            root = etree.Element('fragment')
-            for x in elements:
-                root.append(x)
-        else:
-            elements = []
-
-        # if there are non-XPath tags, we will select just the Text nodes from within them
-        if tags:
-            for element in root.iter():
-                tag = element.tag
-                text = element.text
-                if tag in self.target_tags and text is not None:
-                    results += '<%s>%s</%s>' % (tag, text, tag)
-        else:
-            # if we have XPath selectors, but no other tags, return the entire contents
-            # of the selected elements
-            for element in elements:
-                results += etree.tostring(element)
-            
+        results = self.process_root(results, root)
         page.setText(results)
 
     def set_state(self, obj):
