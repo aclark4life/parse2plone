@@ -299,8 +299,8 @@ Swap types (see typeswap.py).
 ``'--help'``
 ************
 
-You can ask ``parse2plone`` to tell you about its available options with the ``--help``
-option::
+And lastly, you can always ask ``parse2plone`` to tell you about its available options with
+the ``--help`` or ``-h`` option::
 
     $ bin/plone run bin/import -h
     Usage: import [options]
@@ -322,6 +322,8 @@ option::
       --publish             Optionally publish newly created content
       --slugify             Optionally "slugify" content (see slugify.py)
       --rename=RENAME       Optionally rename content (see rename.py)
+      --typeswap=TYPESWAP   Optionally swap content types (see typeswap.py)
+
 
 Example
 '''''''
