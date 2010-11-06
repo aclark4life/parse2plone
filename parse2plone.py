@@ -218,6 +218,12 @@ class Utils(object):
         parse2plone.utils = utils
         return parse2plone
 
+    def setup_locals(self, *kwargs):
+        results = []
+        for arg in kwargs:
+            results.append(_SETTINGS[arg])
+        return results
+
 
 class Parse2Plone(object):
     """
@@ -450,9 +456,6 @@ class Parse2Plone(object):
         newSecurityManager(None, system)
         return app
 
-    def setup_locals(self):
-        return (_SETTINGS['path'], _SETTINGS['force'],
-            _SETTINGS['slugify'], _SETTINGS['rename'])
 
 class Recipe(object):
     """zc.buildout recipe"""
@@ -464,7 +467,6 @@ class Recipe(object):
         bindir = self.buildout['buildout']['bin-directory']
         utils = Utils()
         utils.convert_parameter_values(self.options)
-
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
         arguments += " target_tags='%s', force=%s, publish=%s,"
@@ -518,7 +520,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     num_parts = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
     base = parse2plone.get_base(import_dir, num_parts)
-    path, force, slugify, rename = self.setup_locals()
+    path, force, slugify, rename = utils.setup_locals('path','force','slugify',
+        'rename')
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:
