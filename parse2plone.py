@@ -515,10 +515,9 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     num_parts = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
     base = parse2plone.get_base(import_dir, num_parts)
-    path = _SETTINGS['path']
-    force = _SETTINGS['force']
-    slugify = _SETTINGS['slugify']
-    rename = _SETTINGS['rename']
+    path, force, slugify, rename = (
+        _SETTINGS['path'], _SETTINGS['force'],
+        _SETTINGS['slugify'], _SETTINGS['rename'])
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:
