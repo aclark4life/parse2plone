@@ -15,8 +15,8 @@ import fnmatch
 import logging
 import re
 
+from lxml import etree
 from lxml.html import fromstring
-from lxml.etree import XMLSyntaxError
 from optparse import OptionParser
 from os import path as os_path
 from os import walk
@@ -445,7 +445,7 @@ class Parse2Plone(object):
         f.close()
         try:
             root = fromstring(data)
-        except XMLSyntaxError:
+        except etree.XMLSyntaxError:
             msg = "unable to import data from '%s', "
             msg = "make sure file contains HTML"
             self.logger.error(msg % filename)
