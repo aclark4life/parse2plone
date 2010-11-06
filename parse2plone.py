@@ -450,6 +450,9 @@ class Parse2Plone(object):
         newSecurityManager(None, system)
         return app
 
+    def setup_locals(self):
+        return (_SETTINGS['path'], _SETTINGS['force'],
+            _SETTINGS['slugify'], _SETTINGS['rename'])
 
 class Recipe(object):
     """zc.buildout recipe"""
@@ -515,9 +518,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     num_parts = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
     base = parse2plone.get_base(import_dir, num_parts)
-    path, force, slugify, rename = (
-        _SETTINGS['path'], _SETTINGS['force'],
-        _SETTINGS['slugify'], _SETTINGS['rename'])
+    path, force, slugify, rename = self.setup_locals()
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:
@@ -530,12 +531,10 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             logger.error(msg % path)
             exit(1)
     files = parse2plone.prep_files(files, num_parts, base)
-
     if slugify:
         slug_map = convert_path_to_slug(files, slug_map, base)
     if rename:
         rename_map = rename_old_to_new(files, rename_map, base, rename)
-
     results = parse2plone.import_files(parent, files, base, slug_map,
         rename_map)
 
