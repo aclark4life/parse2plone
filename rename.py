@@ -17,14 +17,9 @@
 ###############################################################################
 
 from re import compile
+from utils import clean_path
 
 paths = compile('\n(\S+)\s+(\S+)')
-
-
-# XXX Factor me out of both parse2plone and rename modules
-def clean_path(path):
-    if path.startswith('/'):
-        return path[1:]
 
 
 def get_paths_to_rename(value):

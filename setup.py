@@ -2,8 +2,9 @@
 from setuptools import setup
 
 name = 'parse2plone'
-description = 'Easily import static HTML websites into Plone.' 
+description = 'Easily import static HTML websites into Plone.'
 version = '0.9.3'
+
 
 def read(file):
     file = open(file)
@@ -15,7 +16,7 @@ setup(
     name=name,
     version=version,
     description=description,
-    long_description=read('README.txt')+read('docs/HISTORY.txt'),
+    long_description=read('README.txt') + read('docs/HISTORY.txt'),
     url='http://aclark4life.github.com/Parse2Plone',
     author='Alex Clark',
     author_email='aclark@aclark.net',
@@ -27,7 +28,7 @@ setup(
         'lxml',
         'zc.buildout',
     ],
-    py_modules=['parse2plone','slugify','rename'],
+    py_modules=['parse2plone', 'slugify', 'rename', 'typeswap', 'utils'],
     classifiers=[
         'Framework :: Buildout',
         'Framework :: Plone'

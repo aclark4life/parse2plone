@@ -24,6 +24,7 @@ from pkg_resources import working_set
 from sys import executable
 from zc.buildout.easy_install import scripts as create_scripts
 
+from utils import clean_path
 from slugify import convert_path_to_slug
 from rename import get_paths_to_rename, rename_old_to_new
 from typeswap import get_types_to_swap, swap_types
@@ -84,13 +85,6 @@ class Utils(object):
         except:
             return False
 
-    def clean_path(self, path):
-        if path.startswith('/'):
-            path = path[1:]
-        if path.endswith('/'):
-            path = path[0:-1]
-        return path
-
     def convert_arg_values(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
         publish, slugify, rename, typeswap):
@@ -103,7 +97,7 @@ class Utils(object):
         _SETTINGS['image_extensions'] = image_extensions.split(',')
         _SETTINGS['file_extensions'] = file_extensions.split(',')
         _SETTINGS['target_tags'] = target_tags.split(',')
-        _SETTINGS['path'] = self.clean_path(path)
+        _SETTINGS['path'] = clean_path(path)
         _SETTINGS['force'] = force
         _SETTINGS['publish'] = publish
         _SETTINGS['slugify'] = slugify
@@ -197,7 +191,7 @@ class Utils(object):
         Process command line args; save results in _SETTINGS dict
         """
         if options.path is not None:
-            _SETTINGS['path'] = self.clean_path(options.path)
+            _SETTINGS['path'] = clean_path(options.path)
         if options.illegal_chars is not None:
             _SETTINGS['illegal_chars'] = options.illegal_chars
         if options.html_extensions is not None:
@@ -329,7 +323,7 @@ class Parse2Plone(object):
                 break
 
     def get_base(self, import_dir, num_parts):
-        import_dir = self.utils.clean_path(import_dir)
+        import_dir = clean_path(import_dir)
         return '/'.join(import_dir.split('/')[:num_parts])
 
     def get_files(self, import_dir):
@@ -535,7 +529,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Process command line args; save results in _SETTINGS
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
-    import_dir = utils.clean_path(args[0])
+    import_dir = clean_path(args[0])
     utils.process_command_line_args(options)
 
     # Run parse2plone
