@@ -5,7 +5,7 @@ History
 0.9.4 (11/06/2010)
 ~~~~~~~~~~~~~~~~~~
 
-* Remove ``bin/import`` script when recipe is uninstalled [aclark4life]
+* Remove ``bin/import`` script whenever recipe is uninstalled [aclark4life]
 * Add support for XPath syntax in target_tags [derek]
 * Add "typeswap" feature [aclark4life]
 * Update docs [aclark4life]
