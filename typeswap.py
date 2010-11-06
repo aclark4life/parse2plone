@@ -33,23 +33,18 @@ def get_types_to_swap(value):
     return results
 
 
-def swap_types(files, types_map, base, typeswap):
+def swap_types(typeswap, _CONTENT, logger):
     """
-    Returns a rename_map which is forward/reverse mapping of old paths to
-    new paths and vice versa. E.g.:
-
-        rename_map{'forward': {'/var/www/html/old/2000/01/01/foo/index.html':
-            '/var/www/html/new/2000/01/01/foo/index.html'}}
-
-        rename_map{'reverse': {'/var/www/html/new/2000/01/01/foo/index.html':
-            '/var/www/html/old/2000/01/01/foo/index.html'}}
+    Update _CONTENT
     """
-    for f in files[base]:
-        for path in rename:
-            parts = path.split(':')
-            old = parts[0]
-            new = parts[1]
-            if f.find(old) >= 0:
-                rename_map['forward'][f] = f.replace(old, new)
-            rename_map['reverse'][f.replace(old, new)] = f
-    return rename_map
+    for swap in typeswap:
+        types = swap.split(':')
+        old = types[0]
+        new = types[1]
+        if old in _CONTENT:
+            _CONTENT[old] = new
+        else:
+            logger.error("Can't swap '%s' with unknown type: '%s'" % (new, old))
+            exit(1)
+
+    return _CONTENT

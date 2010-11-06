@@ -43,6 +43,10 @@ _SETTINGS = {
     'typeswap': None,
 }
 
+_CONTENT = {
+    'Document': 'Document',
+    'Folder': 'Folder',
+}
 
 # BBB Because the ast module is not included with Python 2.4, we include this
 # function to produce similar results (with our limited input set).
@@ -237,7 +241,7 @@ class Parse2Plone(object):
     Parse2Plone
     """
     def create_content(self, parent, obj, prefix_path, base, slug_map,
-        rename_map, types_map):
+        rename_map):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
         from transaction import commit
@@ -249,8 +253,7 @@ class Parse2Plone(object):
         elif self.utils.is_file(obj, self.html_extensions):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
-            self.set_page(page, obj, prefix_path, base, slug_map, rename_map,
-                types_map)
+            self.set_page(page, obj, prefix_path, base, slug_map, rename_map)
             self.count['pages'] += 1
             commit()
         elif self.utils.is_file(obj, self.image_extensions):
@@ -269,7 +272,8 @@ class Parse2Plone(object):
     def create_folder(self, parent, obj):
         self.logger.info("creating folder '%s' inside parent folder '%s'" % (
             obj, self.utils.obj_to_path(parent)))
-        parent.invokeFactory('Folder', obj)
+        folder_type = _CONTENT['folder']
+        parent.invokeFactory(folder_type, obj)
         folder = parent[obj]
         if self.publish:
             self.set_state(folder)
@@ -293,15 +297,15 @@ class Parse2Plone(object):
     def create_page(self, parent, obj):
         self.logger.info("creating page '%s' inside parent folder '%s'" % (obj,
             self.utils.obj_to_path(parent)))
-        parent.invokeFactory('Document', obj)
+        page_type = _CONTENT['page']
+        parent.invokeFactory(page_type, obj)
         page = parent[obj]
         if self.publish:
             self.set_state(page)
             self.logger.info("publishing page '%s'" % obj)
         return page
 
-    def create_parts(self, parent, parts, base, slug_map, rename_map,
-        types_map):
+    def create_parts(self, parent, parts, base, slug_map, rename_map):
         self.logger.info("creating parts for '%s'" % '/'.join(parts))
         for i in range(len(parts)):
             path = self.get_path(parts, i)
@@ -317,7 +321,7 @@ class Parse2Plone(object):
                         "object '%s' does not exist inside '%s'"
                         % (obj, self.utils.obj_to_path(parent)))
                     self.create_content(parent, obj, prefix_path, base,
-                        slug_map, rename_map, types_map)
+                        slug_map, rename_map)
             else:
                 self.logger.info("object '%s' has illegal chars" % obj)
                 break
@@ -365,18 +369,14 @@ class Parse2Plone(object):
             results.append(parts)
         return results
 
-    def import_files(self, parent, files, base, slug_map, rename_map,
-        types_map):
+    def import_files(self, parent, files, base, slug_map, rename_map):
         for f in files[base]:
             parts = self.get_parts(f)
             if self.rename and f in rename_map['forward']:
                 parts = rename_map['forward'][f].split('/')
             if self.slugify and f in slug_map['forward']:
                 parts = slug_map['forward'][f].split('/')
-            if self.typeswap and f in types_map['forward']:
-                parts = types_map['forward'][f].split('/')
-            self.create_parts(parent, parts, base, slug_map, rename_map,
-                types_map)
+            self.create_parts(parent, parts, base, slug_map, rename_map)
 
         results = self.count.values()
         results.append(self.utils.obj_to_path(parent))
@@ -437,9 +437,6 @@ class Parse2Plone(object):
             filename = '/'.join([base, value])
         if self.slugify and obj in slug_map['reverse']:
             value = slug_map['reverse'][obj]
-            filename = '/'.join([base, value])
-        if self.typeswap and obj in types_map['reverse']:
-            value = types_map['reverse'][obj]
             filename = '/'.join([base, value])
         f = open(filename, 'rb')
         results = ''
@@ -526,7 +523,6 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     logger = setup_logger()
     rename_map = {'forward': {}, 'reverse': {}}
     slug_map = {'forward': {}, 'reverse': {}}
-    types_map = {'forward': {}, 'reverse': {}}
     utils = Utils()
 
     # Convert arg values from csv to list; save results in _SETTINGS
@@ -554,7 +550,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     else:
         if force:
             parse2plone.create_parts(app, parse2plone.get_parts(path), base,
-                slug_map, rename_map, types_map)
+                slug_map, rename_map)
             parent = parse2plone.get_parent(app, path)
         else:
             msg = "object in path '%s' does not exist, use --force to create"
@@ -566,9 +562,9 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     if rename:
         rename_map = rename_old_to_new(files, rename_map, base, rename)
     if typeswap:
-        types_map = swap_types(files, types_map, base, typeswap)
+        swap_types(typeswap, _CONTENT, logger)
     results = parse2plone.import_files(parent, files, base, slug_map,
-        rename_map, typesmap)
+        rename_map)
 
     # Print results
     msg = "Imported %s folders, %s images, %s pages, and %s files into: '%s'."
