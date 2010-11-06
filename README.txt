@@ -101,10 +101,14 @@ Then add the ``import`` section to the list of parts::
 
 Now run ``bin/buildout`` as usual.
 
+.. Note::
+    The section name ``import`` is arbitrary, you can call it whatever you want. Whatever
+    you name the section is what the name of the script will be. 
+
 Execution
 ---------
 
-You can run ``Parse2Plone`` like this::
+Now you can run ``Parse2Plone`` like this::
 
     $ bin/plone run bin/import /path/to/files
 
