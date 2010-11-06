@@ -272,7 +272,7 @@ class Parse2Plone(object):
     def create_folder(self, parent, obj):
         self.logger.info("creating folder '%s' inside parent folder '%s'" % (
             obj, self.utils.obj_to_path(parent)))
-        folder_type = _CONTENT['folder']
+        folder_type = _CONTENT['Folder']
         parent.invokeFactory(folder_type, obj)
         folder = parent[obj]
         if self.publish:
@@ -297,7 +297,7 @@ class Parse2Plone(object):
     def create_page(self, parent, obj):
         self.logger.info("creating page '%s' inside parent folder '%s'" % (obj,
             self.utils.obj_to_path(parent)))
-        page_type = _CONTENT['page']
+        page_type = _CONTENT['Document']
         parent.invokeFactory(page_type, obj)
         page = parent[obj]
         if self.publish:
