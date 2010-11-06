@@ -8,5 +8,11 @@
 # its replacement "custom" content type (e.g.                                 #
 # --typeswap=Document:MyCustomPageType).                                      #
 #                                                                             #
+# That means that instead of calling:                                         #
+#   parent.invokeFactory('Document','foo')                                    #
+#                                                                             #
+# ``parse2plone`` will call:                                                  #
+#   parent.invokeFactory('MyCustomPageType','foo')                            #
+#                                                                             #
 ###############################################################################
 
