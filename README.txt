@@ -291,6 +291,11 @@ Publish newly created content.
 
 Rename content (see rename.py).
 
+``'--typeswap'``
+***************
+
+Swap types (see typeswap.py).
+
 ``'--help'``
 ************
 
