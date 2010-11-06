@@ -69,6 +69,11 @@ Here are some reasons:
 * Transmogrifier and friends appear to be "developer's tools", while the author wants
   ``Parse2Plone`` to be an "end user's tool".
 
+* ``parse2plone`` in addition to its primary role as a content importer, is
+  intended to serve as an educational tool; both for the author and consumer.
+  Python coding best practices and how to script tasks in Plone are the aim.
+  Forking and pull requests are encouraged.
+
 If you are a developer looking to create repeatable migrations, you probably want to be
 using ``collective.transmogrifier``. If you are an end user that just wants to see your
 static website in Plone, then you might want to give ``Parse2Plone`` a try.
