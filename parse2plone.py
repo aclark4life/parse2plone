@@ -226,7 +226,7 @@ class Utils(object):
         if options.typeswap is not None:
             _SETTINGS['typeswap'] = (options.typeswap).split(',')
         if options.match is not None:
-            _SETTINGS['match'] = clean_path(options.match)
+            _SETTINGS['match'] = (options.match).split(',')
 
     def setup_attrs(self, parse2plone, count, logger, utils):
         """
