@@ -36,7 +36,6 @@ here are this recipe's options::
     rename =
     typeswap =
     match =
-    keepgoing = false
 
 The parameters listed above are configured with their default values. Edit these
 values if you would like to change the default behavior; they are (mostly)
@@ -212,8 +211,6 @@ Options
 +---------------------+-------------+----------------------------------------+
 | ``match``           |             | Match files. (see match.py)            |
 +---------------------+-------------+----------------------------------------+
-| ``keepgoing``       |             | Ignore errors and "keep going"         |
-+---------------------+-------------+----------------------------------------+
 
 Example
 '''''''
@@ -311,11 +308,6 @@ Swap types (see typeswap.py).
 ****************
 
 Match files (see match.py).
-
-``'--keepgoing'``
-****************
-
-Ignore errors and "keep going".
 
 ``'--help'``
 ************
