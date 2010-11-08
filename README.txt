@@ -35,6 +35,8 @@ here are this recipe's options::
     slugify = false
     rename =
     typeswap =
+    match =
+    keepgoing = false
 
 The parameters listed above are configured with their default values. Edit these
 values if you would like to change the default behavior; they are (mostly)
@@ -208,6 +210,10 @@ Options
 +---------------------+-------------+----------------------------------------+
 | ``typeswap``        |             | Swap types. (see typeswap.py)          |
 +---------------------+-------------+----------------------------------------+
+| ``match``           |             | Match files. (see match.py)            |
++---------------------+-------------+----------------------------------------+
+| ``keepgoing``       |             | Ignore errors and "keep going"         |
++---------------------+-------------+----------------------------------------+
 
 Example
 '''''''
@@ -300,6 +306,16 @@ Rename content (see rename.py).
 ****************
 
 Swap types (see typeswap.py).
+
+``'--match'``
+****************
+
+Match files (see match.py).
+
+``'--keepgoing'``
+****************
+
+Ignore errors and "keep going".
 
 ``'--help'``
 ************
