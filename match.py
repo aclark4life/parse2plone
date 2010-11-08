@@ -18,6 +18,10 @@
 ###############################################################################
 
 
-def match_files(files):
-    return files
-
+def match_files(files, base, match):
+    results = {base: []}
+    for f in files[base]:
+        for m in match:
+            if f.find(m) >= 0:
+                results[base].append(f)
+    return results

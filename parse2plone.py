@@ -575,7 +575,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             exit(1)
     files = parse2plone.prep_files(files, num_parts, base)
     if match:
-        files = match_files(files)
+        files = match_files(files, base, match)
     if slugify:
         slug_map = convert_path_to_slug(files, slug_map, base)
     if rename:
