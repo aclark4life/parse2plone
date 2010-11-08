@@ -28,7 +28,8 @@ setup(
         'lxml',
         'zc.buildout',
     ],
-    py_modules=['parse2plone', 'slugify', 'rename', 'typeswap', 'utils'],
+    py_modules=['parse2plone', 'slugify', 'rename', 'typeswap', 'utils',
+        'match'],
     classifiers=[
         'Framework :: Buildout',
         'Framework :: Plone'
