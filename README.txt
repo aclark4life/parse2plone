@@ -8,7 +8,7 @@ into Plone.
 Warning
 -------
 
-This is a **Buildout recipe** for use with Plone; by itself it does nothing. If you
+This is a **Buildout** recipe for use with Plone; by itself it does nothing. If you
 do not know what Plone is, please see: http://plone.org. If you do not know
 what Buildout is, please see: http://www.buildout.org/.
 

@@ -467,8 +467,11 @@ class Parse2Plone(object):
         obj.portal_workflow.doActionFor(obj, 'publish')
 
     def set_title(self, obj, title):
-        obj.setTitle(title.title())
-        obj.reindexObject()
+        try:
+            obj.setTitle(title.title())
+            obj.reindexObject()
+        except:
+            import pdb; pdb.set_trace()
 
     def setup_app(self, app):
         # BBB Move imports here to avoid calling them on script installation,
