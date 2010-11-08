@@ -28,6 +28,7 @@ from utils import clean_path
 from slugify import convert_path_to_slug
 from rename import get_paths_to_rename, rename_old_to_new
 from typeswap import get_types_to_swap, swap_types
+from match import match_files
 
 _SETTINGS = {
     'path': '/Plone',
@@ -41,6 +42,7 @@ _SETTINGS = {
     'slugify': False,
     'rename': None,
     'typeswap': None,
+    'match': None,
 }
 
 _CONTENT = {
@@ -92,7 +94,7 @@ class Utils(object):
 
     def convert_arg_values(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
-        publish, slugify, rename, typeswap):
+        publish, slugify, rename, typeswap, match):
         """
         Convert most recipe parameter values from csv; save results
         in _SETTINGS dict
@@ -114,6 +116,10 @@ class Utils(object):
             _SETTINGS['typeswap'] = typeswap.split(',')
         else:
             _SETTINGS['typeswap'] = typeswap
+        if match is not None:
+            _SETTINGS['match'] = match.split(',')
+        else:
+            _SETTINGS['match'] = match
 
     def create_option_parser(self):
         option_parser = OptionParser()
@@ -142,6 +148,8 @@ class Utils(object):
             dest="rename", help="Optionally rename content (see rename.py)")
         option_parser.add_option("--typeswap", dest="typeswap",
             help="Optionally swap content types (see typeswap.py)")
+        option_parser.add_option("--match", dest="match",
+            help="Only import content that matches (see match.py)")
         return option_parser
 
     def is_file(self, obj, extensions):
@@ -178,13 +186,13 @@ class Utils(object):
                     value = get_paths_to_rename((options[option]))
                 elif option in ('typeswap'):
                     value = get_types_to_swap((options[option]))
-                elif option in ('path'):
+                elif option in ('path', 'match'):
                     value = options[option]
                 elif option not in ('path'):
                     value = ','.join(re.split('\s+', options[option]))
             else:
                 if option in ('force', 'publish', 'slugify', 'rename',
-                    'typeswap', 'path'):
+                    'typeswap', 'path', 'match'):
                     value = existing_value
                 else:
                     value = ','.join(existing_value)
@@ -217,6 +225,8 @@ class Utils(object):
             _SETTINGS['rename'] = (options.rename).split(',')
         if options.typeswap is not None:
             _SETTINGS['typeswap'] = (options.typeswap).split(',')
+        if options.match is not None:
+            _SETTINGS['match'] = clean_path(options.match)
 
     def setup_attrs(self, parse2plone, count, logger, utils):
         """
@@ -490,9 +500,13 @@ class Recipe(object):
         else:
             arguments += " rename=%s,"
         if _SETTINGS['typeswap']:
-            arguments += " typeswap='%s'"
+            arguments += " typeswap='%s',"
         else:
-            arguments += " typeswap=%s"
+            arguments += " typeswap=%s,"
+        if _SETTINGS['match']:
+            arguments += " match='%s'"
+        else:
+            arguments += " match=%s"
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([('import', 'parse2plone', 'main')],
@@ -508,6 +522,7 @@ class Recipe(object):
             _SETTINGS['slugify'],
             _SETTINGS['rename'],
             _SETTINGS['typeswap'],
+            _SETTINGS['match'],
             ))
         return tuple((bindir + '/' + 'import',))
 
@@ -529,7 +544,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Convert arg values from csv to list; save results in _SETTINGS
     utils.convert_arg_values(illegal_chars, html_extensions, image_extensions,
         file_extensions, target_tags, path, force, publish, slugify, rename,
-        typeswap)
+        typeswap, match)
 
     # Process command line args; save results in _SETTINGS
     option_parser = utils.create_option_parser()
@@ -544,8 +559,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     num_parts = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
     base = parse2plone.get_base(import_dir, num_parts)
-    path, force, slugify, rename, typeswap = utils.setup_locals('path',
-        'force', 'slugify', 'rename', 'typeswap')
+    path, force, slugify, rename, typeswap, match = utils.setup_locals('path',
+        'force', 'slugify', 'rename', 'typeswap', 'match')
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:
@@ -558,6 +573,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             logger.error(msg % path)
             exit(1)
     files = parse2plone.prep_files(files, num_parts, base)
+    if match:
+        files = match_files(files)
     if slugify:
         slug_map = convert_path_to_slug(files, slug_map, base)
     if rename:
