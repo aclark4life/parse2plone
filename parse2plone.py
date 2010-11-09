@@ -37,11 +37,7 @@ from os import walk
 from pkg_resources import working_set
 from re import compile
 from sys import executable
-from utils import clean_path
 from zc.buildout.easy_install import scripts as create_scripts
-
-paths = compile('\n(\S+)\s+(\S+)')
-slug = compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 _SETTINGS = {
     'path': '/Plone',
@@ -62,6 +58,9 @@ _CONTENT = {
     'Document': 'Document',
     'Folder': 'Folder',
 }
+
+paths = compile('\n(\S+)\s+(\S+)')
+slug = compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 
 # BBB Because the ast module is not included with Python 2.4, we include this
@@ -162,13 +161,17 @@ def setup_logger():
     return logger
 
 
-# This next function add
+# This next function adds
 # "slugify" support to parse2plone, which means that if a path like this
 # is discovered:
+#
 #     /2000/01/01/foo/index.html
+#
 # And --slugify is called, then instead of creating /2000/01/01/foo/index.html
 # (in Plone), parse2plone will create:
+#
 #     /foo-20000101.html
+#
 # thereby "slugifying" the content, if you will.
 
 def convert_path_to_slug(files, slug_map, base):
