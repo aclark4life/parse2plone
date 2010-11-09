@@ -62,6 +62,17 @@ paths = re.compile('\n(\S+)\s+(\S+)')
 slug = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 
+def clean_path(path):
+    """
+    Turns /foo/bar/baz into foo/bar/baz
+    """
+    if path.startswith('/'):
+        path = path[1:]
+    if path.endswith('/'):
+        path = path[0:-1]
+    return path
+
+
 # BBB Because the ast module is not included with Python 2.4, we include this
 # function to produce similar results (with our limited input set).
 def fake_literal_eval(input):
@@ -237,14 +248,6 @@ def setup_logger():
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
-
-
-def clean_path(path):
-    if path.startswith('/'):
-        path = path[1:]
-    if path.endswith('/'):
-        path = path[0:-1]
-    return path
 
 
 class Utils(object):
