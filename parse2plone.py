@@ -26,8 +26,6 @@
 #                                                                             #
 ###############################################################################
 
-"""Recipe parse2plone"""
-
 import fnmatch
 import logging
 import re
