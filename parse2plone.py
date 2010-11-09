@@ -148,19 +148,6 @@ def rename_old_to_new(files, rename_map, base, rename):
     return rename_map
 
 
-def setup_logger():
-    # log levels: debug, info, warn, error, critical
-    logger = logging.getLogger("parse2plone")
-    logger.setLevel(logging.INFO)
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    return logger
-
-
 # This next function adds
 # "slugify" support to parse2plone, which means that if a path like this
 # is discovered:
@@ -239,6 +226,19 @@ def swap_types(typeswap, _CONTENT, logger):
             exit(1)
 
     return _CONTENT
+
+
+def setup_logger():
+    # log levels: debug, info, warn, error, critical
+    logger = logging.getLogger("parse2plone")
+    logger.setLevel(logging.INFO)
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
 
 
 class Utils(object):
