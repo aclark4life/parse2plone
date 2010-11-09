@@ -28,10 +28,9 @@
 
 import fnmatch
 import logging
+import lxml
 import re
 
-from lxml import etree
-from lxml.html import fromstring
 from optparse import OptionParser
 from os import path as os_path
 from os import walk
@@ -574,7 +573,7 @@ class Parse2Plone(object):
         # containing only the matched elements
         if selectors:
             elements = root.xpath('|'.join(selectors))
-            root = etree.Element('fragment')
+            root = lxml.etree.Element('fragment')
             for x in elements:
                 root.append(x)
         else:
@@ -591,7 +590,7 @@ class Parse2Plone(object):
             # if we have XPath selectors, but no other tags, return the
             # entire contents of the selected elements
             for element in elements:
-                results += etree.tostring(element)
+                results += lxml.etree.tostring(element)
         return results
 
     def set_image(self, image, obj, prefix_path, base):
@@ -620,8 +619,8 @@ class Parse2Plone(object):
         data = f.read()
         f.close()
         try:
-            root = fromstring(data)
-        except etree.XMLSyntaxError:
+            root = lxml.html.fromstring(data)
+        except lxml.etree.XMLSyntaxError:
             msg = "unable to import data from '%s', "
             msg = "make sure file contains HTML"
             self.logger.error(msg % filename)
