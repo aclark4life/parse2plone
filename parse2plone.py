@@ -174,7 +174,7 @@ class Utils(object):
     def obj_to_path(self, obj):
         return '/'.join(obj.getPhysicalPath())
 
-    def process_parameter_values(self, options):
+    def process_recipe_parameter_values(self, options):
         """
         Convert most recipe parameter values to csv; save in _SETTINGS dict
         """
@@ -493,7 +493,7 @@ class Recipe(object):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
         utils = Utils()
-        utils.process_parameter_values(self.options)
+        utils.process_recipe_parameter_values(self.options)
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
         arguments += " target_tags='%s', force=%s, publish=%s,"
