@@ -21,14 +21,13 @@ from optparse import OptionParser
 from os import path as os_path
 from os import walk
 from pkg_resources import working_set
+from re import compile
 from sys import executable
+from utils import clean_path
 from zc.buildout.easy_install import scripts as create_scripts
 
-from utils import clean_path
-from slugify import convert_path_to_slug
-from rename import get_paths_to_rename, rename_old_to_new
-from typeswap import get_types_to_swap, swap_types
-from match import match_files
+paths = compile('\n(\S+)\s+(\S+)')
+slug = compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 _SETTINGS = {
     'path': '/Plone',
@@ -65,6 +64,75 @@ def fake_literal_eval(input):
         return None
 
 
+def match_files(files, base, match):
+    """
+    Adds match feature to ``parse2plone``.
+
+    The user may specify a string to match file names against; only content
+    from files that match the string will be imported. E.g.
+                                                                           
+        $ bin/plone run bin/import /var/www/html --match=2000
+
+    Will import:
+
+        /var/www/html/2000/01/01/foo/index.html
+
+    But not:
+
+        /var/www/html/2001/01/01/foo/index.html
+    """
+    results = {base: []}
+    for f in files[base]:
+        for m in match:
+            if f.find(m) >= 0:
+                results[base].append(f)
+    return results
+
+#These next two functions add rename support to ``parse2plone``.
+#
+#This feature allows the user to specify two paths: old and new (e.g.
+#--rename=old:new ).
+#
+#Then if a path like this is found:
+#    /old/2000/01/01/foo/index.html
+#
+#Instead of creating /old/2000/01/01/foo/index.html (in Plone),
+#``parse2plone`` will create:
+#
+#    /new/2000/01/01/foo/index.html
+
+def get_paths_to_rename(value):
+    results = None
+    if paths.findall(value):
+        results = []
+        for group in paths.findall(value):
+            results.append('%s:%s' % (clean_path(group[0]),
+                clean_path(group[1])))
+        results = ','.join(results)
+    return results
+
+
+def rename_old_to_new(files, rename_map, base, rename):
+    """
+    Returns a rename_map which is forward/reverse mapping of old paths to
+    new paths and vice versa. E.g.:
+
+        rename_map{'forward': {'/var/www/html/old/2000/01/01/foo/index.html':
+            '/var/www/html/new/2000/01/01/foo/index.html'}}
+
+        rename_map{'reverse': {'/var/www/html/new/2000/01/01/foo/index.html':
+            '/var/www/html/old/2000/01/01/foo/index.html'}}
+    """
+    for f in files[base]:
+        for path in rename:
+            parts = path.split(':')
+            old = parts[0]
+            new = parts[1]
+            if f.find(old) >= 0:
+                rename_map['forward'][f] = f.replace(old, new)
+            rename_map['reverse'][f.replace(old, new)] = f
+    return rename_map
+
 def setup_logger():
     # log levels: debug, info, warn, error, critical
     logger = logging.getLogger("parse2plone")
@@ -77,6 +145,77 @@ def setup_logger():
     logger.addHandler(handler)
     return logger
 
+# This next function add
+# "slugify" support to parse2plone, which means that if a path like this
+# is discovered:
+#     /2000/01/01/foo/index.html
+# And --slugify is called, then instead of creating /2000/01/01/foo/index.html
+# (in Plone), parse2plone will create:
+#     /foo-20000101.html
+# thereby "slugifying" the content, if you will.
+
+def convert_path_to_slug(files, slug_map, base):
+    """
+    Returns a slug_map which is forward/reverse mapping of paths to slugified
+    paths and vice versa. E.g.:
+
+        slug_map{'forward': {'/var/www/html/2000/01/01/foo/index.html':
+            '/var/www/html/foo-20000101.html'}}
+
+        slug_map{'reverse': {'/var/www/html/foo-20000101.html':
+            '/var/www/html/2000/01/01/foo/index.html'}}
+    """
+
+    for f in files[base]:
+        result = slug.search(f)
+        if result:
+            groups = result.groups()
+            slugfile = '%s-%s%s%s.html' % (groups[3], groups[0], groups[1],
+                groups[2])
+            slug_map['forward'][f] = slugfile
+            slug_map['reverse'][slugfile] = f
+
+    return slug_map
+
+# These next two functions adds "typeswap" feature to ``parse2plone``.
+#
+# This feature allows the user to specify customize content types for use
+# when importing content by specifying a "default" content type followed by
+# its replacement "custom" content type (e.g.
+# --typeswap=Document:MyCustomPageType).
+#
+# That means that instead of calling:
+#   parent.invokeFactory('Document','foo')
+#
+# ``parse2plone`` will call:
+#   parent.invokeFactory('MyCustomPageType','foo')
+
+def get_types_to_swap(value):
+    results = None
+    if paths.findall(value):
+        results = []
+        for group in paths.findall(value):
+            results.append('%s:%s' % (clean_path(group[0]),
+                clean_path(group[1])))
+        results = ','.join(results)
+    return results
+
+def swap_types(typeswap, _CONTENT, logger):
+    """
+    Update _CONTENT
+    """
+    for swap in typeswap:
+        types = swap.split(':')
+        old = types[0]
+        new = types[1]
+        if old in _CONTENT:
+            _CONTENT[old] = new
+        else:
+            logger.error("Can't swap '%s' with unknown type: '%s'" % (new,
+                old))
+            exit(1)
+
+    return _CONTENT
 
 class Utils(object):
     def check_exists_obj(self, parent, obj):
@@ -91,6 +230,13 @@ class Utils(object):
             return True
         except:
             return False
+
+    def clean_path(self, path):
+        if path.startswith('/'):
+            path = path[1:]
+        if path.endswith('/'):
+            path = path[0:-1]
+        return path
 
     def convert_arg_values(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
@@ -186,13 +332,11 @@ class Utils(object):
                     value = get_paths_to_rename((options[option]))
                 elif option in ('typeswap'):
                     value = get_types_to_swap((options[option]))
-                elif option in ('path', 'match'):
-                    value = options[option]
                 elif option not in ('path'):
                     value = ','.join(re.split('\s+', options[option]))
             else:
                 if option in ('force', 'publish', 'slugify', 'rename',
-                    'typeswap', 'path', 'match'):
+                    'typeswap', 'path'):
                     value = existing_value
                 else:
                     value = ','.join(existing_value)
