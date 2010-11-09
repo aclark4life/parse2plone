@@ -2,10 +2,12 @@
 History
 -------
 
-0.9.6 ()
-~~~~~~~~
+0.9.6 (11/08/2010)
+~~~~~~~~~~~~~~~~~~
 
 * Fixes to match feature 
+* Combine all modules into one
+* Remove a stray pdb (!)
 
 0.9.5 (11/08/2010)
 ~~~~~~~~~~~~~~~~~~
