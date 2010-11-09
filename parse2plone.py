@@ -70,7 +70,7 @@ def match_files(files, base, match):
 
     The user may specify a string to match file names against; only content
     from files that match the string will be imported. E.g.
-                                                                           
+
         $ bin/plone run bin/import /var/www/html --match=2000
 
     Will import:
@@ -87,6 +87,7 @@ def match_files(files, base, match):
             if f.find(m) >= 0:
                 results[base].append(f)
     return results
+
 
 #These next two functions add rename support to ``parse2plone``.
 #
@@ -133,6 +134,7 @@ def rename_old_to_new(files, rename_map, base, rename):
             rename_map['reverse'][f.replace(old, new)] = f
     return rename_map
 
+
 def setup_logger():
     # log levels: debug, info, warn, error, critical
     logger = logging.getLogger("parse2plone")
@@ -145,6 +147,7 @@ def setup_logger():
     logger.addHandler(handler)
     return logger
 
+
 # This next function add
 # "slugify" support to parse2plone, which means that if a path like this
 # is discovered:
@@ -155,6 +158,7 @@ def setup_logger():
 # thereby "slugifying" the content, if you will.
 
 def convert_path_to_slug(files, slug_map, base):
+
     """
     Returns a slug_map which is forward/reverse mapping of paths to slugified
     paths and vice versa. E.g.:
@@ -176,6 +180,7 @@ def convert_path_to_slug(files, slug_map, base):
             slug_map['reverse'][slugfile] = f
 
     return slug_map
+
 
 # These next two functions adds "typeswap" feature to ``parse2plone``.
 #
@@ -200,6 +205,7 @@ def get_types_to_swap(value):
         results = ','.join(results)
     return results
 
+
 def swap_types(typeswap, _CONTENT, logger):
     """
     Update _CONTENT
@@ -216,6 +222,7 @@ def swap_types(typeswap, _CONTENT, logger):
             exit(1)
 
     return _CONTENT
+
 
 class Utils(object):
     def check_exists_obj(self, parent, obj):
@@ -611,11 +618,8 @@ class Parse2Plone(object):
         obj.portal_workflow.doActionFor(obj, 'publish')
 
     def set_title(self, obj, title):
-        try:
-            obj.setTitle(title.title())
-            obj.reindexObject()
-        except:
-            import pdb; pdb.set_trace()
+        obj.setTitle(title.title())
+        obj.reindexObject()
 
     def setup_app(self, app):
         # BBB Move imports here to avoid calling them on script installation,
