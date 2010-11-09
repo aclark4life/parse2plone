@@ -8,8 +8,8 @@ into Plone.
 Warning
 -------
 
-This is a **Buildout** recipe for use with Plone; by itself it does nothing. If you
-do not know what Plone is, please see: http://plone.org. If you do not know
+This is a **Buildout** recipe for use with **Plone**; by itself it does nothing. If you
+don't know what Plone is, please see: http://plone.org. If you don't know
 what Buildout is, please see: http://www.buildout.org/.
 
 Getting started
@@ -45,13 +45,8 @@ you would like to know more.
 Explanation
 -----------
 
-Why did you create ``Parse2Plone`` when the following packages already exist:
-
-* http://pypi.python.org/pypi/collective.transmogrifier
-
-  * http://pypi.python.org/pypi/transmogrify.filesystem
-  * http://pypi.python.org/pypi/transmogrify.htmlcontentextractor
-  * http://pypi.python.org/pypi/transmogrify.webcrawler
+Why did you create ``Parse2Plone`` when `collective.transmogrifier`_ already
+exists?
 
 Here are some reasons:
 
@@ -62,18 +57,10 @@ Here are some reasons:
 
 * collective.transmogrify provides a framework for creating reusable pipes
   (whose definitions are called blueprints). ``Parse2Plone`` provides 
-  a single, non-reusable "pipe/blueprint".
-
-* The author had an itch to scratch; it will be nice for him to be able to say
-  "just go write a script" and then point to an example.
+  a single, non-reusable script.
 
 * Transmogrifier and friends appear to be "developer's tools", while the author wants
   ``Parse2Plone`` to be an "end user's tool".
-
-* ``parse2plone`` in addition to its primary role as a content importer, is
-  intended to serve as an educational tool; both for the author and consumer.
-  Python coding best practices and how to script tasks in Plone are the aim.
-  Forking and pull requests are encouraged.
 
 If you are a developer looking to create repeatable migrations, you probably want to be
 using ``collective.transmogrifier``. If you are an end user that just wants to see your
@@ -87,6 +74,33 @@ There is also this user/contributor comment, which captures the author's sentime
 
                                                     -Derek Broughton, Pointer
                                                      Stop Consulting, Inc.
+
+That's great, but why didn't you try to improve `collective.transmogrifier`_
+and make it more user friendly?
+
+Here are some reasons:
+
+* The author is a minimalist. One of the design aims of ``Parse2Plone`` was to
+  have as few dependiences as possible. There are two "big" dependencies,
+  ``zc.buildout`` and ``lxml``. Using Buildout was a design compromise, and
+  using ``lxml`` is pretty much a must if you want to "parse". Oh, and 
+  ``BeautifulSoup`` was thrown in after the author read this:
+  http://codespeak.net/lxml/elementsoup.html
+
+* ``parse2plone`` in addition to its primary role as a content importer, is
+  intended to serve as an educational tool; both for the author and consumer.
+  Python coding best practices, and demonstrating how to script tasks in Plone
+  with "bin/instance run" are the aim. Forking and pull requests are encouraged.
+
+* The author had an itch to scratch; it will be nice for him to be able to say
+  "just go write a script" and then point to an example.
+
+All of that said, the author understands that reusability and conservation of
+(developer) resources are important goals, especially for the Plone project.
+But for better or worse, these were not the goals of ``Parse2Plone``. However,
+it is certainly possible that some of the lessons learned 
+
+.. _`collective.transmogrifier`: http://pypi.python.org/pypi/collective.transmogrifier
 
 Installation
 ------------

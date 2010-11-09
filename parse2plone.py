@@ -149,7 +149,7 @@ class Utils(object):
         option_parser.add_option("--typeswap", dest="typeswap",
             help="Optionally swap content types (see typeswap.py)")
         option_parser.add_option("--match", dest="match",
-            help="Only import content that matches (see match.py)")
+            help="Only import content that matches pattern (see match.py)")
         return option_parser
 
     def is_file(self, obj, extensions):
