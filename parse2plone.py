@@ -35,7 +35,6 @@ import re
 from os import path as os_path
 from os import walk
 from pkg_resources import working_set
-from re import compile
 from sys import executable
 from zc.buildout.easy_install import scripts as create_scripts
 
@@ -59,8 +58,8 @@ _CONTENT = {
     'Folder': 'Folder',
 }
 
-paths = compile('\n(\S+)\s+(\S+)')
-slug = compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
+paths = re.compile('\n(\S+)\s+(\S+)')
+slug = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 
 # BBB Because the ast module is not included with Python 2.4, we include this
@@ -241,6 +240,14 @@ def setup_logger():
     return logger
 
 
+def clean_path(path):
+    if path.startswith('/'):
+        path = path[1:]
+    if path.endswith('/'):
+        path = path[0:-1]
+    return path
+
+
 class Utils(object):
     def check_exists_obj(self, parent, obj):
         if obj in parent.objectIds():
@@ -254,13 +261,6 @@ class Utils(object):
             return True
         except:
             return False
-
-    def clean_path(self, path):
-        if path.startswith('/'):
-            path = path[1:]
-        if path.endswith('/'):
-            path = path[0:-1]
-        return path
 
     def convert_arg_values(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
