@@ -703,6 +703,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
     force=False, publish=False, slugify=False, rename=None, typeswap=None,
     match=None):
+
     count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
     logger = setup_logger()
     rename_map = {'forward': {}, 'reverse': {}}
