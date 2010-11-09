@@ -64,7 +64,7 @@ slug = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 def clean_path(path):
     """
-    Turns /foo/bar/baz into foo/bar/baz
+    Turns '/foo/bar/baz/' into 'foo/bar/baz'
     """
     if path.startswith('/'):
         path = path[1:]
