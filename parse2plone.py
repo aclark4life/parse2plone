@@ -74,6 +74,8 @@ def fake_literal_eval(input):
         return True
     elif input == 'None':
         return None
+    else:
+        return ValueError, 'malformed string'
 
 
 def match_files(files, base, match):
