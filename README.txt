@@ -96,9 +96,11 @@ Here are some reasons:
   "just go write a script" and then point to an example.
 
 All of that said, the author understands that reusability and conservation of
-(developer) resources are important goals, especially for the Plone project.
+developer resources are important goals, especially for the Plone project.
 But for better or worse, these were not the goals of ``Parse2Plone``. However,
-it is certainly possible that some of the lessons learned 
+you can be sure that the lessons learned while developing ``Parse2Plone`` will  
+be applied outside of it, particularly with regard to the conservation of developer
+resources within the Plone project.
 
 .. _`collective.transmogrifier`: http://pypi.python.org/pypi/collective.transmogrifier
 
