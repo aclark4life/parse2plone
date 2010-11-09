@@ -3,7 +3,7 @@ Introduction
 
 ``Parse2Plone`` is an HTML parser (in the form of a Buildout recipe that
 creates a script for you) to easily get content from static HTML websites
-into Plone.
+(on the file system) into Plone.
 
 Warning
 -------
