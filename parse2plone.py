@@ -78,10 +78,9 @@ def fake_literal_eval(input):
         return ValueError, 'malformed string'
 
 
+# Adds match feature to ``parse2plone``.
 def match_files(files, base, match):
     """
-    Adds match feature to ``parse2plone``.
-
     The user may specify a string to match file names against; only content
     from files that match the string will be imported. E.g.
 
@@ -103,20 +102,20 @@ def match_files(files, base, match):
     return results
 
 
-# These next two functions add rename support to ``parse2plone``.
-#
-# This feature allows the user to specify two paths: old and new (e.g.
-# --rename=old:new ).
-#
-# Then if a path like this is found:
-#    /old/2000/01/01/foo/index.html
-#
-# Instead of creating /old/2000/01/01/foo/index.html (in Plone),
-# ``parse2plone`` will create:
-#
-#    /new/2000/01/01/foo/index.html
-
+# Adds rename support to ``parse2plone``.
 def get_paths_to_rename(value):
+    """
+    This feature allows the user to specify two paths: old and new (e.g.
+    --rename=old:new ).
+
+    Then if a path like this is found:
+       /old/2000/01/01/foo/index.html
+
+    Instead of creating /old/2000/01/01/foo/index.html (in Plone),
+    ``parse2plone`` will create:
+
+       /new/2000/01/01/foo/index.html
+    """
     results = None
     if paths.findall(value):
         results = []
@@ -149,24 +148,22 @@ def rename_old_to_new(files, rename_map, base, rename):
     return rename_map
 
 
-# This next function adds
-# "slugify" support to parse2plone, which means that if a path like this
-# is discovered:
-#
-#     /2000/01/01/foo/index.html
-#
-# And --slugify is called, then instead of creating /2000/01/01/foo/index.html
-# (in Plone), parse2plone will create:
-#
-#     /foo-20000101.html
-#
-# thereby "slugifying" the content, if you will.
-
+# Adds "slugify" support to ``parse2plone``.
 def convert_path_to_slug(files, slug_map, base):
-
     """
-    Returns a slug_map which is forward/reverse mapping of paths to slugified
-    paths and vice versa. E.g.:
+    If a path like this is discovered:
+
+        /2000/01/01/foo/index.html
+
+    And --slugify is called, then instead of creating /2000/01/01/foo/index.html
+    (in Plone), parse2plone will create:
+
+        /foo-20000101.html
+
+    thereby "slugifying" the content, if you will.
+
+    This function returns a slug_map which is forward/reverse mapping of paths to
+    slugified paths and vice versa. E.g.:
 
         slug_map{'forward': {'/var/www/html/2000/01/01/foo/index.html':
             '/var/www/html/foo-20000101.html'}}
@@ -187,20 +184,20 @@ def convert_path_to_slug(files, slug_map, base):
     return slug_map
 
 
-# These next two functions adds "typeswap" feature to ``parse2plone``.
-#
-# This feature allows the user to specify customize content types for use
-# when importing content by specifying a "default" content type followed by
-# its replacement "custom" content type (e.g.
-# --typeswap=Document:MyCustomPageType).
-#
-# That means that instead of calling:
-#   parent.invokeFactory('Document','foo')
-#
-# ``parse2plone`` will call:
-#   parent.invokeFactory('MyCustomPageType','foo')
-
+# Adds "typeswap" feature to ``parse2plone``.
 def get_types_to_swap(value):
+    """
+    This feature allows the user to specify customize content types for use
+    when importing content by specifying a "default" content type followed by
+    its replacement "custom" content type (e.g.
+    --typeswap=Document:MyCustomPageType).
+
+    That means that instead of calling:
+      parent.invokeFactory('Document','foo')
+
+    ``parse2plone`` will call:
+      parent.invokeFactory('MyCustomPageType','foo')
+    """
     results = None
     if paths.findall(value):
         results = []
