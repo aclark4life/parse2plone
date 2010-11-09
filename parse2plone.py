@@ -29,9 +29,9 @@
 import fnmatch
 import logging
 import lxml
+import optparse
 import re
 
-from optparse import OptionParser
 from os import path as os_path
 from os import walk
 from pkg_resources import working_set
@@ -289,7 +289,7 @@ class Utils(object):
             _SETTINGS['match'] = match
 
     def create_option_parser(self):
-        option_parser = OptionParser()
+        option_parser = optparse.OptionParser()
         option_parser.add_option("-p", "--path", dest="path",
             help="Path to Plone site object or sub-folder")
         option_parser.add_option("--html-extensions",
