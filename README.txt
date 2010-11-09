@@ -81,7 +81,7 @@ and make it more user friendly?
 Here are some reasons:
 
 * The author is a minimalist. One of the design aims of ``Parse2Plone`` was to
-  have as few dependiences as possible. There are two "big" dependencies,
+  have as few dependencies as possible. There are two "big" dependencies,
   ``zc.buildout`` and ``lxml``. Using Buildout was a design compromise, and
   using ``lxml`` is pretty much a must if you want to "parse". Oh, and 
   ``BeautifulSoup`` was thrown in after the author read this:
