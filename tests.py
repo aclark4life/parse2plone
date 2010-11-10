@@ -4,10 +4,7 @@ import unittest
 from zc.buildout import testing
 
 
-class Parse2PloneTestCase(unittest.TestCase):
-
-    def setUp(self):
-        pass
+class FakeLiteralEvalTestCase(unittest.TestCase):
 
     def testFakeLiteralEvalTrue(self):
         self.assertEqual(True, parse2plone.fake_literal_eval('True'))
@@ -21,6 +18,12 @@ class Parse2PloneTestCase(unittest.TestCase):
     def testFakeLiteralEvalMalformedString(self):
         self.assertEqual((ValueError, 'malformed string'),
             parse2plone.fake_literal_eval('asdf'))
+
+
+class CleanPathTestCase(unittest.TestCase):
+
+    def testCleanPath(self):
+        self.assertEqual('foo/bar/baz', parse2plone.clean_path('/foo/bar/baz/'))
 
 if __name__ == '__main__':
     unittest.main()
