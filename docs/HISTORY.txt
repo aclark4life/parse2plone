@@ -6,7 +6,7 @@ History
 ~~~~~~~~~~~~~~~~~~
 
 * Fix import error
-* Add outfile to logger
+* Add file handler to logger; saves output to a file called "parse2plone.log"
 
 0.9.6 (11/08/2010)
 ~~~~~~~~~~~~~~~~~~
