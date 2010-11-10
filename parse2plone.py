@@ -422,9 +422,6 @@ class Utils(object):
 
 
 class Parse2Plone(object):
-    """
-    Parse2Plone
-    """
     def create_content(self, parent, obj, prefix_path, base, slug_map,
         rename_map):
         # BBB Move imports here to avoid calling them on script installation,
