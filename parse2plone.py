@@ -31,10 +31,10 @@ import logging
 import lxml
 import lxml.html
 import optparse
+import os
 import re
 
 from os import path as os_path
-from os import walk
 from pkg_resources import working_set
 from sys import executable
 from zc.buildout.easy_install import scripts as create_scripts
@@ -160,7 +160,6 @@ def rename_old_to_new(files, rename_map, base, rename):
     return rename_map
 
 
-
 # Adds "slugify" support to ``parse2plone``.
 def convert_path_to_slug(files, slug_map, base):
     """
@@ -168,15 +167,15 @@ def convert_path_to_slug(files, slug_map, base):
 
         /2000/01/01/foo/index.html
 
-    And --slugify is called, then instead of creating /2000/01/01/foo/index.html
-    (in Plone), parse2plone will create:
+    And --slugify is called, then instead of creating
+    /2000/01/01/foo/index.html (in Plone), parse2plone will create:
 
         /foo-20000101.html
 
     thereby "slugifying" the content, if you will.
 
-    This function returns a slug_map which is forward/reverse mapping of paths to
-    slugified paths and vice versa. E.g.:
+    This function returns a slug_map which is forward/reverse mapping of
+    paths to slugified paths and vice versa. E.g.:
 
         slug_map{'forward': {'/var/www/html/2000/01/01/foo/index.html':
             '/var/www/html/foo-20000101.html'}}
@@ -518,7 +517,7 @@ class Parse2Plone(object):
 
     def get_files(self, import_dir):
         results = []
-        for path, subdirs, files in walk(import_dir):
+        for path, subdirs, files in os.walk(import_dir):
             self.logger.info("path '%s', has subdirs '%s', and files '%s'" % (
                 path, ' '.join(subdirs), ' '.join(files)))
             for f in fnmatch.filter(files, '*'):
