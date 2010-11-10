@@ -241,17 +241,17 @@ def swap_types(typeswap, _CONTENT, logger):
 
 def setup_logger():
     # log levels: debug, info, warn, error, critical
-    LOG_FILENAME = 'parse2plone.log'
     logger = logging.getLogger("parse2plone")
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
+    outfile = logging.FileHandler(filename='parse2plone.log')
     handler.setLevel(logging.INFO)
+    outfile.setLevel(logging.INFO)
     formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
     handler.setFormatter(formatter)
     logger.addHandler(handler)
-
+    logger.addHandler(outfile)
     return logger
 
 
