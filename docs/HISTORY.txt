@@ -5,16 +5,17 @@ History
 0.9.6 (11/08/2010)
 ~~~~~~~~~~~~~~~~~~
 
-* Fixes to "match" feature 
+* Fixes to "match" feature
 * Combine all modules into one
 * Remove a stray pdb (!)
 * Add tests (we're at 20% test coverage people!)
+* Update docs
 
 0.9.5 (11/08/2010)
 ~~~~~~~~~~~~~~~~~~
 
-* Add match feature [aclark4life]
-* Add more project justifications to the docs [aclark4life]
+* Add match feature
+* Add more project justifications to the docs
 
 0.9.4 (11/06/2010)
 ~~~~~~~~~~~~~~~~~~
