@@ -155,8 +155,9 @@ def rename_old_to_new(files, rename_map, base, rename):
             new = parts[1]
             if f.find(old) >= 0:
                 rename_map['forward'][f] = f.replace(old, new)
-            rename_map['reverse'][f.replace(old, new)] = f
+                rename_map['reverse'][f.replace(old, new)] = f
     return rename_map
+
 
 
 # Adds "slugify" support to ``parse2plone``.
