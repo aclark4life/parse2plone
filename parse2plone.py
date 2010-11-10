@@ -366,7 +366,10 @@ class Utils(object):
                     'typeswap', 'path'):
                     value = existing_value
                 else:
-                    value = ','.join(existing_value)
+                    if existing_value is not None:
+                        value = ','.join(existing_value)
+                    else:
+                        value = None
 
             _SETTINGS[option] = value
 
