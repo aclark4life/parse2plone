@@ -437,7 +437,7 @@ class Utils(object):
         parse2plone.utils = utils
         return parse2plone
 
-    def setup_locals(self, *kwargs):
+    def _setup_locals(self, *kwargs):
         results = []
         for arg in kwargs:
             results.append(_SETTINGS[arg])
@@ -754,7 +754,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     num_parts = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
     base = parse2plone._get_base(import_dir, num_parts)
-    path, force, collapse, rename, customtypes, match = utils.setup_locals('path',
+    path, force, collapse, rename, customtypes, match = utils._setup_locals('path',
         'force', 'collapse', 'rename', 'customtypes', 'match')
     if utils._check_exists_path(app, path):
         parent = parse2plone._get_parent(app, path)
