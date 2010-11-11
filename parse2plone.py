@@ -69,7 +69,7 @@ _SETTINGS = {
     'match': None,
 }
 
-_CONTENT = {
+_CONTENT_TYPE_MAP = {
     'Document': 'Document',
     'Folder': 'Folder',
 }
@@ -215,7 +215,7 @@ def collapse_parts(files, collapse_map, base):
 
 
 # Adds "customtypes" feature to ``parse2plone``.
-def swap_types(customtypes, _CONTENT, logger):
+def swap_types(customtypes, _CONTENT_TYPE_MAP, logger):
     """
     This feature allows the user to specify customize content types for use
     when importing content by specifying a "default" content type followed by
@@ -228,20 +228,20 @@ def swap_types(customtypes, _CONTENT, logger):
     ``parse2plone`` will call:
       parent.invokeFactory('MyCustomPageType','foo')
 
-    Update _CONTENT with new types.
+    Update _CONTENT_TYPE_MAP with new types.
     """
     for swap in customtypes:
         types = swap.split(':')
         old = types[0]
         new = types[1]
-        if old in _CONTENT:
-            _CONTENT[old] = new
+        if old in _CONTENT_TYPE_MAP:
+            _CONTENT_TYPE_MAP[old] = new
         else:
             logger.error("Can't swap '%s' with unknown type: '%s'" % (new,
                 old))
             exit(1)
 
-    return _CONTENT
+    return _CONTENT_TYPE_MAP
 
 
 def _convert_types_to_csv(value):
@@ -477,7 +477,7 @@ class Parse2Plone(object):
     def create_folder(self, parent, obj):
         self.logger.info("creating folder '%s' inside parent folder '%s'" % (
             obj, self.utils.obj_to_path(parent)))
-        folder_type = _CONTENT['Folder']
+        folder_type = _CONTENT_TYPE_MAP['Folder']
         parent.invokeFactory(folder_type, obj)
         folder = parent[obj]
         if self.publish:
@@ -502,7 +502,7 @@ class Parse2Plone(object):
     def create_page(self, parent, obj):
         self.logger.info("creating page '%s' inside parent folder '%s'" % (obj,
             self.utils.obj_to_path(parent)))
-        page_type = _CONTENT['Document']
+        page_type = _CONTENT_TYPE_MAP['Document']
         parent.invokeFactory(page_type, obj)
         page = parent[obj]
         if self.publish:
@@ -775,7 +775,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     if rename:
         rename_map = rename_parts(object_paths, rename_map, base, rename)
     if customtypes:
-        swap_types(customtypes, _CONTENT, logger)
+        swap_types(customtypes, _CONTENT_TYPE_MAP, logger)
     results = parse2plone.import_files(parent, object_paths, base, collapse_map,
         rename_map)
 
