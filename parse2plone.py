@@ -74,8 +74,8 @@ _CONTENT_TYPE_MAP = {
     'Folder': 'Folder',
 }
 
-paths = re.compile('\n(\S+)\s+(\S+)')
-collapse = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
+_paths_expr = re.compile('\n(\S+)\s+(\S+)')
+_collapse_expr = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 
 def _clean_path(path):
@@ -168,9 +168,9 @@ def _convert_paths_to_csv(value):
     This function applies the `paths` regular expression to a value.
     """
     results = None
-    if paths.findall(value):
+    if _paths_expr.findall(value):
         results = []
-        for group in paths.findall(value):
+        for group in _paths_expr.findall(value):
             results.append('%s:%s' % (
                 _clean_path(group[0]),
                 _clean_path(group[1])))
@@ -203,7 +203,7 @@ def collapse_parts(files, collapse_map, base):
     """
 
     for f in files[base]:
-        result = collapse.search(f)
+        result = _collapse_expr.search(f)
         if result:
             groups = result.groups()
             collapse_id = '%s-%s%s%s.html' % (groups[3], groups[0], groups[1],
@@ -248,9 +248,9 @@ def _convert_types_to_csv(value):
     """
     """
     results = None
-    if paths.findall(value):
+    if _paths_expr.findall(value):
         results = []
-        for group in paths.findall(value):
+        for group in _paths_expr.findall(value):
             results.append('%s:%s' % (
                 _clean_path(group[0]),
                 _clean_path(group[1])))
