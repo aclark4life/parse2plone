@@ -230,14 +230,14 @@ def replace_types(customtypes, _CONTENT_TYPE_MAP, logger):
 
     Update _CONTENT_TYPE_MAP with new types.
     """
-    for swap in customtypes:
-        types = swap.split(':')
+    for replace in customtypes:
+        types = replace.split(':')
         old = types[0]
         new = types[1]
         if old in _CONTENT_TYPE_MAP:
             _CONTENT_TYPE_MAP[old] = new
         else:
-            logger.error("Can't swap '%s' with unknown type: '%s'" % (new,
+            logger.error("Can't replace '%s' with unknown type: '%s'" % (new,
                 old))
             exit(1)
 
@@ -341,11 +341,11 @@ class Utils(object):
             action="store_true", dest="collapse", default=False,
             help="""Optionally "collapse" content (see collapse.py)""")
         option_parser.add_option("--rename",
-            dest="rename", help="Optionally rename content (see rename.py)")
+            dest="rename", help="Optionally rename content (see rename_parts())")
         option_parser.add_option("--customtypes", dest="customtypes",
-            help="Optionally swap content types (see customtypes.py)")
+            help="Optionally use custom content types (see rename_types())")
         option_parser.add_option("--match", dest="match",
-            help="Only import content that matches pattern (see match.py)")
+            help="Only import content that matches <PATTERN> (see match_files())")
         return option_parser
 
     def is_file(self, obj, extensions):
