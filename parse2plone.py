@@ -275,20 +275,20 @@ def setup_logger():
 
 
 class Utils(object):
-    def check_exists_obj(self, parent, obj):
+    def _check_exists_obj(self, parent, obj):
         if obj in parent.objectIds():
             return True
         else:
             return False
 
-    def check_exists_path(self, parent, path):
+    def _check_exists_path(self, parent, path):
         try:
             parent.restrictedTraverse(path)
             return True
         except:
             return False
 
-    def convert_arg_values(self, illegal_chars, html_extensions,
+    def _convert_csv_to_list(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
         publish, collapse, rename, customtypes, match):
         """
@@ -317,7 +317,7 @@ class Utils(object):
         else:
             _SETTINGS['match'] = match
 
-    def create_option_parser(self):
+    def _create_option_parser(self):
         option_parser = optparse.OptionParser()
         option_parser.add_option("-p", "--path", dest="path",
             help="Path to Plone site object or sub-folder")
@@ -367,7 +367,7 @@ class Utils(object):
             results = False
         return results
 
-    def obj_to_path(self, obj):
+    def _convert_obj_to_path(self, obj):
         return '/'.join(obj.getPhysicalPath())
 
     def process_recipe_parameter_values(self, options):
@@ -425,7 +425,7 @@ class Utils(object):
         if options.match is not None:
             _SETTINGS['match'] = (options.match).split(',')
 
-    def setup_attrs(self, parse2plone, count, logger, utils):
+    def _setup_attrs(self, parse2plone, count, logger, utils):
         """
         Make settings available as Parse2Plone class attributes
         for convenience.
@@ -476,7 +476,7 @@ class Parse2Plone(object):
 
     def create_folder(self, parent, obj):
         self.logger.info("creating folder '%s' inside parent folder '%s'" % (
-            obj, self.utils.obj_to_path(parent)))
+            obj, self.utils._convert_obj_to_path(parent)))
         folder_type = _CONTENT_TYPE_MAP['Folder']
         parent.invokeFactory(folder_type, obj)
         folder = parent[obj]
@@ -487,21 +487,21 @@ class Parse2Plone(object):
 
     def create_file(self, parent, obj):
         self.logger.info("creating file '%s' inside parent folder '%s'" % (obj,
-            self.utils.obj_to_path(parent)))
+            self.utils._convert_obj_to_path(parent)))
         parent.invokeFactory('File', obj)
         file = parent[obj]
         return file
 
     def create_image(self, parent, obj):
         self.logger.info("creating image '%s' inside parent folder '%s'" % (
-            obj, self.utils.obj_to_path(parent)))
+            obj, self.utils._convert_obj_to_path(parent)))
         parent.invokeFactory('Image', obj)
         image = parent[obj]
         return image
 
     def create_page(self, parent, obj):
         self.logger.info("creating page '%s' inside parent folder '%s'" % (obj,
-            self.utils.obj_to_path(parent)))
+            self.utils._convert_obj_to_path(parent)))
         page_type = _CONTENT_TYPE_MAP['Document']
         parent.invokeFactory(page_type, obj)
         page = parent[obj]
@@ -518,13 +518,13 @@ class Parse2Plone(object):
             obj = self._get_obj(path)
             parent = self._get_parent(parent, '/'.join(prefix_path))
             if self.utils.is_legal(obj, self.illegal_chars):
-                if self.utils.check_exists_obj(parent, obj):
+                if self.utils._check_exists_obj(parent, obj):
                     self.logger.info("object '%s' exists inside '%s'" % (
-                        obj, self.utils.obj_to_path(parent)))
+                        obj, self.utils._convert_obj_to_path(parent)))
                 else:
                     self.logger.info(
                         "object '%s' does not exist inside '%s'"
-                        % (obj, self.utils.obj_to_path(parent)))
+                        % (obj, self.utils._convert_obj_to_path(parent)))
                     self.create_content(parent, obj, prefix_path, base,
                         collapse_map, rename_map)
             else:
@@ -553,8 +553,8 @@ class Parse2Plone(object):
     def _get_parent(self, current_parent, prefix_path):
         updated_parent = current_parent.restrictedTraverse(prefix_path)
         self.logger.info("updating parent from '%s' to '%s'" % (
-             self.utils.obj_to_path(current_parent),
-             self.utils.obj_to_path(updated_parent)))
+             self.utils._convert_obj_to_path(current_parent),
+             self.utils._convert_obj_to_path(updated_parent)))
         return updated_parent
 
     def _get_parts(self, path):
@@ -584,7 +584,7 @@ class Parse2Plone(object):
             self.create_parts(parent, parts, base, collapse_map, rename_map)
 
         results = self.count.values()
-        results.append(self.utils.obj_to_path(parent))
+        results.append(self.utils._convert_obj_to_path(parent))
         return results
 
     def _remove_base(self, files, num_parts, base):
@@ -736,27 +736,27 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     collapse_map = {'forward': {}, 'reverse': {}}
     utils = Utils()
 
-    # Convert arg values from csv to list; save results in _SETTINGS
-    utils.convert_arg_values(illegal_chars, html_extensions, image_extensions,
+    # Convert arg values passed in to main from csv to list; save results in _SETTINGS
+    utils._convert_csv_to_list(illegal_chars, html_extensions, image_extensions,
         file_extensions, target_tags, path, force, publish, collapse, rename,
         customtypes, match)
 
     # Process command line args; save results in _SETTINGS
-    option_parser = utils.create_option_parser()
+    option_parser = utils._create_option_parser()
     options, args = option_parser.parse_args()
     import_dir = _clean_path(args[0])
     utils.process_command_line_args(options)
 
     # Run parse2plone
     parse2plone = Parse2Plone()
-    parse2plone = utils.setup_attrs(parse2plone, count, logger, utils)
+    parse2plone = utils._setup_attrs(parse2plone, count, logger, utils)
     files = parse2plone._get_files(import_dir)
     num_parts = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
     base = parse2plone._get_base(import_dir, num_parts)
     path, force, collapse, rename, customtypes, match = utils.setup_locals('path',
         'force', 'collapse', 'rename', 'customtypes', 'match')
-    if utils.check_exists_path(app, path):
+    if utils._check_exists_path(app, path):
         parent = parse2plone._get_parent(app, path)
     else:
         if force:
