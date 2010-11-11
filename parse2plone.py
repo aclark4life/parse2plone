@@ -513,10 +513,10 @@ class Parse2Plone(object):
     def create_parts(self, parent, parts, base, collapse_map, rename_map):
         self.logger.info("creating parts for '%s'" % '/'.join(parts))
         for i in range(len(parts)):
-            path = self.get_path(parts, i)
-            prefix_path = self.get_prefix_path(path)
-            obj = self.get_obj(path)
-            parent = self.get_parent(parent, '/'.join(prefix_path))
+            path = self._get_path(parts, i)
+            prefix_path = self._get_prefix_path(path)
+            obj = self._get_obj(path)
+            parent = self._get_parent(parent, '/'.join(prefix_path))
             if self.utils.is_legal(obj, self.illegal_chars):
                 if self.utils.check_exists_obj(parent, obj):
                     self.logger.info("object '%s' exists inside '%s'" % (
@@ -531,11 +531,11 @@ class Parse2Plone(object):
                 self.logger.info("object '%s' has illegal chars" % obj)
                 break
 
-    def get_base(self, import_dir, num_parts):
+    def _get_base(self, import_dir, num_parts):
         import_dir = _clean_path(import_dir)
         return '/'.join(import_dir.split('/')[:num_parts])
 
-    def get_files(self, import_dir):
+    def _get_files(self, import_dir):
         results = []
         for path, subdirs, files in os.walk(import_dir):
             self.logger.info("path '%s', has subdirs '%s', and files '%s'" % (
@@ -547,36 +547,36 @@ class Parse2Plone(object):
                     self.logger.info("object '%s' has illegal chars" % f)
         return results
 
-    def get_obj(self, path):
+    def _get_obj(self, path):
         return path.split('/')[-1:][0]
 
-    def get_parent(self, current_parent, prefix_path):
+    def _get_parent(self, current_parent, prefix_path):
         updated_parent = current_parent.restrictedTraverse(prefix_path)
         self.logger.info("updating parent from '%s' to '%s'" % (
              self.utils.obj_to_path(current_parent),
              self.utils.obj_to_path(updated_parent)))
         return updated_parent
 
-    def get_parts(self, path):
+    def _get_parts(self, path):
         return path.split('/')
 
-    def get_path(self, parts, i):
+    def _get_path(self, parts, i):
         return '/'.join(parts[:i + 1])
 
-    def get_prefix_path(self, path):
+    def _get_prefix_path(self, path):
         return path.split('/')[:-1]
 
     def ignore_parts(self, files, num_parts):
         results = []
         for f in files:
-            parts = self.get_parts(f)
+            parts = self._get_parts(f)
             parts = parts[num_parts:]
             results.append(parts)
         return results
 
     def import_files(self, parent, files, base, collapse_map, rename_map):
         for f in files[base]:
-            parts = self.get_parts(f)
+            parts = self._get_parts(f)
             if self.rename and f in rename_map['forward']:
                 parts = rename_map['forward'][f].split('/')
             if self.collapse and f in collapse_map['forward']:
@@ -750,19 +750,19 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Run parse2plone
     parse2plone = Parse2Plone()
     parse2plone = utils.setup_attrs(parse2plone, count, logger, utils)
-    files = parse2plone.get_files(import_dir)
+    files = parse2plone._get_files(import_dir)
     num_parts = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
-    base = parse2plone.get_base(import_dir, num_parts)
+    base = parse2plone._get_base(import_dir, num_parts)
     path, force, collapse, rename, customtypes, match = utils.setup_locals('path',
         'force', 'collapse', 'rename', 'customtypes', 'match')
     if utils.check_exists_path(app, path):
-        parent = parse2plone.get_parent(app, path)
+        parent = parse2plone._get_parent(app, path)
     else:
         if force:
-            parse2plone.create_parts(app, parse2plone.get_parts(path), base,
+            parse2plone.create_parts(app, parse2plone._get_parts(path), base,
                 collapse_map, rename_map)
-            parent = parse2plone.get_parent(app, path)
+            parent = parse2plone._get_parent(app, path)
         else:
             msg = "object in path '%s' does not exist, use --force to create"
             logger.error(msg % path)
