@@ -130,7 +130,7 @@ def match_files(files, base, match):
 
 
 # Adds rename support to ``parse2plone``.
-def get_paths_to_rename(value):
+def _convert_paths_to_csv(value):
     """
     This feature allows the user to specify two paths: old and new (e.g.
     --rename=old:new ).
@@ -142,12 +142,15 @@ def get_paths_to_rename(value):
     ``parse2plone`` will create:
 
        /new/2000/01/01/foo/index.html
+
+    This function applies the `paths` regular expression to a value.
     """
     results = None
     if paths.findall(value):
         results = []
         for group in paths.findall(value):
-            results.append('%s:%s' % (clean_path(group[0]),
+            results.append('%s:%s' % (
+                clean_path(group[0]),
                 clean_path(group[1])))
         results = ','.join(results)
     return results
@@ -374,7 +377,7 @@ class Utils(object):
                 if option in ('force', 'publish', 'slugify'):
                     value = fake_literal_eval(options[option].capitalize())
                 elif option in ('rename'):
-                    value = get_paths_to_rename((options[option]))
+                    value = _convert_paths_to_csv((options[option]))
                 elif option in ('typeswap'):
                     value = get_types_to_swap((options[option]))
                 elif option not in ('path'):

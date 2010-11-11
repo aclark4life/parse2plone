@@ -29,7 +29,6 @@ class RenameOldNewTestCase(unittest.TestCase):
 
     def setUp(self):
         self.rename_map_before = {'forward': {}, 'reverse': {}}
-
         self.rename_map_after = {
             'forward': {
                 '/var/www/html/foo/index.html': '/var/www/html/bar/index.html',
@@ -44,6 +43,11 @@ class RenameOldNewTestCase(unittest.TestCase):
             '/var/www/html/foo/index.html',
             '/var/www/html/baz/index.html'
         ]}
+        self.recipe_input_line_1 = "\n/foo /bar"
+        self.recipe_input_line_2 = "\n/baz /qux"
+        self.recipe_input_before = [self.recipe_input_line_1,
+            self.recipe_input_line_2]
+        self.recipe_input_after = ['foo:bar', 'baz:qux']
 
     def testRenameOldNew(self):
         rename_map_before = self.rename_map_before
@@ -54,6 +58,16 @@ class RenameOldNewTestCase(unittest.TestCase):
         self.assertEqual(rename_map_after,
             parse2plone.rename_old_to_new(
             files, rename_map_before, base, rename))
+
+    def testConvertRecipeInputToCSV(self):
+        results = []
+        recipe_input_before = self.recipe_input_before
+        recipe_input_after = self.recipe_input_after
+
+        for recipe_input in recipe_input_before:
+            results.append(parse2plone._convert_paths_to_csv(recipe_input))
+
+        self.assertEqual(results, recipe_input_after)
 
 
 class MatchFilesTestCase(unittest.TestCase):
