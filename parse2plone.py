@@ -370,7 +370,7 @@ class Utils(object):
     def _convert_obj_to_path(self, obj):
         return '/'.join(obj.getPhysicalPath())
 
-    def _process_recipe_args(self, options):
+    def process_recipe_args(self, options):
         """
         Convert most recipe parameter values to csv; save in _SETTINGS dict
         """
@@ -396,7 +396,7 @@ class Utils(object):
 
             _SETTINGS[option] = value
 
-    def _process_command_line_args(self, options):
+    def process_command_line_args(self, options):
         """
         Process command line args; save results in _SETTINGS dict
         """
@@ -594,7 +594,7 @@ class Parse2Plone(object):
             results[base].append('/'.join(f))
         return results
 
-    def _process_root_element(self, results, root):
+    def process_root_element(self, results, root):
         # separate out the XPath selectors and ordinary tags
         selectors = [x for x in self.target_tags if '/' in x]
         tags = [x for x in self.target_tags if '/' not in x]
@@ -654,7 +654,7 @@ class Parse2Plone(object):
             msg = "make sure file contains HTML"
             self.logger.error(msg % filename)
             exit(1)
-        results = self._process_root_element(results, root)
+        results = self.process_root_element(results, root)
         page.setText(results)
 
     def set_state(self, obj):
@@ -684,7 +684,7 @@ class Recipe(object):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
         utils = Utils()
-        utils._process_recipe_args(self.options)
+        utils.process_recipe_args(self.options)
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
         arguments += " target_tags='%s', force=%s, publish=%s,"
@@ -745,7 +745,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     option_parser = utils._create_option_parser()
     options, args = option_parser.parse_args()
     import_dir = _clean_path(args[0])
-    utils._process_command_line_args(options)
+    utils.process_command_line_args(options)
 
     # Run parse2plone
     parse2plone = Parse2Plone()
