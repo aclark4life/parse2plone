@@ -1,3 +1,4 @@
+
 ###############################################################################
 #                                                                             #
 # Parse2Plone - Easily import static website content into Plone               #
@@ -21,6 +22,20 @@
 # Usage:                                                                      #
 #                                                                             #
 #     $ bin/plone run bin/import /path/to/files                               #
+#                                                                             #
+# Where:                                                                      #
+#                                                                             #
+#     * `bin/plone` is an instance script created by                          #
+#       http://pypi.python.org/pypi/plone.recipe.zope2instance                #
+#       (after you run Buildout)                                              #
+#                                                                             #
+#     * `run` is a command line option of `bin/plone` to execute a script     #
+#                                                                             #
+#     * `bin/import` is a script created by parse2plone (after you run        #
+#       Buildout)                                                             #
+#                                                                             #
+#     * `/path/to/files` is the file system path to your website files e.g.   #
+#       /var/www/html                                                         #
 #                                                                             #
 # See README.txt for more information                                         #
 #                                                                             #
