@@ -156,7 +156,7 @@ def _convert_paths_to_csv(value):
     return results
 
 
-def rename_old_to_new(files, rename_map, base, rename):
+def _rename_old_to_new(files, rename_map, base, rename):
     """
     Returns a rename_map which is forward/reverse mapping of old paths to
     new paths and vice versa. E.g.:
@@ -771,7 +771,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     if slugify:
         slug_map = convert_path_to_slug(files, slug_map, base)
     if rename:
-        rename_map = rename_old_to_new(files, rename_map, base, rename)
+        rename_map = _rename_old_to_new(files, rename_map, base, rename)
     if typeswap:
         swap_types(typeswap, _CONTENT, logger)
     results = parse2plone.import_files(parent, files, base, slug_map,

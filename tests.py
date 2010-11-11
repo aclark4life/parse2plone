@@ -56,7 +56,7 @@ class RenameOldNewTestCase(unittest.TestCase):
         base = self.base
         rename = ['foo:bar', 'baz:qux']
         self.assertEqual(rename_map_after,
-            parse2plone.rename_old_to_new(
+            parse2plone._rename_old_to_new(
             files, rename_map_before, base, rename))
 
     def testConvertRecipeInputToCSV(self):
