@@ -56,5 +56,24 @@ class RenameOldNewTestCase(unittest.TestCase):
             files, rename_map_before, base, rename))
 
 
+class MatchFilesTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.base = '/var/www/html'
+        self.files_before = {self.base: [
+            '/var/www/html/2000/index.html',
+            '/var/www/html/2001/index.html'
+        ]}
+        self.files_after = {self.base: [
+            '/var/www/html/2000/index.html',
+        ]}
+
+    def testMatchFiles(self):
+        base = self.base
+        files_before = self.files_before
+        files_after = self.files_after
+        self.assertEqual(files_after,
+            parse2plone.match_files(files_before, base, ['2000']))
+
 if __name__ == '__main__':
     unittest.main()
