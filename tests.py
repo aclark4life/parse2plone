@@ -25,6 +25,7 @@ class CleanPathTestCase(unittest.TestCase):
             '/foo/bar/baz/'))
 
 
+# Test "rename" feature
 class RenameOldNewTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -70,6 +71,7 @@ class RenameOldNewTestCase(unittest.TestCase):
         self.assertEqual(results, recipe_input_after)
 
 
+# Test "match" feature
 class MatchFilesTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -89,13 +91,26 @@ class MatchFilesTestCase(unittest.TestCase):
         self.assertEqual(files_after,
             parse2plone.match_files(files_before, base, ['2000']))
 
+
+# Test "customtypes" feature
 class CustomTypesTestCase(unittest.TestCase):
 
     def setUp(self):
         pass
 
-    def UseCustomTypes(self):        
+    def testCustomTypes(self):        
         pass
+
+
+# Test "collapse" feature
+class CollapseTestCase(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def testCollapse(self):        
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
