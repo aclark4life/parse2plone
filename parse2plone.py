@@ -78,7 +78,7 @@ paths = re.compile('\n(\S+)\s+(\S+)')
 slug = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 
-def clean_path(path):
+def _clean_path(path):
     """
     Turns '/foo/bar/baz/' into 'foo/bar/baz'
     """
@@ -150,13 +150,13 @@ def _convert_paths_to_csv(value):
         results = []
         for group in paths.findall(value):
             results.append('%s:%s' % (
-                clean_path(group[0]),
-                clean_path(group[1])))
+                _clean_path(group[0]),
+                _clean_path(group[1])))
         results = ','.join(results)
     return results
 
 
-def _rename_old_to_new(files, rename_map, base, rename):
+def rename_parts(files, rename_map, base, rename):
     """
     Returns a rename_map which is forward/reverse mapping of old paths to
     new paths and vice versa. E.g.:
@@ -232,8 +232,9 @@ def get_types_to_swap(value):
     if paths.findall(value):
         results = []
         for group in paths.findall(value):
-            results.append('%s:%s' % (clean_path(group[0]),
-                clean_path(group[1])))
+            results.append('%s:%s' % (
+                _clean_path(group[0]),
+                _clean_path(group[1])))
         results = ','.join(results)
     return results
 
@@ -298,7 +299,7 @@ class Utils(object):
         _SETTINGS['image_extensions'] = image_extensions.split(',')
         _SETTINGS['file_extensions'] = file_extensions.split(',')
         _SETTINGS['target_tags'] = target_tags.split(',')
-        _SETTINGS['path'] = clean_path(path)
+        _SETTINGS['path'] = _clean_path(path)
         _SETTINGS['force'] = force
         _SETTINGS['publish'] = publish
         _SETTINGS['slugify'] = slugify
@@ -399,7 +400,7 @@ class Utils(object):
         Process command line args; save results in _SETTINGS dict
         """
         if options.path is not None:
-            _SETTINGS['path'] = clean_path(options.path)
+            _SETTINGS['path'] = _clean_path(options.path)
         if options.illegal_chars is not None:
             _SETTINGS['illegal_chars'] = options.illegal_chars
         if options.html_extensions is not None:
@@ -530,7 +531,7 @@ class Parse2Plone(object):
                 break
 
     def get_base(self, import_dir, num_parts):
-        import_dir = clean_path(import_dir)
+        import_dir = _clean_path(import_dir)
         return '/'.join(import_dir.split('/')[:num_parts])
 
     def get_files(self, import_dir):
@@ -742,7 +743,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Process command line args; save results in _SETTINGS
     option_parser = utils.create_option_parser()
     options, args = option_parser.parse_args()
-    import_dir = clean_path(args[0])
+    import_dir = _clean_path(args[0])
     utils.process_command_line_args(options)
 
     # Run parse2plone
@@ -771,7 +772,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     if slugify:
         slug_map = convert_path_to_slug(files, slug_map, base)
     if rename:
-        rename_map = _rename_old_to_new(files, rename_map, base, rename)
+        rename_map = rename_parts(files, rename_map, base, rename)
     if typeswap:
         swap_types(typeswap, _CONTENT, logger)
     results = parse2plone.import_files(parent, files, base, slug_map,

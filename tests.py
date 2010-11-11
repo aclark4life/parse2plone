@@ -21,7 +21,7 @@ class FakeLiteralEvalTestCase(unittest.TestCase):
 class CleanPathTestCase(unittest.TestCase):
 
     def testCleanPath(self):
-        self.assertEqual('foo/bar/baz', parse2plone.clean_path(
+        self.assertEqual('foo/bar/baz', parse2plone._clean_path(
             '/foo/bar/baz/'))
 
 
@@ -56,7 +56,7 @@ class RenameOldNewTestCase(unittest.TestCase):
         base = self.base
         rename = ['foo:bar', 'baz:qux']
         self.assertEqual(rename_map_after,
-            parse2plone._rename_old_to_new(
+            parse2plone.rename_parts(
             files, rename_map_before, base, rename))
 
     def testConvertRecipeInputToCSV(self):
