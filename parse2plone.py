@@ -105,7 +105,7 @@ def _fake_literal_eval(input):
         return ValueError, 'malformed string'
 
 
-# Adds match feature to ``parse2plone``.
+# Adds "match" feature to ``parse2plone``.
 def match_files(files, base, match):
     """
     The user may specify a string to match file names against; only content
@@ -129,7 +129,7 @@ def match_files(files, base, match):
     return results
 
 
-# Adds rename support to ``parse2plone``.
+# Adds "rename" feature to ``parse2plone``.
 def rename_parts(files, rename_map, base, rename):
     """
     This feature allows the user to specify two paths: old and new (e.g.
@@ -178,7 +178,7 @@ def _convert_paths_to_csv(value):
     return results
 
 
-# Adds "collapse" support to ``parse2plone``.
+# Adds "collapse" feature to ``parse2plone``.
 def collapse_parts(files, collapse_map, base):
     """
     If a path like this is discovered:
