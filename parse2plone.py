@@ -63,7 +63,7 @@ _SETTINGS = {
     'target_tags': ['a', 'div', 'h1', 'h2', 'p'],
     'force': False,
     'publish': False,
-    'slugify': False,
+    'collapse': False,
     'rename': None,
     'typeswap': None,
     'match': None,
@@ -75,7 +75,7 @@ _CONTENT = {
 }
 
 paths = re.compile('\n(\S+)\s+(\S+)')
-slug = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
+collapse = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 
 def _clean_path(path):
@@ -91,7 +91,7 @@ def _clean_path(path):
 
 # BBB Because the ast module is not included with Python 2.4, we include this
 # function to produce similar results (with our limited input set).
-def fake_literal_eval(input):
+def _fake_literal_eval(input):
     """
     Returns False when 'False' is passed in, and so on.
     """
@@ -130,7 +130,7 @@ def match_files(files, base, match):
 
 
 # Adds rename support to ``parse2plone``.
-def _convert_paths_to_csv(value):
+def rename_parts(files, rename_map, base, rename):
     """
     This feature allows the user to specify two paths: old and new (e.g.
     --rename=old:new ).
@@ -143,23 +143,8 @@ def _convert_paths_to_csv(value):
 
        /new/2000/01/01/foo/index.html
 
-    This function applies the `paths` regular expression to a value.
-    """
-    results = None
-    if paths.findall(value):
-        results = []
-        for group in paths.findall(value):
-            results.append('%s:%s' % (
-                _clean_path(group[0]),
-                _clean_path(group[1])))
-        results = ','.join(results)
-    return results
-
-
-def rename_parts(files, rename_map, base, rename):
-    """
-    Returns a rename_map which is forward/reverse mapping of old paths to
-    new paths and vice versa. E.g.:
+    This function returns a rename_map which is forward/reverse mapping of
+    old paths to new paths and vice versa. E.g.:
 
         rename_map{'forward': {'/var/www/html/old/2000/01/01/foo/index.html':
             '/var/www/html/new/2000/01/01/foo/index.html'}}
@@ -178,40 +163,55 @@ def rename_parts(files, rename_map, base, rename):
     return rename_map
 
 
-# Adds "slugify" support to ``parse2plone``.
-def convert_path_to_slug(files, slug_map, base):
+def _convert_paths_to_csv(value):
+    """
+    This function applies the `paths` regular expression to a value.
+    """
+    results = None
+    if paths.findall(value):
+        results = []
+        for group in paths.findall(value):
+            results.append('%s:%s' % (
+                _clean_path(group[0]),
+                _clean_path(group[1])))
+        results = ','.join(results)
+    return results
+
+
+# Adds "collapse" support to ``parse2plone``.
+def collapse_parts(files, collapse_map, base):
     """
     If a path like this is discovered:
 
         /2000/01/01/foo/index.html
 
-    And --slugify is called, then instead of creating
+    And --collapse is called, then instead of creating
     /2000/01/01/foo/index.html (in Plone), parse2plone will create:
 
         /foo-20000101.html
 
-    thereby "slugifying" the content, if you will.
+    thereby "collapsing" the content, if you will.
 
-    This function returns a slug_map which is forward/reverse mapping of
-    paths to slugified paths and vice versa. E.g.:
+    This function returns a collapse_map which is forward/reverse mapping of
+    paths to collapsed paths and vice versa. E.g.:
 
-        slug_map{'forward': {'/var/www/html/2000/01/01/foo/index.html':
+        collapse_map{'forward': {'/var/www/html/2000/01/01/foo/index.html':
             '/var/www/html/foo-20000101.html'}}
 
-        slug_map{'reverse': {'/var/www/html/foo-20000101.html':
+        collapse_map{'reverse': {'/var/www/html/foo-20000101.html':
             '/var/www/html/2000/01/01/foo/index.html'}}
     """
 
     for f in files[base]:
-        result = slug.search(f)
+        result = collapse.search(f)
         if result:
             groups = result.groups()
-            slugfile = '%s-%s%s%s.html' % (groups[3], groups[0], groups[1],
+            collapse_id = '%s-%s%s%s.html' % (groups[3], groups[0], groups[1],
                 groups[2])
-            slug_map['forward'][f] = slugfile
-            slug_map['reverse'][slugfile] = f
+            collapse_map['forward'][f] = collapse_id
+            collapse_map['reverse'][collapse_id] = f
 
-    return slug_map
+    return collapse_map
 
 
 # Adds "typeswap" feature to ``parse2plone``.
@@ -289,7 +289,7 @@ class Utils(object):
 
     def convert_arg_values(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
-        publish, slugify, rename, typeswap, match):
+        publish, collapse, rename, typeswap, match):
         """
         Convert most recipe parameter values from csv; save results
         in _SETTINGS dict
@@ -302,7 +302,7 @@ class Utils(object):
         _SETTINGS['path'] = _clean_path(path)
         _SETTINGS['force'] = force
         _SETTINGS['publish'] = publish
-        _SETTINGS['slugify'] = slugify
+        _SETTINGS['collapse'] = collapse
         if rename is not None:
             _SETTINGS['rename'] = rename.split(',')
         else:
@@ -336,9 +336,9 @@ class Utils(object):
         option_parser.add_option("--publish",
             action="store_true", dest="publish", default=False,
             help="Optionally publish newly created content")
-        option_parser.add_option("--slugify",
-            action="store_true", dest="slugify", default=False,
-            help="""Optionally "slugify" content (see slugify.py)""")
+        option_parser.add_option("--collapse",
+            action="store_true", dest="collapse", default=False,
+            help="""Optionally "collapse" content (see collapse.py)""")
         option_parser.add_option("--rename",
             dest="rename", help="Optionally rename content (see rename.py)")
         option_parser.add_option("--typeswap", dest="typeswap",
@@ -375,8 +375,8 @@ class Utils(object):
         """
         for option, existing_value in _SETTINGS.items():
             if option in options:
-                if option in ('force', 'publish', 'slugify'):
-                    value = fake_literal_eval(options[option].capitalize())
+                if option in ('force', 'publish', 'collapse'):
+                    value = _fake_literal_eval(options[option].capitalize())
                 elif option in ('rename'):
                     value = _convert_paths_to_csv((options[option]))
                 elif option in ('typeswap'):
@@ -384,7 +384,7 @@ class Utils(object):
                 elif option not in ('path'):
                     value = ','.join(re.split('\s+', options[option]))
             else:
-                if option in ('force', 'publish', 'slugify', 'rename',
+                if option in ('force', 'publish', 'collapse', 'rename',
                     'typeswap', 'path'):
                     value = existing_value
                 else:
@@ -415,8 +415,8 @@ class Utils(object):
             _SETTINGS['force'] = options.force
         if options.publish is not None:
             _SETTINGS['publish'] = options.publish
-        if options.slugify is not None:
-            _SETTINGS['slugify'] = options.slugify
+        if options.collapse is not None:
+            _SETTINGS['collapse'] = options.collapse
         if options.rename is not None:
             _SETTINGS['rename'] = (options.rename).split(',')
         if options.typeswap is not None:
@@ -444,7 +444,7 @@ class Utils(object):
 
 
 class Parse2Plone(object):
-    def create_content(self, parent, obj, prefix_path, base, slug_map,
+    def create_content(self, parent, obj, prefix_path, base, collapse_map,
         rename_map):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
@@ -457,7 +457,7 @@ class Parse2Plone(object):
         elif self.utils.is_file(obj, self.html_extensions):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
-            self.set_page(page, obj, prefix_path, base, slug_map, rename_map)
+            self.set_page(page, obj, prefix_path, base, collapse_map, rename_map)
             self.count['pages'] += 1
             commit()
         elif self.utils.is_file(obj, self.image_extensions):
@@ -509,7 +509,7 @@ class Parse2Plone(object):
             self.logger.info("publishing page '%s'" % obj)
         return page
 
-    def create_parts(self, parent, parts, base, slug_map, rename_map):
+    def create_parts(self, parent, parts, base, collapse_map, rename_map):
         self.logger.info("creating parts for '%s'" % '/'.join(parts))
         for i in range(len(parts)):
             path = self.get_path(parts, i)
@@ -525,7 +525,7 @@ class Parse2Plone(object):
                         "object '%s' does not exist inside '%s'"
                         % (obj, self.utils.obj_to_path(parent)))
                     self.create_content(parent, obj, prefix_path, base,
-                        slug_map, rename_map)
+                        collapse_map, rename_map)
             else:
                 self.logger.info("object '%s' has illegal chars" % obj)
                 break
@@ -573,14 +573,14 @@ class Parse2Plone(object):
             results.append(parts)
         return results
 
-    def import_files(self, parent, files, base, slug_map, rename_map):
+    def import_files(self, parent, files, base, collapse_map, rename_map):
         for f in files[base]:
             parts = self.get_parts(f)
             if self.rename and f in rename_map['forward']:
                 parts = rename_map['forward'][f].split('/')
-            if self.slugify and f in slug_map['forward']:
-                parts = slug_map['forward'][f].split('/')
-            self.create_parts(parent, parts, base, slug_map, rename_map)
+            if self.collapse and f in collapse_map['forward']:
+                parts = collapse_map['forward'][f].split('/')
+            self.create_parts(parent, parts, base, collapse_map, rename_map)
 
         results = self.count.values()
         results.append(self.utils.obj_to_path(parent))
@@ -633,14 +633,14 @@ class Parse2Plone(object):
         f.close()
         at_file.setFile(data)
 
-    def set_page(self, page, obj, prefix_path, base, slug_map, rename_map):
+    def set_page(self, page, obj, prefix_path, base, collapse_map, rename_map):
         filename = '/'.join([base, '/'.join(prefix_path), obj])
         key = '/'.join(prefix_path) + '/' + obj
         if self.rename and key in rename_map['reverse']:
             value = rename_map['reverse'][key]
             filename = '/'.join([base, value])
-        if self.slugify and obj in slug_map['reverse']:
-            value = slug_map['reverse'][obj]
+        if self.collapse and obj in collapse_map['reverse']:
+            value = collapse_map['reverse'][obj]
             filename = '/'.join([base, value])
         f = open(filename, 'rb')
         results = ''
@@ -687,7 +687,7 @@ class Recipe(object):
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
         arguments += " target_tags='%s', force=%s, publish=%s,"
-        arguments += " slugify=%s,"
+        arguments += " collapse=%s,"
         if _SETTINGS['rename']:
             arguments += " rename='%s',"
         else:
@@ -712,7 +712,7 @@ class Recipe(object):
             _SETTINGS['target_tags'],
             _SETTINGS['force'],
             _SETTINGS['publish'],
-            _SETTINGS['slugify'],
+            _SETTINGS['collapse'],
             _SETTINGS['rename'],
             _SETTINGS['typeswap'],
             _SETTINGS['match'],
@@ -726,18 +726,18 @@ class Recipe(object):
 
 def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
-    force=False, publish=False, slugify=False, rename=None, typeswap=None,
+    force=False, publish=False, collapse=False, rename=None, typeswap=None,
     match=None):
 
     count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
     logger = setup_logger()
     rename_map = {'forward': {}, 'reverse': {}}
-    slug_map = {'forward': {}, 'reverse': {}}
+    collapse_map = {'forward': {}, 'reverse': {}}
     utils = Utils()
 
     # Convert arg values from csv to list; save results in _SETTINGS
     utils.convert_arg_values(illegal_chars, html_extensions, image_extensions,
-        file_extensions, target_tags, path, force, publish, slugify, rename,
+        file_extensions, target_tags, path, force, publish, collapse, rename,
         typeswap, match)
 
     # Process command line args; save results in _SETTINGS
@@ -753,14 +753,14 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     num_parts = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
     base = parse2plone.get_base(import_dir, num_parts)
-    path, force, slugify, rename, typeswap, match = utils.setup_locals('path',
-        'force', 'slugify', 'rename', 'typeswap', 'match')
+    path, force, collapse, rename, typeswap, match = utils.setup_locals('path',
+        'force', 'collapse', 'rename', 'typeswap', 'match')
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:
         if force:
             parse2plone.create_parts(app, parse2plone.get_parts(path), base,
-                slug_map, rename_map)
+                collapse_map, rename_map)
             parent = parse2plone.get_parent(app, path)
         else:
             msg = "object in path '%s' does not exist, use --force to create"
@@ -769,13 +769,13 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     files = parse2plone.prep_files(files, num_parts, base)
     if match:
         files = match_files(files, base, match)
-    if slugify:
-        slug_map = convert_path_to_slug(files, slug_map, base)
+    if collapse:
+        collapse_map = collapse_parts(files, collapse_map, base)
     if rename:
         rename_map = rename_parts(files, rename_map, base, rename)
     if typeswap:
         swap_types(typeswap, _CONTENT, logger)
-    results = parse2plone.import_files(parent, files, base, slug_map,
+    results = parse2plone.import_files(parent, files, base, collapse_map,
         rename_map)
 
     # Print results

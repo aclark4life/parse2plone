@@ -5,17 +5,17 @@ import unittest
 class FakeLiteralEvalTestCase(unittest.TestCase):
 
     def testFakeLiteralEvalTrue(self):
-        self.assertEqual(True, parse2plone.fake_literal_eval('True'))
+        self.assertEqual(True, parse2plone._fake_literal_eval('True'))
 
     def testFakeLiteralEvalFalse(self):
-        self.assertEqual(False, parse2plone.fake_literal_eval('False'))
+        self.assertEqual(False, parse2plone._fake_literal_eval('False'))
 
     def testFakeLiteralEvalNone(self):
-        self.assertEqual(None, parse2plone.fake_literal_eval('None'))
+        self.assertEqual(None, parse2plone._fake_literal_eval('None'))
 
     def testFakeLiteralEvalMalformedString(self):
         self.assertEqual((ValueError, 'malformed string'),
-            parse2plone.fake_literal_eval('asdf'))
+            parse2plone._fake_literal_eval('asdf'))
 
 
 class CleanPathTestCase(unittest.TestCase):
