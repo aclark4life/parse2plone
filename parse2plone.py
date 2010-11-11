@@ -348,20 +348,20 @@ class Utils(object):
             help="Only import content that matches <PATTERN> (see match_files())")
         return option_parser
 
-    def is_file(self, obj, extensions):
+    def _is_file(self, obj, extensions):
         result = False
         for ext in extensions:
             if obj.endswith(ext):
                 result = True
         return result
 
-    def is_folder(self, obj):
+    def _is_folder(self, obj):
         if len(obj.split('.')) == 1:
             return True
         else:
             return False
 
-    def is_legal(self, obj, illegal_chars):
+    def _is_legal(self, obj, illegal_chars):
         results = True
         if obj[:1] in illegal_chars:
             results = False
@@ -370,7 +370,7 @@ class Utils(object):
     def _convert_obj_to_path(self, obj):
         return '/'.join(obj.getPhysicalPath())
 
-    def process_recipe_parameter_values(self, options):
+    def _process_recipe_args(self, options):
         """
         Convert most recipe parameter values to csv; save in _SETTINGS dict
         """
@@ -396,7 +396,7 @@ class Utils(object):
 
             _SETTINGS[option] = value
 
-    def process_command_line_args(self, options):
+    def _process_command_line_args(self, options):
         """
         Process command line args; save results in _SETTINGS dict
         """
@@ -450,24 +450,24 @@ class Parse2Plone(object):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
         from transaction import commit
-        if self.utils.is_folder(obj):
+        if self.utils._is_folder(obj):
             folder = self.create_folder(parent, obj)
             self.set_title(folder, obj)
             self.count['folders'] += 1
             commit()
-        elif self.utils.is_file(obj, self.html_extensions):
+        elif self.utils._is_file(obj, self.html_extensions):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
             self.set_page(page, obj, prefix_path, base, collapse_map, rename_map)
             self.count['pages'] += 1
             commit()
-        elif self.utils.is_file(obj, self.image_extensions):
+        elif self.utils._is_file(obj, self.image_extensions):
             image = self.create_image(parent, obj)
             self.set_title(image, obj)
             self.set_image(image, obj, prefix_path, base)
             self.count['images'] += 1
             commit()
-        elif self.utils.is_file(obj, self.file_extensions):
+        elif self.utils._is_file(obj, self.file_extensions):
             at_file = self.create_file(parent, obj)
             self.set_title(at_file, obj)
             self.set_file(at_file, obj, prefix_path, base)
@@ -517,7 +517,7 @@ class Parse2Plone(object):
             prefix_path = self._get_prefix_path(path)
             obj = self._get_obj(path)
             parent = self._get_parent(parent, '/'.join(prefix_path))
-            if self.utils.is_legal(obj, self.illegal_chars):
+            if self.utils._is_legal(obj, self.illegal_chars):
                 if self.utils._check_exists_obj(parent, obj):
                     self.logger.info("object '%s' exists inside '%s'" % (
                         obj, self.utils._convert_obj_to_path(parent)))
@@ -541,7 +541,7 @@ class Parse2Plone(object):
             self.logger.info("path '%s', has subdirs '%s', and files '%s'" % (
                 path, ' '.join(subdirs), ' '.join(files)))
             for f in fnmatch.filter(files, '*'):
-                if self.utils.is_legal(f, self.illegal_chars):
+                if self.utils._is_legal(f, self.illegal_chars):
                     results.append(os_path.join(path, f))
                 else:
                     self.logger.info("object '%s' has illegal chars" % f)
@@ -684,7 +684,7 @@ class Recipe(object):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
         utils = Utils()
-        utils.process_recipe_parameter_values(self.options)
+        utils._process_recipe_args(self.options)
         arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
         arguments += " target_tags='%s', force=%s, publish=%s,"
@@ -745,7 +745,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     option_parser = utils._create_option_parser()
     options, args = option_parser.parse_args()
     import_dir = _clean_path(args[0])
-    utils.process_command_line_args(options)
+    utils._process_command_line_args(options)
 
     # Run parse2plone
     parse2plone = Parse2Plone()
