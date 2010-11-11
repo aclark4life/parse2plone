@@ -340,12 +340,13 @@ class Utils(object):
         option_parser.add_option("--collapse",
             action="store_true", dest="collapse", default=False,
             help="""Optionally "collapse" content (see collapse.py)""")
-        option_parser.add_option("--rename",
-            dest="rename", help="Optionally rename content (see rename_parts())")
+        option_parser.add_option("--rename", dest="rename",
+            help="Optionally rename content (see rename_parts())")
         option_parser.add_option("--customtypes", dest="customtypes",
             help="Optionally use custom content types (see rename_types())")
         option_parser.add_option("--match", dest="match",
-            help="Only import content that matches <PATTERN> (see match_files())")
+            help="Only import content that matches PATTERN (see match_files())"
+                )
         return option_parser
 
     def _is_file(self, obj, extensions):
@@ -458,7 +459,8 @@ class Parse2Plone(object):
         elif self.utils._is_file(obj, self.html_extensions):
             page = self.create_page(parent, obj)
             self.set_title(page, obj)
-            self.set_page(page, obj, prefix_path, base, collapse_map, rename_map)
+            self.set_page(page, obj, prefix_path, base, collapse_map,
+                rename_map)
             self.count['pages'] += 1
             commit()
         elif self.utils._is_file(obj, self.image_extensions):
@@ -574,7 +576,8 @@ class Parse2Plone(object):
             results.append(parts)
         return results
 
-    def import_files(self, parent, object_paths, base, collapse_map, rename_map):
+    def import_files(self, parent, object_paths, base, collapse_map,
+        rename_map):
         for f in object_paths[base]:
             parts = self._get_parts(f)
             if self.rename and f in rename_map['forward']:
@@ -736,10 +739,11 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     collapse_map = {'forward': {}, 'reverse': {}}
     utils = Utils()
 
-    # Convert arg values passed in to main from csv to list; save results in _SETTINGS
-    utils._convert_csv_to_list(illegal_chars, html_extensions, image_extensions,
-        file_extensions, target_tags, path, force, publish, collapse, rename,
-        customtypes, match)
+    # Convert arg values passed in to main from csv to list;
+    # save results in _SETTINGS
+    utils._convert_csv_to_list(illegal_chars, html_extensions,
+        image_extensions, file_extensions, target_tags, path, force, publish,
+        collapse, rename, customtypes, match)
 
     # Process command line args; save results in _SETTINGS
     option_parser = utils._create_option_parser()
@@ -754,8 +758,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     num_parts = len(import_dir.split('/'))
     app = parse2plone._setup_app(app)
     base = parse2plone._get_base(import_dir, num_parts)
-    path, force, collapse, rename, customtypes, match = utils._setup_locals('path',
-        'force', 'collapse', 'rename', 'customtypes', 'match')
+    path, force, collapse, rename, customtypes, match = utils._setup_locals(
+        'path', 'force', 'collapse', 'rename', 'customtypes', 'match')
     if utils._check_exists_path(app, path):
         parent = parse2plone._get_parent(app, path)
     else:
@@ -776,8 +780,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         rename_map = rename_parts(object_paths, rename_map, base, rename)
     if customtypes:
         replace_types(customtypes, _CONTENT_TYPES_MAP, logger)
-    results = parse2plone.import_files(parent, object_paths, base, collapse_map,
-        rename_map)
+    results = parse2plone.import_files(parent, object_paths, base,
+        collapse_map, rename_map)
 
     # Print results
     msg = "Imported %s folders, %s images, %s pages, and %s files into: '%s'."

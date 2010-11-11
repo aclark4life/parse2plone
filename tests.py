@@ -2,6 +2,7 @@ import parse2plone
 import unittest
 
 
+# Test private function
 class FakeLiteralEvalTestCase(unittest.TestCase):
 
     def testFakeLiteralEvalTrue(self):
@@ -18,6 +19,7 @@ class FakeLiteralEvalTestCase(unittest.TestCase):
             parse2plone._fake_literal_eval('asdf'))
 
 
+# Test private function
 class CleanPathTestCase(unittest.TestCase):
 
     def testCleanPath(self):
@@ -98,7 +100,7 @@ class CustomTypesTestCase(unittest.TestCase):
     def setUp(self):
         pass
 
-    def testCustomTypes(self):        
+    def testCustomTypes(self):
         pass
 
 
@@ -108,7 +110,7 @@ class CollapseTestCase(unittest.TestCase):
     def setUp(self):
         pass
 
-    def testCollapse(self):        
+    def testCollapse(self):
         pass
 
 
