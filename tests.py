@@ -91,6 +91,9 @@ class MatchFilesTestCase(unittest.TestCase):
 
 class CustomTypesTestCase(unittest.TestCase):
 
+    def setUp(self):
+        pass
+
     def UseCustomTypes(self):        
         pass
 

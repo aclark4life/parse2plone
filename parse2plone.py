@@ -132,7 +132,7 @@ def match_files(files, base, match):
 # Adds "rename" feature to ``parse2plone``.
 def rename_parts(files, rename_map, base, rename):
     """
-    This feature allows the user to specify two paths: old and new (e.g.
+    This allows the user to specify two paths: old and new (e.g.
     --rename=old:new ).
 
     Then if a path like this is found:
@@ -217,7 +217,7 @@ def collapse_parts(files, collapse_map, base):
 # Adds "customtypes" feature to ``parse2plone``.
 def replace_types(customtypes, _CONTENT_TYPES_MAP, logger):
     """
-    This feature allows the user to specify customize content types for use
+    This allows the user to specify customize content types for use
     when importing content, by specifying a "default" content type followed by
     its replacement "custom" content type (e.g.
     --customtypes=Document:MyCustomPageType).
