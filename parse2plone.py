@@ -215,7 +215,7 @@ def collapse_parts(files, collapse_map, base):
 
 
 # Adds "typeswap" feature to ``parse2plone``.
-def get_types_to_swap(value):
+def swap_types(typeswap, _CONTENT, logger):
     """
     This feature allows the user to specify customize content types for use
     when importing content by specifying a "default" content type followed by
@@ -227,21 +227,8 @@ def get_types_to_swap(value):
 
     ``parse2plone`` will call:
       parent.invokeFactory('MyCustomPageType','foo')
-    """
-    results = None
-    if paths.findall(value):
-        results = []
-        for group in paths.findall(value):
-            results.append('%s:%s' % (
-                _clean_path(group[0]),
-                _clean_path(group[1])))
-        results = ','.join(results)
-    return results
 
-
-def swap_types(typeswap, _CONTENT, logger):
-    """
-    Update _CONTENT
+    Update _CONTENT with new types.
     """
     for swap in typeswap:
         types = swap.split(':')
@@ -255,6 +242,20 @@ def swap_types(typeswap, _CONTENT, logger):
             exit(1)
 
     return _CONTENT
+
+
+def _convert_types_to_csv(value):
+    """
+    """
+    results = None
+    if paths.findall(value):
+        results = []
+        for group in paths.findall(value):
+            results.append('%s:%s' % (
+                _clean_path(group[0]),
+                _clean_path(group[1])))
+        results = ','.join(results)
+    return results
 
 
 def setup_logger():
@@ -380,7 +381,7 @@ class Utils(object):
                 elif option in ('rename'):
                     value = _convert_paths_to_csv((options[option]))
                 elif option in ('typeswap'):
-                    value = get_types_to_swap((options[option]))
+                    value = _convert_types_to_csv((options[option]))
                 elif option not in ('path'):
                     value = ','.join(re.split('\s+', options[option]))
             else:

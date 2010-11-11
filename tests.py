@@ -89,5 +89,10 @@ class MatchFilesTestCase(unittest.TestCase):
         self.assertEqual(files_after,
             parse2plone.match_files(files_before, base, ['2000']))
 
+class SwapTypesTestCase(unittest.TestCase):
+
+    def testSwapTypes(self):        
+        pass
+
 if __name__ == '__main__':
     unittest.main()
