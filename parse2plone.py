@@ -566,7 +566,7 @@ class Parse2Plone(object):
     def _get_prefix_path(self, path):
         return path.split('/')[:-1]
 
-    def ignore_parts(self, files, num_parts):
+    def _remove_parts(self, files, num_parts):
         results = []
         for f in files:
             parts = self._get_parts(f)
@@ -574,8 +574,8 @@ class Parse2Plone(object):
             results.append(parts)
         return results
 
-    def import_files(self, parent, files, base, collapse_map, rename_map):
-        for f in files[base]:
+    def import_files(self, parent, object_paths, base, collapse_map, rename_map):
+        for f in object_paths[base]:
             parts = self._get_parts(f)
             if self.rename and f in rename_map['forward']:
                 parts = rename_map['forward'][f].split('/')
@@ -587,9 +587,9 @@ class Parse2Plone(object):
         results.append(self.utils.obj_to_path(parent))
         return results
 
-    def prep_files(self, files, num_parts, base):
+    def _remove_base(self, files, num_parts, base):
         results = {base: []}
-        files = self.ignore_parts(files, num_parts)
+        files = self._remove_parts(files, num_parts)
         for f in files:
             results[base].append('/'.join(f))
         return results
@@ -767,16 +767,16 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             msg = "object in path '%s' does not exist, use --force to create"
             logger.error(msg % path)
             exit(1)
-    files = parse2plone.prep_files(files, num_parts, base)
+    object_paths = parse2plone._remove_base(files, num_parts, base)
     if match:
-        files = match_files(files, base, match)
+        object_paths = match_files(object_paths, base, match)
     if collapse:
-        collapse_map = collapse_parts(files, collapse_map, base)
+        collapse_map = collapse_parts(object_paths, collapse_map, base)
     if rename:
-        rename_map = rename_parts(files, rename_map, base, rename)
+        rename_map = rename_parts(object_paths, rename_map, base, rename)
     if customtypes:
         swap_types(customtypes, _CONTENT, logger)
-    results = parse2plone.import_files(parent, files, base, collapse_map,
+    results = parse2plone.import_files(parent, object_paths, base, collapse_map,
         rename_map)
 
     # Print results
