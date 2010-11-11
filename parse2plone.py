@@ -67,6 +67,7 @@ _SETTINGS = {
     'rename': None,
     'customtypes': None,
     'match': None,
+    'paths': None,
 }
 
 _CONTENT_TYPES_MAP = {
@@ -163,7 +164,7 @@ def rename_parts(files, rename_map, base, rename):
     return rename_map
 
 
-def _convert_paths_to_csv(value):
+def _convert_paths_to_csv(value, option):
     """
     This function applies the `paths` regular expression to a value.
     """
@@ -171,10 +172,13 @@ def _convert_paths_to_csv(value):
     if _paths_expr.findall(value):
         results = []
         for group in _paths_expr.findall(value):
-            results.append('%s:%s' % (
-                _clean_path(group[0]),
-                _clean_path(group[1])))
-        results = ','.join(results)
+            if option is not 'paths':
+                group_0 = _clean_path(group[0])
+            else:
+                group_0 = group[0]
+            group_1 = _clean_path(group[1])
+            results.append('%s:%s' % (group_0, group_1))
+        results = ', '.join(results)
     return results
 
 
@@ -201,7 +205,6 @@ def collapse_parts(files, collapse_map, base):
         collapse_map{'reverse': {'/var/www/html/foo-20000101.html':
             '/var/www/html/2000/01/01/foo/index.html'}}
     """
-
     for f in files[base]:
         result = _collapse_expr.search(f)
         if result:
@@ -377,25 +380,21 @@ class Utils(object):
         """
         for option, existing_value in _SETTINGS.items():
             if option in options:
-                if option in ('force', 'publish', 'collapse'):
-                    value = _fake_literal_eval(options[option].capitalize())
-                elif option in ('rename'):
-                    value = _convert_paths_to_csv((options[option]))
-                elif option in ('customtypes'):
-                    value = _convert_types_to_csv((options[option]))
-                elif option not in ('path'):
-                    value = ','.join(re.split('\s+', options[option]))
-            else:
-                if option in ('force', 'publish', 'collapse', 'rename',
-                    'customtypes', 'path'):
-                    value = existing_value
+                if option in ('rename', 'paths'):
+                    _SETTINGS[option] = _convert_paths_to_csv(options[option], option)
                 else:
-                    if existing_value is not None:
-                        value = ','.join(existing_value)
-                    else:
-                        value = None
+                    _SETTINGS[option] = options[option]
+            else:
+                if option in ('illegal_chars', 'html_extensions', 'image_extensions',
+                    'file_extensions', 'target_tags'):
+                    _SETTINGS[option] = ','.join(existing_value)
+                else:
+                    _SETTINGS[option] = existing_value
 
-            _SETTINGS[option] = value
+#                    value = _fake_literal_eval(options[option].capitalize())
+#                    value = _convert_paths_to_csv((options[option]))
+#                    value = _convert_types_to_csv((options[option]))
+#                    value = ','.join(re.split('\s+', options[option]))
 
     def process_command_line_args(self, options):
         """
@@ -701,9 +700,13 @@ class Recipe(object):
         else:
             arguments += " customtypes=%s,"
         if _SETTINGS['match']:
-            arguments += " match='%s'"
+            arguments += " match='%s',"
         else:
-            arguments += " match=%s"
+            arguments += " match=%s,"
+        if _SETTINGS['paths']:
+            arguments += " paths='%s'"
+        else:
+            arguments += " paths=%s"
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([('import', 'parse2plone', 'main')],
@@ -720,6 +723,7 @@ class Recipe(object):
             _SETTINGS['rename'],
             _SETTINGS['customtypes'],
             _SETTINGS['match'],
+            _SETTINGS['paths'],
             ))
         return tuple((bindir + '/' + 'import',))
 
