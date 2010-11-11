@@ -664,7 +664,7 @@ class Parse2Plone(object):
         obj.setTitle(title.title())
         obj.reindexObject()
 
-    def setup_app(self, app):
+    def _setup_app(self, app):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
         from AccessControl.SecurityManagement import newSecurityManager
@@ -752,7 +752,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     parse2plone = utils._setup_attrs(parse2plone, count, logger, utils)
     files = parse2plone._get_files(import_dir)
     num_parts = len(import_dir.split('/'))
-    app = parse2plone.setup_app(app)
+    app = parse2plone._setup_app(app)
     base = parse2plone._get_base(import_dir, num_parts)
     path, force, collapse, rename, customtypes, match = utils._setup_locals('path',
         'force', 'collapse', 'rename', 'customtypes', 'match')
