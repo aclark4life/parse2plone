@@ -65,7 +65,7 @@ _SETTINGS = {
     'publish': False,
     'collapse': False,
     'rename': None,
-    'typeswap': None,
+    'customtypes': None,
     'match': None,
 }
 
@@ -214,13 +214,13 @@ def collapse_parts(files, collapse_map, base):
     return collapse_map
 
 
-# Adds "typeswap" feature to ``parse2plone``.
-def swap_types(typeswap, _CONTENT, logger):
+# Adds "customtypes" feature to ``parse2plone``.
+def swap_types(customtypes, _CONTENT, logger):
     """
     This feature allows the user to specify customize content types for use
     when importing content by specifying a "default" content type followed by
     its replacement "custom" content type (e.g.
-    --typeswap=Document:MyCustomPageType).
+    --customtypes=Document:MyCustomPageType).
 
     That means that instead of calling:
       parent.invokeFactory('Document','foo')
@@ -230,7 +230,7 @@ def swap_types(typeswap, _CONTENT, logger):
 
     Update _CONTENT with new types.
     """
-    for swap in typeswap:
+    for swap in customtypes:
         types = swap.split(':')
         old = types[0]
         new = types[1]
@@ -290,7 +290,7 @@ class Utils(object):
 
     def convert_arg_values(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
-        publish, collapse, rename, typeswap, match):
+        publish, collapse, rename, customtypes, match):
         """
         Convert most recipe parameter values from csv; save results
         in _SETTINGS dict
@@ -308,10 +308,10 @@ class Utils(object):
             _SETTINGS['rename'] = rename.split(',')
         else:
             _SETTINGS['rename'] = rename
-        if typeswap is not None:
-            _SETTINGS['typeswap'] = typeswap.split(',')
+        if customtypes is not None:
+            _SETTINGS['customtypes'] = customtypes.split(',')
         else:
-            _SETTINGS['typeswap'] = typeswap
+            _SETTINGS['customtypes'] = customtypes
         if match is not None:
             _SETTINGS['match'] = match.split(',')
         else:
@@ -342,8 +342,8 @@ class Utils(object):
             help="""Optionally "collapse" content (see collapse.py)""")
         option_parser.add_option("--rename",
             dest="rename", help="Optionally rename content (see rename.py)")
-        option_parser.add_option("--typeswap", dest="typeswap",
-            help="Optionally swap content types (see typeswap.py)")
+        option_parser.add_option("--customtypes", dest="customtypes",
+            help="Optionally swap content types (see customtypes.py)")
         option_parser.add_option("--match", dest="match",
             help="Only import content that matches pattern (see match.py)")
         return option_parser
@@ -380,13 +380,13 @@ class Utils(object):
                     value = _fake_literal_eval(options[option].capitalize())
                 elif option in ('rename'):
                     value = _convert_paths_to_csv((options[option]))
-                elif option in ('typeswap'):
+                elif option in ('customtypes'):
                     value = _convert_types_to_csv((options[option]))
                 elif option not in ('path'):
                     value = ','.join(re.split('\s+', options[option]))
             else:
                 if option in ('force', 'publish', 'collapse', 'rename',
-                    'typeswap', 'path'):
+                    'customtypes', 'path'):
                     value = existing_value
                 else:
                     if existing_value is not None:
@@ -420,8 +420,8 @@ class Utils(object):
             _SETTINGS['collapse'] = options.collapse
         if options.rename is not None:
             _SETTINGS['rename'] = (options.rename).split(',')
-        if options.typeswap is not None:
-            _SETTINGS['typeswap'] = (options.typeswap).split(',')
+        if options.customtypes is not None:
+            _SETTINGS['customtypes'] = (options.customtypes).split(',')
         if options.match is not None:
             _SETTINGS['match'] = (options.match).split(',')
 
@@ -693,10 +693,10 @@ class Recipe(object):
             arguments += " rename='%s',"
         else:
             arguments += " rename=%s,"
-        if _SETTINGS['typeswap']:
-            arguments += " typeswap='%s',"
+        if _SETTINGS['customtypes']:
+            arguments += " customtypes='%s',"
         else:
-            arguments += " typeswap=%s,"
+            arguments += " customtypes=%s,"
         if _SETTINGS['match']:
             arguments += " match='%s'"
         else:
@@ -715,7 +715,7 @@ class Recipe(object):
             _SETTINGS['publish'],
             _SETTINGS['collapse'],
             _SETTINGS['rename'],
-            _SETTINGS['typeswap'],
+            _SETTINGS['customtypes'],
             _SETTINGS['match'],
             ))
         return tuple((bindir + '/' + 'import',))
@@ -727,7 +727,7 @@ class Recipe(object):
 
 def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
-    force=False, publish=False, collapse=False, rename=None, typeswap=None,
+    force=False, publish=False, collapse=False, rename=None, customtypes=None,
     match=None):
 
     count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
@@ -739,7 +739,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Convert arg values from csv to list; save results in _SETTINGS
     utils.convert_arg_values(illegal_chars, html_extensions, image_extensions,
         file_extensions, target_tags, path, force, publish, collapse, rename,
-        typeswap, match)
+        customtypes, match)
 
     # Process command line args; save results in _SETTINGS
     option_parser = utils.create_option_parser()
@@ -754,8 +754,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     num_parts = len(import_dir.split('/'))
     app = parse2plone.setup_app(app)
     base = parse2plone.get_base(import_dir, num_parts)
-    path, force, collapse, rename, typeswap, match = utils.setup_locals('path',
-        'force', 'collapse', 'rename', 'typeswap', 'match')
+    path, force, collapse, rename, customtypes, match = utils.setup_locals('path',
+        'force', 'collapse', 'rename', 'customtypes', 'match')
     if utils.check_exists_path(app, path):
         parent = parse2plone.get_parent(app, path)
     else:
@@ -774,8 +774,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         collapse_map = collapse_parts(files, collapse_map, base)
     if rename:
         rename_map = rename_parts(files, rename_map, base, rename)
-    if typeswap:
-        swap_types(typeswap, _CONTENT, logger)
+    if customtypes:
+        swap_types(customtypes, _CONTENT, logger)
     results = parse2plone.import_files(parent, files, base, collapse_map,
         rename_map)
 
