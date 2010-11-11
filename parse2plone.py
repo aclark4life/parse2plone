@@ -215,10 +215,10 @@ def collapse_parts(files, collapse_map, base):
 
 
 # Adds "customtypes" feature to ``parse2plone``.
-def swap_types(customtypes, _CONTENT_TYPE_MAP, logger):
+def replace_types(customtypes, _CONTENT_TYPE_MAP, logger):
     """
     This feature allows the user to specify customize content types for use
-    when importing content by specifying a "default" content type followed by
+    when importing content, by specifying a "default" content type followed by
     its replacement "custom" content type (e.g.
     --customtypes=Document:MyCustomPageType).
 
@@ -775,7 +775,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     if rename:
         rename_map = rename_parts(object_paths, rename_map, base, rename)
     if customtypes:
-        swap_types(customtypes, _CONTENT_TYPE_MAP, logger)
+        replace_types(customtypes, _CONTENT_TYPE_MAP, logger)
     results = parse2plone.import_files(parent, object_paths, base, collapse_map,
         rename_map)
 
