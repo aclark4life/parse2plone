@@ -403,6 +403,30 @@ class Utils(object):
                 else:
                     _SETTINGS[option] = existing_value
 
+        arguments = "app,"
+        if not _SETTINGS['paths']:
+            arguments += " path='%s',"
+        arguments += " illegal_chars='%s', html_extensions='%s',"
+        arguments += " image_extensions='%s', file_extensions='%s',"
+        arguments += " target_tags='%s', force=%s, publish=%s,"
+        arguments += " collapse=%s,"
+        if _SETTINGS['rename']:
+            arguments += " rename='%s',"
+        else:
+            arguments += " rename=%s,"
+        if _SETTINGS['customtypes']:
+            arguments += " customtypes='%s',"
+        else:
+            arguments += " customtypes=%s,"
+        if _SETTINGS['match']:
+            arguments += " match='%s'"
+        else:
+            arguments += " match=%s"
+        if _SETTINGS['paths']:
+            arguments += ", paths='%s'"
+
+        return arguments
+
     def process_command_line_args(self, options):
         """
         Process command line args; save results in _SETTINGS dict
@@ -693,28 +717,7 @@ class Recipe(object):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
         utils = Utils()
-        utils.process_recipe_args(self.options)
-        arguments = "app,"
-        if not _SETTINGS['paths']:
-            arguments += " path='%s',"
-        arguments += " illegal_chars='%s', html_extensions='%s',"
-        arguments += " image_extensions='%s', file_extensions='%s',"
-        arguments += " target_tags='%s', force=%s, publish=%s,"
-        arguments += " collapse=%s,"
-        if _SETTINGS['rename']:
-            arguments += " rename='%s',"
-        else:
-            arguments += " rename=%s,"
-        if _SETTINGS['customtypes']:
-            arguments += " customtypes='%s',"
-        else:
-            arguments += " customtypes=%s,"
-        if _SETTINGS['match']:
-            arguments += " match='%s'"
-        else:
-            arguments += " match=%s"
-        if _SETTINGS['paths']:
-            arguments += ", paths='%s'"
+        arguments = utils.process_recipe_args(self.options)
 
         if not _SETTINGS['paths']:
             # if the user does not set the paths parameter (which by default
