@@ -694,7 +694,10 @@ class Recipe(object):
         bindir = self.buildout['buildout']['bin-directory']
         utils = Utils()
         utils.process_recipe_args(self.options)
-        arguments = "app, path='%s', illegal_chars='%s', html_extensions='%s',"
+        arguments = "app,"
+        if not _SETTINGS['paths']:
+            arguments += " path='%s',"
+        arguments += " illegal_chars='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
         arguments += " target_tags='%s', force=%s, publish=%s,"
         arguments += " collapse=%s,"
@@ -715,9 +718,8 @@ class Recipe(object):
         else:
             arguments += " paths=%s"
 
-        # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
-        create_scripts([('import', 'parse2plone', 'main')],
-            working_set, executable, bindir, arguments=arguments % (
+        if not _SETTINGS['paths']:
+            settings = (
             _SETTINGS['path'],
             _SETTINGS['illegal_chars'],
             _SETTINGS['html_extensions'],
@@ -730,8 +732,26 @@ class Recipe(object):
             _SETTINGS['rename'],
             _SETTINGS['customtypes'],
             _SETTINGS['match'],
-            _SETTINGS['paths'],
-            ))
+            _SETTINGS['paths'])
+        else:
+            settings = (
+            _SETTINGS['illegal_chars'],
+            _SETTINGS['html_extensions'],
+            _SETTINGS['image_extensions'],
+            _SETTINGS['file_extensions'],
+            _SETTINGS['target_tags'],
+            _SETTINGS['force'],
+            _SETTINGS['publish'],
+            _SETTINGS['collapse'],
+            _SETTINGS['rename'],
+            _SETTINGS['customtypes'],
+            _SETTINGS['match'],
+            _SETTINGS['paths'])
+
+        # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
+        create_scripts([('import', 'parse2plone', 'main')],
+            working_set, executable, bindir, arguments=arguments % (settings))
+
         return tuple((bindir + '/' + 'import',))
 
     def update(self):
