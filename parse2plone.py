@@ -293,7 +293,7 @@ class Utils(object):
 
     def _convert_csv_to_list(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
-        publish, collapse, rename, customtypes, match):
+        publish, collapse, rename, customtypes, match, paths):
         """
         Convert most recipe parameter values from csv; save results
         in _SETTINGS dict
@@ -766,7 +766,7 @@ class Recipe(object):
 def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
     force=False, publish=False, collapse=False, rename=None, customtypes=None,
-    match=None):
+    match=None, paths=None):
 
     count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
     logger = setup_logger()
@@ -778,7 +778,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # save results in _SETTINGS
     utils._convert_csv_to_list(illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force, publish,
-        collapse, rename, customtypes, match)
+        collapse, rename, customtypes, match, paths)
 
     # Process command line args; save results in _SETTINGS
     option_parser = utils._create_option_parser()
