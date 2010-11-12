@@ -733,7 +733,7 @@ class Recipe(object):
                 _SETTINGS['customtypes'],
                 _SETTINGS['match'])
         else:
-            # if the user sets the paths parameter we use it (and ignore
+            # if the user sets the paths parameter, we use it (and ignore
             # path)
             settings = (
                 _SETTINGS['illegal_chars'],
