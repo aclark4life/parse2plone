@@ -382,6 +382,9 @@ class Utils(object):
             if option in options:
                 if option in ('rename', 'paths'):
                     _SETTINGS[option] = _convert_paths_to_csv(options[option], option)
+                elif option in ('illegal_chars', 'html_extensions', 'image_extensions',
+                    'file_extensions', 'target_tags'):
+                    _SETTINGS[option] = ', '.join(re.split('\s+', options[option]))
                 else:
                     _SETTINGS[option] = options[option]
             else:
