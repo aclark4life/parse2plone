@@ -380,14 +380,20 @@ class Utils(object):
         """
         for option, existing_value in _SETTINGS.items():
             if option in options:
-                if option in ('rename', 'paths'):
+                # the user set a recipe parameter
+                if option in ('rename', 'paths', 'match'):
                     _SETTINGS[option] = _convert_paths_to_csv(options[option], option)
+                elif option in ('customtypes'):
+                    _SETTINGS[option] = _convert_types_to_csv(options[option])
                 elif option in ('illegal_chars', 'html_extensions', 'image_extensions',
                     'file_extensions', 'target_tags'):
                     _SETTINGS[option] = ', '.join(re.split('\s+', options[option]))
+                elif option in ('force', 'publish', 'collapse'):
+                    _SETTINGS[option] = _fake_literal_eval(options[option].capitalize())
                 else:
                     _SETTINGS[option] = options[option]
             else:
+                # the user did not set any recipe parameters
                 if option in ('illegal_chars', 'html_extensions', 'image_extensions',
                     'file_extensions', 'target_tags'):
                     _SETTINGS[option] = ','.join(existing_value)
