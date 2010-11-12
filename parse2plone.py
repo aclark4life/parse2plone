@@ -382,28 +382,26 @@ class Utils(object):
             if option in options:
                 # the user set a recipe parameter
                 if option in ('rename', 'paths', 'match'):
-                    _SETTINGS[option] = _convert_paths_to_csv(options[option], option)
+                    _SETTINGS[option] = _convert_paths_to_csv(options[option],
+                        option)
                 elif option in ('customtypes'):
                     _SETTINGS[option] = _convert_types_to_csv(options[option])
-                elif option in ('illegal_chars', 'html_extensions', 'image_extensions',
-                    'file_extensions', 'target_tags'):
-                    _SETTINGS[option] = ', '.join(re.split('\s+', options[option]))
+                elif option in ('illegal_chars', 'html_extensions',
+                    'image_extensions', 'file_extensions', 'target_tags'):
+                    _SETTINGS[option] = ', '.join(re.split('\s+',
+                        options[option]))
                 elif option in ('force', 'publish', 'collapse'):
-                    _SETTINGS[option] = _fake_literal_eval(options[option].capitalize())
+                    _SETTINGS[option] = _fake_literal_eval(
+                        options[option].capitalize())
                 else:
                     _SETTINGS[option] = options[option]
             else:
                 # the user did not set any recipe parameters
-                if option in ('illegal_chars', 'html_extensions', 'image_extensions',
-                    'file_extensions', 'target_tags'):
+                if option in ('illegal_chars', 'html_extensions',
+                    'image_extensions', 'file_extensions', 'target_tags'):
                     _SETTINGS[option] = ','.join(existing_value)
                 else:
                     _SETTINGS[option] = existing_value
-
-#                    value = _fake_literal_eval(options[option].capitalize())
-#                    value = _convert_paths_to_csv((options[option]))
-#                    value = _convert_types_to_csv((options[option]))
-#                    value = ','.join(re.split('\s+', options[option]))
 
     def process_command_line_args(self, options):
         """
