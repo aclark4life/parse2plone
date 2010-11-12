@@ -716,23 +716,9 @@ class Recipe(object):
         if _SETTINGS['paths']:
             arguments += ", paths='%s'"
 
-        if _SETTINGS['paths']:
-            # if the user set the paths recipe parameter ignore path
-            settings = (
-                _SETTINGS['illegal_chars'],
-                _SETTINGS['html_extensions'],
-                _SETTINGS['image_extensions'],
-                _SETTINGS['file_extensions'],
-                _SETTINGS['target_tags'],
-                _SETTINGS['force'],
-                _SETTINGS['publish'],
-                _SETTINGS['collapse'],
-                _SETTINGS['rename'],
-                _SETTINGS['customtypes'],
-                _SETTINGS['match'],
-                _SETTINGS['paths'])
-        else:
-            # ignore paths
+        if not _SETTINGS['paths']:
+            # if the user does not set the paths parameter (which by default
+            # they won't) we use path (aka /path/to/files)
             settings = (
                 _SETTINGS['path'],
                 _SETTINGS['illegal_chars'],
@@ -746,6 +732,22 @@ class Recipe(object):
                 _SETTINGS['rename'],
                 _SETTINGS['customtypes'],
                 _SETTINGS['match'])
+        else:
+            # if the user sets the paths parameter we use it (and ignore
+            # path)
+            settings = (
+                _SETTINGS['illegal_chars'],
+                _SETTINGS['html_extensions'],
+                _SETTINGS['image_extensions'],
+                _SETTINGS['file_extensions'],
+                _SETTINGS['target_tags'],
+                _SETTINGS['force'],
+                _SETTINGS['publish'],
+                _SETTINGS['collapse'],
+                _SETTINGS['rename'],
+                _SETTINGS['customtypes'],
+                _SETTINGS['match'],
+                _SETTINGS['paths'])
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([('import', 'parse2plone', 'main')],
