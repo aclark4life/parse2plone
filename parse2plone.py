@@ -710,43 +710,42 @@ class Recipe(object):
         else:
             arguments += " customtypes=%s,"
         if _SETTINGS['match']:
-            arguments += " match='%s',"
+            arguments += " match='%s'"
         else:
-            arguments += " match=%s,"
+            arguments += " match=%s"
         if _SETTINGS['paths']:
-            arguments += " paths='%s'"
-        else:
-            arguments += " paths=%s"
+            arguments += ", paths='%s'"
 
-        if not _SETTINGS['paths']:
+        if _SETTINGS['paths']:
+            # if the user set the paths recipe parameter ignore path
             settings = (
-            _SETTINGS['path'],
-            _SETTINGS['illegal_chars'],
-            _SETTINGS['html_extensions'],
-            _SETTINGS['image_extensions'],
-            _SETTINGS['file_extensions'],
-            _SETTINGS['target_tags'],
-            _SETTINGS['force'],
-            _SETTINGS['publish'],
-            _SETTINGS['collapse'],
-            _SETTINGS['rename'],
-            _SETTINGS['customtypes'],
-            _SETTINGS['match'],
-            _SETTINGS['paths'])
+                _SETTINGS['illegal_chars'],
+                _SETTINGS['html_extensions'],
+                _SETTINGS['image_extensions'],
+                _SETTINGS['file_extensions'],
+                _SETTINGS['target_tags'],
+                _SETTINGS['force'],
+                _SETTINGS['publish'],
+                _SETTINGS['collapse'],
+                _SETTINGS['rename'],
+                _SETTINGS['customtypes'],
+                _SETTINGS['match'],
+                _SETTINGS['paths'])
         else:
+            # ignore paths
             settings = (
-            _SETTINGS['illegal_chars'],
-            _SETTINGS['html_extensions'],
-            _SETTINGS['image_extensions'],
-            _SETTINGS['file_extensions'],
-            _SETTINGS['target_tags'],
-            _SETTINGS['force'],
-            _SETTINGS['publish'],
-            _SETTINGS['collapse'],
-            _SETTINGS['rename'],
-            _SETTINGS['customtypes'],
-            _SETTINGS['match'],
-            _SETTINGS['paths'])
+                _SETTINGS['path'],
+                _SETTINGS['illegal_chars'],
+                _SETTINGS['html_extensions'],
+                _SETTINGS['image_extensions'],
+                _SETTINGS['file_extensions'],
+                _SETTINGS['target_tags'],
+                _SETTINGS['force'],
+                _SETTINGS['publish'],
+                _SETTINGS['collapse'],
+                _SETTINGS['rename'],
+                _SETTINGS['customtypes'],
+                _SETTINGS['match'])
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([('import', 'parse2plone', 'main')],
