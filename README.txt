@@ -1,7 +1,12 @@
-.. contents::
+.. contents:: :depth: 2
+
+Parse2Plone
+===========
+
+Easily import static websites into Plone
 
 Introduction
-============
+------------
 
 ``Parse2Plone`` is a "one off" HTML parser (in the form of a Buildout recipe that
 creates a script for you) to easily get content from static HTML websites
@@ -45,8 +50,8 @@ values if you would like to change the default behavior; they are (mostly)
 self-explanatory. Now you can just cut and paste to get started or keep reading if
 you would like to know more.
 
-Explanation
------------
+Justification
+-------------
 
 Why did you create ``Parse2Plone`` when `collective.transmogrifier`_ already
 exists?
@@ -149,8 +154,8 @@ Now you can run ``Parse2Plone`` like this::
 
 .. _`plone.recipe.zope2instance`: http://pypi.python.org/pypi/plone.recipe.zope2instance
 
-Demonstration
--------------
+Example
+-------
 
 If you have a site in /var/www/html that contains the following::
 
@@ -166,8 +171,8 @@ And the following will be created:
 * http://localhost:8080/Plone/index.html
 * http://localhost:8080/Plone/about/index.html
 
-Modification
-------------
+Customization
+-------------
 
 Modifying the default behavior of ``parse2plone`` is easy; just use the command
 line options or add parameters to your ``buildout.cfg`` file. Both approaches
@@ -388,8 +393,8 @@ This will configure ``parse2plone`` to (only) import content *from*:
 
 * A Plone site folder named ``/Plone/foo``.
 
-Consternation
--------------
+Troubleshooting
+---------------
 
 Here are some trouble-shooting comments/tips.
 
@@ -410,8 +415,8 @@ Before running ``parse2plone``, you must either stop your Plone site or
 use ZEO. Otherwise ``parse2plone`` will not be able to access the
 database.
 
-Communication
--------------
+Contact
+-------
 
 Questions, comments, or concerns? Please e-mail: aclark@aclark.net.
 
