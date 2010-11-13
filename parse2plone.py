@@ -185,7 +185,7 @@ def _convert_paths_to_csv(value, option):
 
 
 # Adds "collapse" feature to ``parse2plone``.
-def collapse_parts(files, collapse_map, base):
+def collapse_parts(object_paths, collapse_map, base):
     """
     If a path like this is discovered:
 
@@ -207,7 +207,7 @@ def collapse_parts(files, collapse_map, base):
         collapse_map{'reverse': {'/var/www/html/foo-20000101.html':
             '/var/www/html/2000/01/01/foo/index.html'}}
     """
-    for f in files[base]:
+    for f in object_paths[base]:
         result = _collapse_expr.search(f)
         if result:
             groups = result.groups()
@@ -215,7 +215,6 @@ def collapse_parts(files, collapse_map, base):
                 groups[2])
             collapse_map['forward'][f] = collapse_id
             collapse_map['reverse'][collapse_id] = f
-
     return collapse_map
 
 

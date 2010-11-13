@@ -101,19 +101,29 @@ class CustomTypesTestCase(unittest.TestCase):
     def setUp(self):
         pass
 
-    def testCustomTypes(self):
+    def testCollapse(self):
         pass
-
 
 # Test "collapse" feature
 class CollapseTestCase(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.base = '/var/www/html'
+        self.collapse_map_before = {'forward': {}, 'reverse': {}}
+        self.collapse_map_after = {
+            'forward': {
+                '2000/01/01/foo/index.html': 'foo-20000101.html'},
+            'reverse': {
+                'foo-20000101.html': '2000/01/01/foo/index.html'},
+            }
+        self.object_paths = {self.base: ['2000/01/01/foo/index.html']}
 
-    def testCollapse(self):
-        pass
-
+    def testCustomTypes(self):
+        self.assertEqual(self.collapse_map_after,
+            parse2plone.collapse_parts(
+                self.object_paths,
+                self.collapse_map_before,
+                self.base))
 
 if __name__ == '__main__':
     unittest.main()
