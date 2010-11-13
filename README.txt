@@ -67,7 +67,7 @@ Here are some reasons:
 
 * Because ``Parse2Plone`` is aimed at lowering the bar for folks who don't already
   know (or want to know) what a "transmogrifier blueprint" is but are able to update
-  their ``buildout.cfg`` file; run ``Buildout``; then run a single command all
+  their ``buildout.cfg`` file; run ``Buildout``; then run a single command; all
   without having to think too much.
 
 * collective.transmogrify provides a framework for creating reusable pipes
