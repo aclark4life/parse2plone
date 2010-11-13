@@ -174,11 +174,10 @@ def _convert_paths_to_csv(value, option):
     if _paths_expr.findall(value):
         results = []
         for group in _paths_expr.findall(value):
-#            if option is not 'paths':
-#                group_0 = _clean_path(group[0])
-#            else:
-#                group_0 = group[0]
-            group_0 = _clean_path(group[0])
+            if option is not 'paths':
+                group_0 = _clean_path(group[0])
+            else:
+                group_0 = group[0]
             group_1 = _clean_path(group[1])
             results.append('%s:%s' % (group_0, group_1))
         results = ','.join(results)
@@ -324,7 +323,6 @@ class Utils(object):
         else:
             _SETTINGS['match'] = match
 
-
     def _create_option_parser(self):
         option_parser = optparse.OptionParser()
         option_parser.add_option('-p', '--path',
@@ -377,7 +375,8 @@ class Utils(object):
         option_parser.add_option('--match',
             default=_UNSET,
             dest='match',
-            help='Only import content that matches PATTERN (see match_files())')
+            help='Only import content that matches PATTERN (see match_files())'
+            )
 
         return option_parser
 
@@ -593,7 +592,6 @@ class Parse2Plone(object):
                 break
 
     def _get_base(self, import_dir, num_parts):
-        #import_dir = _clean_path(import_dir)
         return '/'.join(import_dir.split('/')[:num_parts])
 
     def _get_files(self, import_dir):
@@ -809,17 +807,15 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         image_extensions, file_extensions, target_tags, path, force, publish,
         collapse, rename, customtypes, match, paths)
 
-
     # Process command line args; save results in _SETTINGS
     option_parser = utils._create_option_parser()
     options, args = option_parser.parse_args()
     utils.process_command_line_args(options)
 
-
     # Process import dir or dirs
     import_dirs = []
     if not paths:
-        import_dirs.append(':'.join( _clean_path(args[0]), path) )
+        import_dirs.append(':'.join(_clean_path(args[0]), path))
     else:
         import_dirs = paths.split(',')
 
@@ -839,8 +835,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             parent = parse2plone._get_parent(app, path)
         else:
             if force:
-                parse2plone.create_parts(app, parse2plone._get_parts(path), base,
-                    collapse_map, rename_map)
+                parse2plone.create_parts(app, parse2plone._get_parts(path),
+                    base, collapse_map, rename_map)
                 parent = parse2plone._get_parent(app, path)
             else:
                 msg = "object in path '%s' does not exist, use --force to create"
