@@ -321,7 +321,7 @@ Force create folders that do not exist.
 Publish newly created content.
 
 ``'--collapse'``
-***************
+****************
 
 "collapse" content (see collapse_parts()).
 
@@ -378,7 +378,7 @@ the ``--help`` or ``-h`` option::
                             rename_types())
       --match=MATCH         Only import content that matches PATTERN (see
                             match_files())
-      --paths=PATHS         Specify import_dirs:object_paths (--path is ignored)
+      --paths=PATHS         Specify import_dirs:object_paths (--path will be ignored)
 
 Example
 '''''''

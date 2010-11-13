@@ -380,7 +380,7 @@ class Utils(object):
         option_parser.add_option('--paths',
             default=_UNSET,
             dest='paths',
-            help='Specify import_dirs:object_paths (--path is ignored)')
+            help='Specify import_dirs:object_paths (--path will be ignored)')
 
         return option_parser
 
