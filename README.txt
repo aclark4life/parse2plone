@@ -351,7 +351,7 @@ Match files (see match_files()).
 
 You can specify a series of import paths and corresponding object paths::
 
-    $ bin/plone run bin/import --path=sample:Plone/sample,sample2:Plone/sample2
+    $ bin/plone run bin/import --paths=sample:Plone/sample,sample2:Plone/sample2
 
 ``'--help'``
 ************
