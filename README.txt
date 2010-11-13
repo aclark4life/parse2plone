@@ -251,8 +251,10 @@ Options
 +---------------------+-------------+----------------------------------------+
 | ``paths``           |             | Specify a series of locations on the   |
 |                     |             | filesystem, with corresponding         |
-|                     |             | locations in the database for imports  |
-|                     |             | to occur.                              |
+|                     |             | locations in the database for imports, |
+|                     |             | with syntax:                           |
+|                     |             | --paths=import_dirs:object_paths       |
+|                     |             | (--path will be ignored)               |
 +---------------------+-------------+----------------------------------------+
 
 Example
