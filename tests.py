@@ -68,7 +68,8 @@ class RenameOldNewTestCase(unittest.TestCase):
         recipe_input_after = self.recipe_input_after
 
         for recipe_input in recipe_input_before:
-            results.append(parse2plone._convert_paths_to_csv(recipe_input, 'rename'))
+            results.append(parse2plone._convert_paths_to_csv(recipe_input,
+                'rename'))
 
         self.assertEqual(results, recipe_input_after)
 
