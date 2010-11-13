@@ -38,6 +38,7 @@ here are this recipe's options::
     rename =
     typeswap =
     match =
+    paths =
 
 The parameters listed above are configured with their default values. Edit these
 values if you would like to change the default behavior; they are (mostly)
@@ -228,6 +229,11 @@ Options
 | ``typeswap``        |             | Swap types. (see typeswap.py)          |
 +---------------------+-------------+----------------------------------------+
 | ``match``           |             | Match files. (see match.py)            |
++---------------------+-------------+----------------------------------------+
+| ``paths``           |             | Specify a series of locations on the   |
+|                     |             | filesystem, with corresponding         |
+|                     |             | locations in the database for imports  |
+|                     |             | to occur.                              |
 +---------------------+-------------+----------------------------------------+
 
 Example

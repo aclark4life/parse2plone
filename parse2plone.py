@@ -380,6 +380,17 @@ class Utils(object):
 
         return option_parser
 
+    def _get_results(self, paths_map, index):
+        results = ''
+        max = len(paths_map)
+        count = 0
+        for i in paths_map:
+            results += i.split(':')[index]
+            count += 1
+            if count != max:
+                results += ', '
+        return "'%s'" % results
+
     def _is_file(self, obj, extensions):
         result = False
         for ext in extensions:
@@ -644,7 +655,6 @@ class Parse2Plone(object):
             self.create_parts(parent, parts, base, collapse_map, rename_map)
 
         results = self.count.values()
-        results.append(self.utils._convert_obj_to_path(parent))
         return results
 
     def _remove_base(self, files, num_parts, base):
@@ -813,18 +823,18 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     utils.process_command_line_args(options)
 
     # Process import dir or dirs
-    import_dirs = []
+    paths_map = []
     if not paths:
-        import_dirs.append(':'.join(_clean_path(args[0]), path))
+        paths_map.append(':'.join(_clean_path(args[0]), path))
     else:
-        import_dirs = paths.split(',')
+        paths_map = paths.split(',')
 
-    for i in import_dirs:
-        import_dir, path = i.split(':')
+    parse2plone = Parse2Plone()
+    parse2plone = utils._setup_attrs(parse2plone, count, logger, utils)
+    for entry in paths_map:
+        import_dir, path = entry.split(':')
 
         # Run parse2plone
-        parse2plone = Parse2Plone()
-        parse2plone = utils._setup_attrs(parse2plone, count, logger, utils)
         files = parse2plone._get_files(import_dir)
         num_parts = len(import_dir.split('/'))
         app = parse2plone._setup_app(app)
@@ -854,7 +864,10 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         results = parse2plone.import_files(parent, object_paths, base,
             collapse_map, rename_map)
 
-        # Print results
-        msg = "Imported %s folders, %s images, %s pages, and %s files into: '%s'."
-        logger.info(msg % tuple(results))
-        exit(0)
+    # Print results
+    msg = "Imported %s folders, %s images, %s pages, and %s files from: %s to %s."
+    results.append(utils._get_results(paths_map, 0))
+    results.append(utils._get_results(paths_map, 1))
+    logger.info(msg % tuple(results))
+
+    exit(0)
