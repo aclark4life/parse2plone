@@ -849,7 +849,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
                     base, collapse_map, rename_map)
                 parent = parse2plone._get_parent(app, path)
             else:
-                msg = "object in path '%s' does not exist, use --force to create"
+                msg = "object in path '%s' does not exist, use --force"
+                msg += " to create"
                 logger.error(msg % path)
                 exit(1)
         object_paths = parse2plone._remove_base(files, num_parts, base)
@@ -865,7 +866,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             collapse_map, rename_map)
 
     # Print results
-    msg = "Imported %s folders, %s images, %s pages, and %s files from: %s to %s."
+    msg = "Imported %s folders, %s images, %s pages, and %s files from:"
+    msg += " %s to %s."
     results.append(utils._get_results(paths_map, 0))
     results.append(utils._get_results(paths_map, 1))
     logger.info(msg % tuple(results))
