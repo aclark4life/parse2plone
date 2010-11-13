@@ -39,16 +39,17 @@ here are this recipe's options::
     # additional bells & whistles
     force = false
     publish = false
-    slugify = false
+    collapse = false
+    customtypes =
     rename =
-    typeswap =
     match =
     paths =
 
-The parameters listed above are configured with their default values. Edit these
-values if you would like to change the default behavior; they are (mostly)
-self-explanatory. Now you can just cut and paste to get started or keep reading if
-you would like to know more.
+.. Note::
+    The parameters listed above are configured with their default values. Edit these
+    values if you would like to change the default behavior; they are (mostly)
+    self-explanatory. Now you can just cut and paste to get started or keep reading if
+    you would like to know more.
 
 Justification
 -------------
@@ -369,10 +370,14 @@ the ``--help`` or ``-h`` option::
                             Specify HTML tags to parse
       --force               Force creation of folders
       --publish             Optionally publish newly created content
-      --slugify             Optionally "slugify" content (see slugify.py)
-      --rename=RENAME       Optionally rename content (see rename.py)
-      --typeswap=TYPESWAP   Optionally swap content types (see typeswap.py)
-
+      --collapse            Optionally 'collapse' content (see collapse_parts())
+      --rename=RENAME       Optionally rename content (see rename_parts())
+      --customtypes=CUSTOMTYPES
+                            Optionally use custom content types (see
+                            rename_types())
+      --match=MATCH         Only import content that matches PATTERN (see
+                            match_files())
+      --paths=PATHS         Specify import_dirs:object_paths (--path is ignored)
 
 Example
 '''''''
