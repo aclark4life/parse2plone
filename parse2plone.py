@@ -219,7 +219,7 @@ def collapse_parts(object_paths, collapse_map, base):
 
 
 # Adds "customtypes" feature to ``parse2plone``.
-def replace_types(customtypes, _CONTENT_TYPES_MAP, logger):
+def replace_types(customtypes, logger):
     """
     This allows the user to specify customize content types for use
     when importing content, by specifying a "default" content type followed by
@@ -244,8 +244,6 @@ def replace_types(customtypes, _CONTENT_TYPES_MAP, logger):
             logger.error("Can't replace '%s' with unknown type: '%s'" % (new,
                 old))
             exit(1)
-
-    return _CONTENT_TYPES_MAP
 
 
 def _convert_types_to_csv(value):
@@ -864,7 +862,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         if rename:
             rename_map = rename_parts(object_paths, rename_map, base, rename)
         if customtypes:
-            replace_types(customtypes, _CONTENT_TYPES_MAP, logger)
+            replace_types(customtypes, logger)
         results = parse2plone.import_files(parent, object_paths, base,
             collapse_map, rename_map)
 
