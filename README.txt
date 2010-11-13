@@ -333,6 +333,13 @@ Swap types (see typeswap.py).
 
 Match files (see match.py).
 
+``'--paths'``
+*************
+
+You can specify a series of import paths and corresponding object paths::
+
+    $ bin/plone run bin/import --path=sample:Plone/sample,sample2:Plone/sample2
+
 ``'--help'``
 ************
 
