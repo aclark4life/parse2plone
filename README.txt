@@ -228,13 +228,14 @@ Options
 +---------------------+-------------+----------------------------------------+
 | ``publish``         | false       | Publish newly created content.         |
 +---------------------+-------------+----------------------------------------+
-| ``slugify``         | false       | "Slugify" content. (see slugify.py)    |
+| ``collapse``        | false       | "collapse" content. (see               |
+|                     |             | collapse_parts())                      |
 +---------------------+-------------+----------------------------------------+
-| ``rename``          |             | Rename content. (see rename.py)        |
+| ``rename``          |             | Rename content. (see rename_parts())   |
 +---------------------+-------------+----------------------------------------+
-| ``typeswap``        |             | Swap types. (see typeswap.py)          |
+| ``customtypes``     |             | Use custom types. (see replace_types())|
 +---------------------+-------------+----------------------------------------+
-| ``match``           |             | Match files. (see match.py)            |
+| ``match``           |             | Match files. (see match_files())       |
 +---------------------+-------------+----------------------------------------+
 | ``paths``           |             | Specify a series of locations on the   |
 |                     |             | filesystem, with corresponding         |
@@ -319,10 +320,10 @@ Force create folders that do not exist.
 
 Publish newly created content.
 
-``'--slugify'``
+``'--collapse'``
 ***************
 
-"Slugify" content (see slugify.py).
+"collapse" content (see collapse_parts()).
 
 ``'--rename'``
 ***************
