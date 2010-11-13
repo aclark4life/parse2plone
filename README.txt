@@ -334,17 +334,17 @@ Publish newly created content.
 ``'--rename'``
 ***************
 
-Rename content (see rename.py).
+Rename content (see rename_files()).
 
-``'--typeswap'``
+``'--customtypes'``
 ****************
 
-Swap types (see typeswap.py).
+Swap types (see rename_types()).
 
 ``'--match'``
 ****************
 
-Match files (see match.py).
+Match files (see match_files()).
 
 ``'--paths'``
 *************
