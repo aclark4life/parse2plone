@@ -377,6 +377,10 @@ class Utils(object):
             dest='match',
             help='Only import content that matches PATTERN (see match_files())'
             )
+        option_parser.add_option('--paths',
+            default=_UNSET,
+            dest='paths',
+            help='Specify import_dirs:object_paths (--path is ignored)')
 
         return option_parser
 
