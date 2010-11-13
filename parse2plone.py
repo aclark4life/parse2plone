@@ -60,7 +60,7 @@ _SETTINGS = {
     'html_extensions': ['html'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
     'file_extensions': ['mp3'],
-    'target_tags': ['a', 'div', 'h1', 'h2', 'p'],
+    'target_tags': ['a', 'div', 'font', 'h1', 'h2', 'p'],
     'force': False,
     'publish': False,
     'collapse': False,
@@ -74,6 +74,8 @@ _CONTENT_TYPES_MAP = {
     'Document': 'Document',
     'Folder': 'Folder',
 }
+
+_UNSET = ''
 
 _paths_expr = re.compile('\n(\S+)\s+(\S+)')
 _collapse_expr = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
@@ -172,13 +174,14 @@ def _convert_paths_to_csv(value, option):
     if _paths_expr.findall(value):
         results = []
         for group in _paths_expr.findall(value):
-            if option is not 'paths':
-                group_0 = _clean_path(group[0])
-            else:
-                group_0 = group[0]
+#            if option is not 'paths':
+#                group_0 = _clean_path(group[0])
+#            else:
+#                group_0 = group[0]
+            group_0 = _clean_path(group[0])
             group_1 = _clean_path(group[1])
             results.append('%s:%s' % (group_0, group_1))
-        results = ', '.join(results)
+        results = ','.join(results)
     return results
 
 
@@ -303,7 +306,8 @@ class Utils(object):
         _SETTINGS['image_extensions'] = image_extensions.split(',')
         _SETTINGS['file_extensions'] = file_extensions.split(',')
         _SETTINGS['target_tags'] = target_tags.split(',')
-        _SETTINGS['path'] = _clean_path(path)
+        if not paths:
+            _SETTINGS['path'] = _clean_path(path)
         _SETTINGS['force'] = force
         _SETTINGS['publish'] = publish
         _SETTINGS['collapse'] = collapse
@@ -320,36 +324,61 @@ class Utils(object):
         else:
             _SETTINGS['match'] = match
 
+
     def _create_option_parser(self):
         option_parser = optparse.OptionParser()
-        option_parser.add_option("-p", "--path", dest="path",
-            help="Path to Plone site object or sub-folder")
-        option_parser.add_option("--html-extensions",
-            dest="html_extensions", help="Specify HTML file extensions")
-        option_parser.add_option("--illegal-chars", dest="illegal_chars",
-            help="Specify characters to ignore")
-        option_parser.add_option("--image-extensions",
-            dest="image_extensions", help="Specify image file extensions")
-        option_parser.add_option("--file-extensions",
-            dest="file_extensions", help="Specify generic file extensions")
-        option_parser.add_option("--target-tags", dest="target_tags",
-            help="Specify HTML tags to parse")
-        option_parser.add_option("--force",
-            action="store_true", dest="force", default=False,
-            help="Force creation of folders")
-        option_parser.add_option("--publish",
-            action="store_true", dest="publish", default=False,
-            help="Optionally publish newly created content")
-        option_parser.add_option("--collapse",
-            action="store_true", dest="collapse", default=False,
-            help="""Optionally "collapse" content (see collapse.py)""")
-        option_parser.add_option("--rename", dest="rename",
-            help="Optionally rename content (see rename_parts())")
-        option_parser.add_option("--customtypes", dest="customtypes",
-            help="Optionally use custom content types (see rename_types())")
-        option_parser.add_option("--match", dest="match",
-            help="Only import content that matches PATTERN (see match_files())"
-                )
+        option_parser.add_option('-p', '--path',
+            default=_UNSET,
+            dest='path',
+            help='Path to Plone site object or sub-folder')
+        option_parser.add_option('--html-extensions',
+            default=_UNSET,
+            dest='html_extensions',
+            help='Specify HTML file extensions')
+        option_parser.add_option('--illegal-chars',
+            default=_UNSET,
+            dest='illegal_chars',
+            help='Specify characters to ignore')
+        option_parser.add_option('--image-extensions',
+            default=_UNSET,
+            dest='image_extensions',
+            help='Specify image file extensions')
+        option_parser.add_option('--file-extensions',
+            default=_UNSET,
+            dest='file_extensions',
+            help='Specify generic file extensions')
+        option_parser.add_option('--target-tags',
+            default=_UNSET,
+            dest='target_tags',
+            help='Specify HTML tags to parse')
+        option_parser.add_option('--force',
+            action='store_true',
+            default=_UNSET,
+            dest='force',
+            help='Force creation of folders')
+        option_parser.add_option('--publish',
+            action='store_true',
+            default=_UNSET,
+            dest='publish',
+            help='Optionally publish newly created content')
+        option_parser.add_option('--collapse',
+            action='store_true',
+            default=_UNSET,
+            dest='collapse',
+            help="Optionally 'collapse' content (see collapse_parts())")
+        option_parser.add_option('--rename',
+            default=_UNSET,
+            dest='rename',
+            help='Optionally rename content (see rename_parts())')
+        option_parser.add_option('--customtypes',
+            default=_UNSET,
+            dest='customtypes',
+            help='Optionally use custom content types (see rename_types())')
+        option_parser.add_option('--match',
+            default=_UNSET,
+            dest='match',
+            help='Only import content that matches PATTERN (see match_files())')
+
         return option_parser
 
     def _is_file(self, obj, extensions):
@@ -431,29 +460,29 @@ class Utils(object):
         """
         Process command line args; save results in _SETTINGS dict
         """
-        if options.path is not None:
+        if options.path is not _UNSET:
             _SETTINGS['path'] = _clean_path(options.path)
-        if options.illegal_chars is not None:
+        if options.illegal_chars is not _UNSET:
             _SETTINGS['illegal_chars'] = options.illegal_chars
-        if options.html_extensions is not None:
+        if options.html_extensions is not _UNSET:
             _SETTINGS['html_extensions'] = options.html_extensions
-        if options.image_extensions is not None:
+        if options.image_extensions is not _UNSET:
             _SETTINGS['image_extensions'] = options.image_extensions
-        if options.file_extensions is not None:
+        if options.file_extensions is not _UNSET:
             _SETTINGS['file_extensions'] = options.file_extensions
-        if options.target_tags is not None:
+        if options.target_tags is not _UNSET:
             _SETTINGS['target_tags'] = options.target_tags
-        if options.force is not None:
+        if options.force is not _UNSET:
             _SETTINGS['force'] = options.force
-        if options.publish is not None:
+        if options.publish is not _UNSET:
             _SETTINGS['publish'] = options.publish
-        if options.collapse is not None:
+        if options.collapse is not _UNSET:
             _SETTINGS['collapse'] = options.collapse
-        if options.rename is not None:
+        if options.rename is not _UNSET:
             _SETTINGS['rename'] = (options.rename).split(',')
-        if options.customtypes is not None:
+        if options.customtypes is not _UNSET:
             _SETTINGS['customtypes'] = (options.customtypes).split(',')
-        if options.match is not None:
+        if options.match is not _UNSET:
             _SETTINGS['match'] = (options.match).split(',')
 
     def _setup_attrs(self, parse2plone, count, logger, utils):
@@ -564,7 +593,7 @@ class Parse2Plone(object):
                 break
 
     def _get_base(self, import_dir, num_parts):
-        import_dir = _clean_path(import_dir)
+        #import_dir = _clean_path(import_dir)
         return '/'.join(import_dir.split('/')[:num_parts])
 
     def _get_files(self, import_dir):
@@ -780,45 +809,56 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         image_extensions, file_extensions, target_tags, path, force, publish,
         collapse, rename, customtypes, match, paths)
 
+
     # Process command line args; save results in _SETTINGS
     option_parser = utils._create_option_parser()
     options, args = option_parser.parse_args()
-    import_dir = _clean_path(args[0])
     utils.process_command_line_args(options)
 
-    # Run parse2plone
-    parse2plone = Parse2Plone()
-    parse2plone = utils._setup_attrs(parse2plone, count, logger, utils)
-    files = parse2plone._get_files(import_dir)
-    num_parts = len(import_dir.split('/'))
-    app = parse2plone._setup_app(app)
-    base = parse2plone._get_base(import_dir, num_parts)
-    path, force, collapse, rename, customtypes, match = utils._setup_locals(
-        'path', 'force', 'collapse', 'rename', 'customtypes', 'match')
-    if utils._check_exists_path(app, path):
-        parent = parse2plone._get_parent(app, path)
+
+    # Process import dir or dirs
+    import_dirs = []
+    if not paths:
+        import_dirs.append(':'.join( _clean_path(args[0]), path) )
     else:
-        if force:
-            parse2plone.create_parts(app, parse2plone._get_parts(path), base,
-                collapse_map, rename_map)
+        import_dirs = paths.split(',')
+
+    for i in import_dirs:
+        import_dir, path = i.split(':')
+
+        # Run parse2plone
+        parse2plone = Parse2Plone()
+        parse2plone = utils._setup_attrs(parse2plone, count, logger, utils)
+        files = parse2plone._get_files(import_dir)
+        num_parts = len(import_dir.split('/'))
+        app = parse2plone._setup_app(app)
+        base = parse2plone._get_base(import_dir, num_parts)
+        force, collapse, rename, customtypes, match = utils._setup_locals(
+            'force', 'collapse', 'rename', 'customtypes', 'match')
+        if utils._check_exists_path(app, path):
             parent = parse2plone._get_parent(app, path)
         else:
-            msg = "object in path '%s' does not exist, use --force to create"
-            logger.error(msg % path)
-            exit(1)
-    object_paths = parse2plone._remove_base(files, num_parts, base)
-    if match:
-        object_paths = match_files(object_paths, base, match)
-    if collapse:
-        collapse_map = collapse_parts(object_paths, collapse_map, base)
-    if rename:
-        rename_map = rename_parts(object_paths, rename_map, base, rename)
-    if customtypes:
-        replace_types(customtypes, _CONTENT_TYPES_MAP, logger)
-    results = parse2plone.import_files(parent, object_paths, base,
-        collapse_map, rename_map)
+            if force:
+                parse2plone.create_parts(app, parse2plone._get_parts(path), base,
+                    collapse_map, rename_map)
+                parent = parse2plone._get_parent(app, path)
+            else:
+                msg = "object in path '%s' does not exist, use --force to create"
+                logger.error(msg % path)
+                exit(1)
+        object_paths = parse2plone._remove_base(files, num_parts, base)
+        if match:
+            object_paths = match_files(object_paths, base, match)
+        if collapse:
+            collapse_map = collapse_parts(object_paths, collapse_map, base)
+        if rename:
+            rename_map = rename_parts(object_paths, rename_map, base, rename)
+        if customtypes:
+            replace_types(customtypes, _CONTENT_TYPES_MAP, logger)
+        results = parse2plone.import_files(parent, object_paths, base,
+            collapse_map, rename_map)
 
-    # Print results
-    msg = "Imported %s folders, %s images, %s pages, and %s files into: '%s'."
-    logger.info(msg % tuple(results))
-    exit(0)
+        # Print results
+        msg = "Imported %s folders, %s images, %s pages, and %s files into: '%s'."
+        logger.info(msg % tuple(results))
+        exit(0)
