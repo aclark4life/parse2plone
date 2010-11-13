@@ -231,13 +231,19 @@ Options
 |                     |             | elements are returned (including HTML) |
 +---------------------+-------------+----------------------------------------+
 | ``force``           | false       | Force create folders that do not exist.|
+|                     |             | For example, if you do                 |
+|                     |             | --path=/Plone/foo and foo does not     |
+|                     |             | exist, you will get an error message.  |
+|                     |             | Use --force to tell ``parse2plone`` to |
+|                     |             | create it.                             |
 +---------------------+-------------+----------------------------------------+
 | ``publish``         | false       | Publish newly created content.         |
 +---------------------+-------------+----------------------------------------+
 | ``collapse``        | false       | "collapse" content. (see               |
-|                     |             | collapse_parts())                      |
+|                     |             | collapse_parts() in parse2plone.py)    |
 +---------------------+-------------+----------------------------------------+
-| ``rename``          |             | Rename content. (see rename_parts())   |
+| ``rename``          |             | Rename content. (see rename_parts()    |
+|                     |             | in parse2plone.py                      | 
 +---------------------+-------------+----------------------------------------+
 | ``customtypes``     |             | Use custom types. (see replace_types())|
 +---------------------+-------------+----------------------------------------+
@@ -337,9 +343,9 @@ Publish newly created content.
 Rename content (see rename_files()).
 
 ``'--customtypes'``
-****************
+*******************
 
-Swap types (see rename_types()).
+Customize types (see replace_types() in parse2plone.py).
 
 ``'--match'``
 ****************
@@ -377,14 +383,16 @@ the ``--help`` or ``-h`` option::
                             Specify HTML tags to parse
       --force               Force creation of folders
       --publish             Optionally publish newly created content
-      --collapse            Optionally 'collapse' content (see collapse_parts())
+      --collapse            Optionally "collapse" content (see collapse_parts())
       --rename=RENAME       Optionally rename content (see rename_parts())
       --customtypes=CUSTOMTYPES
-                            Optionally use custom content types (see
-                            rename_types())
+                            Optionally use custom content types (see replace
+                            types())
       --match=MATCH         Only import content that matches PATTERN (see
                             match_files())
-      --paths=PATHS         Specify import_dirs:object_paths (--path will be ignored)
+      --paths=PATHS         Specify import_dirs:object_paths (--path will be
+                            ignored)
+
 
 Example
 '''''''

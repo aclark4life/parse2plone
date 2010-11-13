@@ -363,7 +363,7 @@ class Utils(object):
             action='store_true',
             default=_UNSET,
             dest='collapse',
-            help="Optionally 'collapse' content (see collapse_parts())")
+            help="""Optionally "collapse" content (see collapse_parts())""")
         option_parser.add_option('--rename',
             default=_UNSET,
             dest='rename',
@@ -371,7 +371,7 @@ class Utils(object):
         option_parser.add_option('--customtypes',
             default=_UNSET,
             dest='customtypes',
-            help='Optionally use custom content types (see rename_types())')
+            help='Optionally use custom content types (see replace types())')
         option_parser.add_option('--match',
             default=_UNSET,
             dest='match',
