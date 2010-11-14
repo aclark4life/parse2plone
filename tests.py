@@ -114,6 +114,7 @@ class CollapseTestCase(unittest.TestCase):
                 self.base))
 
 
+# Test logger
 class LoggerTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -135,6 +136,7 @@ class LoggerTestCase(unittest.TestCase):
         self.assertTrue(isinstance(logger, self.test_logger.__class__))
 
 
+# Test utils
 class FakeLiteralEvalTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -171,9 +173,15 @@ class CleanPathTestCase(unittest.TestCase):
 
 class ConvertTypesToCSVTestCase(unittest.TestCase):
 
-    # _convert_types_to_csv(self, value):
     def setUp(self): 
+        self.utils = parse2plone.Utils()
+
+    def testConvertTypesToCSV(self):
+        # _convert_types_to_csv(self, value):
         pass
+
+
+# Test parse2plone
 
 
 if __name__ == '__main__':
