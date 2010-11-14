@@ -236,12 +236,17 @@ class Utils(object):
 
     def _convert_line_to_csv(self, value):
         """
-        Converts '\nfoo bar' to 'foo:bar'
+        Converts '\nfoo bar\nbaz qux' to 'foo:bar,baz:qux'
         """
         expr = re.compile('\n(\S+)\s+(\S+)')
-        results = None
-        for group in expr.findall(value):
-            results = '%s:%s' % (group[0], group[1])
+        results = ''
+        c = 0
+        groups = expr.findall(value)
+        for group in groups:
+            results += '%s:%s' % (group[0], group[1])
+            if c < len(groups) - 1:
+                results += ','
+            c += 1
         return results
 
     def _convert_csv_to_list(self, illegal_chars, html_extensions,
