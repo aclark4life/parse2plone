@@ -113,8 +113,9 @@ class ReplaceTypesTestCase(unittest.TestCase):
         map_before = self._replace_types_map_before
         map_after = self._replace_types_map_after
         types = self.replacetypes
-        self.assertEqual(map_after, 
+        self.assertEqual(map_after,
             parse2plone.replace_types(types, map_before))
+
 
 # Test "collapse" feature
 class CollapseTestCase(unittest.TestCase):
