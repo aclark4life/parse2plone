@@ -2,28 +2,37 @@ import parse2plone
 import unittest
 
 
-# Test private function
 class FakeLiteralEvalTestCase(unittest.TestCase):
+    
+    def setUp(self):
+        self.utils = parse2plone.Utils()
 
     def testFakeLiteralEvalTrue(self):
-        self.assertEqual(True, parse2plone._fake_literal_eval('True'))
+        utils = self.utils
+        self.assertEqual(True, utils._fake_literal_eval('True'))
 
     def testFakeLiteralEvalFalse(self):
-        self.assertEqual(False, parse2plone._fake_literal_eval('False'))
+        utils = self.utils
+        self.assertEqual(False, utils._fake_literal_eval('False'))
 
     def testFakeLiteralEvalNone(self):
-        self.assertEqual(None, parse2plone._fake_literal_eval('None'))
+        utils = self.utils
+        self.assertEqual(None, utils._fake_literal_eval('None'))
 
     def testFakeLiteralEvalMalformedString(self):
+        utils = self.utils
         self.assertEqual((ValueError, 'malformed string'),
-            parse2plone._fake_literal_eval('asdf'))
+            utils._fake_literal_eval('asdf'))
 
 
-# Test private function
 class CleanPathTestCase(unittest.TestCase):
 
+    def setUp(self):
+        self.utils = parse2plone.Utils()
+
     def testCleanPath(self):
-        self.assertEqual('foo/bar/baz', parse2plone._clean_path(
+        utils = self.utils
+        self.assertEqual('foo/bar/baz', utils._clean_path(
             '/foo/bar/baz/'))
 
 

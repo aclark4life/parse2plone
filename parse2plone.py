@@ -75,33 +75,22 @@ _paths_expr = re.compile('\n(\S+)\s+(\S+)')
 _replace_types_expr = re.compile('\n(\S+)\s+(\S+)')
 _collapse_expr = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
+def _setup_logger():
+    # log levels: debug, info, warn, error, critical
+    logger = logging.getLogger("parse2plone")
+    logger.setLevel(logging.INFO)
+    handler = logging.StreamHandler()
+    outfile = logging.FileHandler(filename='parse2plone.log')
+    handler.setLevel(logging.INFO)
+    outfile.setLevel(logging.INFO)
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logger.addHandler(outfile)
+    return logger
 
-def _clean_path(path):
-    """
-    Turns '/foo/bar/baz/' into 'foo/bar/baz'
-    """
-    if path.startswith('/'):
-        path = path[1:]
-    if path.endswith('/'):
-        path = path[0:-1]
-    return path
-
-
-# BBB Because the ast module is not included with Python 2.4, we include this
-# function to produce similar results (with our limited input set).
-def _fake_literal_eval(input):
-    """
-    Returns False when 'False' is passed in, and so on.
-    """
-    if input == 'False':
-        return False
-    elif input == 'True':
-        return True
-    elif input == 'None':
-        return None
-    else:
-        return ValueError, 'malformed string'
-
+_LOG = _setup_logger()
 
 # Adds "match" feature to ``parse2plone``.
 def match_files(files, base, match):
@@ -166,14 +155,15 @@ def _convert_paths_to_csv(value, option):
     This function applies the `paths` regular expression to a value.
     """
     results = None
+    utils = Utils()
     if _paths_expr.findall(value):
         results = []
         for group in _paths_expr.findall(value):
             if option is not 'paths':
-                group_0 = _clean_path(group[0])
+                group_0 = utils._clean_path(group[0])
             else:
                 group_0 = group[0]
-            group_1 = _clean_path(group[1])
+            group_1 = utils._clean_path(group[1])
             results.append('%s:%s' % (group_0, group_1))
         results = ','.join(results)
     return results
@@ -239,38 +229,52 @@ def replace_types(replacetypes, _replace_types_map):
             raise ValueError
     return _replace_types_map
 
-
-def _convert_types_to_csv(value):
-    """
-    """
-    results = None
-    if _paths_expr.findall(value):
-        results = []
-        for group in _paths_expr.findall(value):
-            results.append('%s:%s' % (
-                _clean_path(group[0]),
-                _clean_path(group[1])))
-        results = ','.join(results)
-    return results
-
-
-def _setup_logger():
-    # log levels: debug, info, warn, error, critical
-    logger = logging.getLogger("parse2plone")
-    logger.setLevel(logging.INFO)
-    handler = logging.StreamHandler()
-    outfile = logging.FileHandler(filename='parse2plone.log')
-    handler.setLevel(logging.INFO)
-    outfile.setLevel(logging.INFO)
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    logger.addHandler(outfile)
-    return logger
-
-
 class Utils(object):
+
+
+    def _convert_types_to_csv(self, value):
+        """
+        """
+        results = None
+        if _paths_expr.findall(value):
+            results = []
+            for group in _paths_expr.findall(value):
+                results.append('%s:%s' % (
+                    _clean_path(group[0]),
+                    _clean_path(group[1])))
+            results = ','.join(results)
+        return results
+
+
+
+
+    def _clean_path(self, path):
+        """
+        Turns '/foo/bar/baz/' into 'foo/bar/baz'
+        """
+        if path.startswith('/'):
+            path = path[1:]
+        if path.endswith('/'):
+            path = path[0:-1]
+        return path
+
+
+    # BBB Because the ast module is not included with Python 2.4, we include this
+    # function to produce similar results (with our limited input set).
+    def _fake_literal_eval(self, input):
+        """
+        Returns False when 'False' is passed in, and so on.
+        """
+        if input == 'False':
+            return False
+        elif input == 'True':
+            return True
+        elif input == 'None':
+            return None
+        else:
+            return ValueError, 'malformed string'
+
+
     def _check_exists_obj(self, parent, obj):
         if obj in parent.objectIds():
             return True
@@ -460,6 +464,7 @@ class Utils(object):
         """
         Convert most recipe parameter values to csv; save in _SETTINGS dict
         """
+        utils = Utils()
         for option, existing_value in _SETTINGS.items():
             if option in options:
                 # the user set a recipe parameter
@@ -473,7 +478,7 @@ class Utils(object):
                     _SETTINGS[option] = ', '.join(re.split('\s+',
                         options[option]))
                 elif option in ('force', 'publish', 'collapse'):
-                    _SETTINGS[option] = _fake_literal_eval(
+                    _SETTINGS[option] = utils._fake_literal_eval(
                         options[option].capitalize())
                 else:
                     _SETTINGS[option] = options[option]
@@ -792,8 +797,6 @@ class Recipe(object):
     def update(self):
         """Updater"""
         pass
-
-_LOG = _setup_logger()
 
 def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
