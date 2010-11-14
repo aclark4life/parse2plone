@@ -69,11 +69,6 @@ _SETTINGS = {
     'paths': None,
 }
 
-_UNSET = ''
-
-_paths_expr = re.compile('\n(\S+)\s+(\S+)')
-_replace_types_expr = re.compile('\n(\S+)\s+(\S+)')
-_collapse_expr = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 def _setup_logger():
     # log levels: debug, info, warn, error, critical
@@ -90,7 +85,12 @@ def _setup_logger():
     logger.addHandler(outfile)
     return logger
 
+_UNSET = ''
 _LOG = _setup_logger()
+_paths_expr = re.compile('\n(\S+)\s+(\S+)')
+_replace_types_expr = re.compile('\n(\S+)\s+(\S+)')
+_collapse_expr = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
+
 
 # Adds "match" feature to ``parse2plone``.
 def match_files(files, base, match):
@@ -229,9 +229,8 @@ def replace_types(replacetypes, _replace_types_map):
             raise ValueError
     return _replace_types_map
 
+
 class Utils(object):
-
-
     def _convert_types_to_csv(self, value):
         """
         """
@@ -245,9 +244,6 @@ class Utils(object):
             results = ','.join(results)
         return results
 
-
-
-
     def _clean_path(self, path):
         """
         Turns '/foo/bar/baz/' into 'foo/bar/baz'
@@ -258,9 +254,9 @@ class Utils(object):
             path = path[0:-1]
         return path
 
-
-    # BBB Because the ast module is not included with Python 2.4, we include this
-    # function to produce similar results (with our limited input set).
+    # BBB Because the ast module is not included with Python 2.4, we
+    # include this function to produce similar results (with our
+    # limited input set).
     def _fake_literal_eval(self, input):
         """
         Returns False when 'False' is passed in, and so on.
@@ -273,7 +269,6 @@ class Utils(object):
             return None
         else:
             return ValueError, 'malformed string'
-
 
     def _check_exists_obj(self, parent, obj):
         if obj in parent.objectIds():
@@ -797,6 +792,7 @@ class Recipe(object):
     def update(self):
         """Updater"""
         pass
+
 
 def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,

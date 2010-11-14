@@ -3,7 +3,7 @@ import unittest
 
 
 class FakeLiteralEvalTestCase(unittest.TestCase):
-    
+
     def setUp(self):
         self.utils = parse2plone.Utils()
 
