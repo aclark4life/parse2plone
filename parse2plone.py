@@ -87,8 +87,7 @@ def _setup_logger():
 
 _UNSET = ''
 _LOG = _setup_logger()
-_paths_expr = re.compile('\n(\S+)\s+(\S+)')
-_replace_types_expr = re.compile('\n(\S+)\s+(\S+)')
+_recipe_args_expr = re.compile('\n(\S+)\s+(\S+)')
 _collapse_expr = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 
@@ -235,21 +234,13 @@ class Utils(object):
         except:
             return False
 
-    def _convert_paths_to_csv(self, value, option):
+    def _convert_line_to_csv(self, value):
         """
-        This function applies the `paths` regular expression to a value.
+        Converts '\nfoo bar' to 'foo:bar'
         """
         results = None
-        if _paths_expr.findall(value):
-            results = []
-            for group in _paths_expr.findall(value):
-                if option is not 'paths':
-                    group_0 = self._clean_path(group[0])
-                else:
-                    group_0 = group[0]
-                group_1 = self._clean_path(group[1])
-                results.append('%s:%s' % (group_0, group_1))
-            results = ','.join(results)
+        for group in _recipe_args_expr.findall(value):
+            results = '%s:%s' % (group[0], group[1])
         return results
 
     def _convert_csv_to_list(self, illegal_chars, html_extensions,
@@ -281,19 +272,6 @@ class Utils(object):
             _SETTINGS['match'] = match.split(',')
         else:
             _SETTINGS['match'] = match
-
-    def _convert_types_to_csv(self, value):
-        """
-        """
-        results = None
-        if _replace_types_expr.findall(value):
-            results = []
-            for group in _replace_types_expr.findall(value):
-                results.append('%s:%s' % (
-                    self._clean_path(group[0]),
-                    self._clean_path(group[1])))
-            results = ','.join(results)
-        return results
 
     def _create_option_parser(self):
         option_parser = optparse.OptionParser()
@@ -470,7 +448,7 @@ class Utils(object):
             results.append(_SETTINGS[arg])
         return results
 
-    def process_recipe_args(self, options):
+    def _process_recipe_args(self, options):
         """
         Convert most recipe parameter values to csv; save in _SETTINGS dict
         """
@@ -478,10 +456,9 @@ class Utils(object):
             if option in options:
                 # the user set a recipe parameter
                 if option in ('rename', 'paths', 'match'):
-                    _SETTINGS[option] = self._convert_paths_to_csv(options[option],
-                        option)
+                    _SETTINGS[option] = self._convert_line_to_csv(options[option])
                 elif option in ('replacetypes'):
-                    _SETTINGS[option] = self._convert_types_to_csv(options[option])
+                    _SETTINGS[option] = self._convert_line_to_csv(options[option])
                 elif option in ('illegal_chars', 'html_extensions',
                     'image_extensions', 'file_extensions', 'target_tags'):
                     _SETTINGS[option] = ', '.join(re.split('\s+',
@@ -522,7 +499,7 @@ class Utils(object):
             arguments += ", paths='%s'"
         return arguments
 
-    def process_command_line_args(self, options):
+    def _process_command_line_args(self, options):
         """
         Process command line args; save results in _SETTINGS dict
         """
@@ -550,6 +527,11 @@ class Utils(object):
             _SETTINGS['replacetypes'] = (options.replacetypes).split(',')
         if options.match is not _UNSET:
             _SETTINGS['match'] = (options.match).split(',')
+
+    def _validate_recipe_args(self, options):
+        for option in options:
+            if option not in _SETTINGS.keys() and option != 'recipe':
+                raise ValueError, "Unknown recipe parameter '%s'." % option
 
 
 class Parse2Plone(object):
@@ -654,7 +636,7 @@ class Parse2Plone(object):
         results = self._count.values()
         return results
 
-    def process_root_element(self, results, root):
+    def _process_root_element(self, results, root):
         # separate out the XPath selectors and ordinary tags
         selectors = [x for x in self.target_tags if '/' in x]
         tags = [x for x in self.target_tags if '/' not in x]
@@ -715,7 +697,7 @@ class Parse2Plone(object):
             msg = "make sure file contains HTML"
             _LOG.error(msg % filename)
             exit(1)
-        results = self.process_root_element(results, root)
+        results = self._process_root_element(results, root)
         page.setText(results)
 
     def set_state(self, obj):
@@ -744,8 +726,11 @@ class Recipe(object):
     def install(self):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
+
         utils = Utils()
-        arguments = utils.process_recipe_args(self.options)
+
+        utils._validate_recipe_args(self.options)
+        arguments = utils._process_recipe_args(self.options)
 
         if not _SETTINGS['paths']:
             # if the user does not set the paths parameter (which by default
@@ -812,7 +797,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Process command line args; save results in _SETTINGS
     option_parser = utils._create_option_parser()
     options, args = option_parser.parse_args()
-    utils.process_command_line_args(options)
+    utils._process_command_line_args(options)
 
     # Setup parse2plone
     parse2plone = Parse2Plone()
