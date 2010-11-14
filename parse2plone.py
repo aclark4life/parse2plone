@@ -646,7 +646,7 @@ class Parse2Plone(object):
         results = _COUNT.values()
         return results
 
-    def _process_root_element(self, results, root):
+    def parse_root(self, results, root):
         # separate out the XPath selectors and ordinary tags
         selectors = [x for x in _SETTINGS['target_tags'] if '/' in x]
         tags = [x for x in _SETTINGS['target_tags'] if '/' not in x]
@@ -707,7 +707,7 @@ class Parse2Plone(object):
             msg = "make sure file contains HTML"
             _LOG.error(msg % filename)
             exit(1)
-        results = self._process_root_element(results, root)
+        results = self.parse_root(results, root)
         page.setText(results)
 
     def set_state(self, obj):
