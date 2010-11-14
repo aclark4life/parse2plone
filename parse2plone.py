@@ -234,7 +234,7 @@ class Utils(object):
         except:
             return False
 
-    def _convert_line_to_csv(self, value):
+    def _convert_str_to_csv(self, value):
         """
         Converts '\nfoo bar\nbaz qux' to 'foo:bar,baz:qux'
         """
@@ -446,10 +446,10 @@ class Utils(object):
             if option in options:
                 # the user set a recipe parameter we need to process
                 if option in ('rename', 'paths', 'match'):
-                    _SETTINGS[option] = self._convert_line_to_csv(
+                    _SETTINGS[option] = self._convert_str_to_csv(
                         options[option])
                 elif option in ('replacetypes'):
-                    _SETTINGS[option] = self._convert_line_to_csv(
+                    _SETTINGS[option] = self._convert_str_to_csv(
                         options[option])
                 elif option in ('illegal_chars', 'html_extensions',
                     'image_extensions', 'file_extensions', 'target_tags'):
