@@ -1,4 +1,3 @@
-
 ###############################################################################
 #                                                                             #
 # Parse2Plone - Easily import static website content into Plone               #
@@ -373,7 +372,6 @@ class Utils(object):
             default=_UNSET,
             dest='paths',
             help='Specify import_dirs:object_paths (--path will be ignored)')
-
         return option_parser
 
     def _get_results(self, paths_map, index):
@@ -459,7 +457,6 @@ class Utils(object):
             arguments += " match=%s"
         if _SETTINGS['paths']:
             arguments += ", paths='%s'"
-
         return arguments
 
     def process_command_line_args(self, options):
@@ -651,7 +648,6 @@ class Parse2Plone(object):
                 parts = _collapse_map['forward'][f].split('/')
             self.create_parts(parent, parts, base, _collapse_map, _rename_map,
                 _replace_types_map)
-
         results = self._count.values()
         return results
 
@@ -823,18 +819,18 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     options, args = option_parser.parse_args()
     utils.process_command_line_args(options)
 
+    # Setup parse2plone
+    parse2plone = Parse2Plone()
+    parse2plone = utils._setup_attrs(parse2plone, _count, logger, utils)
+
     # Process import dir or dirs
     paths_map = []
     if not paths:
         paths_map.append(':'.join(_clean_path(args[0]), path))
     else:
         paths_map = paths.split(',')
-
-    parse2plone = Parse2Plone()
-    parse2plone = utils._setup_attrs(parse2plone, _count, logger, utils)
     for entry in paths_map:
         import_dir, path = entry.split(':')
-
         # Run parse2plone
         files = parse2plone._get_files(import_dir)
         num_parts = len(import_dir.split('/'))
@@ -876,5 +872,4 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     results.append(utils._get_results(paths_map, 0))
     results.append(utils._get_results(paths_map, 1))
     logger.info(msg % tuple(results))
-
     exit(0)
