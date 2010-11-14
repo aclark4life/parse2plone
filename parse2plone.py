@@ -389,6 +389,7 @@ class Utils(object):
         return updated_parent
 
     def _get_parts(self, path):
+        path = self._clean_path(path)
         return path.split('/')
 
     def _get_path(self, parts, i):
@@ -591,8 +592,10 @@ class Parse2Plone(object):
 
     def create_parts(self, parent, parts, base, _collapse_map, _rename_map,
         _replace_types_map):
+
         _LOG.info("creating parts for '%s'" % '/'.join(parts))
         utils = Utils()
+
         for i in range(len(parts)):
             path = utils._get_path(parts, i)
             prefix_path = utils._get_prefix_path(path)
@@ -775,6 +778,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     _collapse_map = {'forward': {}, 'reverse': {}}
     _replace_types_map = {'Document': 'Document', 'Folder': 'Folder'}
 
+    parse2plone = Parse2Plone()
     utils = Utils()
 
     # Convert arg values passed in to main from csv to list;
@@ -788,8 +792,6 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     options, args = option_parser.parse_args()
     utils._process_command_line_args(options)
 
-    # Setup parse2plone
-    parse2plone = Parse2Plone()
 
     # Process import dir or dirs
     paths_map = []
