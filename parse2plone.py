@@ -577,7 +577,8 @@ class Parse2Plone(object):
             self.logger.info("publishing page '%s'" % obj)
         return page
 
-    def create_parts(self, parent, parts, base, _collapse_map, _rename_map, _replace_types_map):
+    def create_parts(self, parent, parts, base, _collapse_map, _rename_map,
+        _replace_types_map):
         self.logger.info("creating parts for '%s'" % '/'.join(parts))
         for i in range(len(parts)):
             path = self._get_path(parts, i)
@@ -701,7 +702,8 @@ class Parse2Plone(object):
         f.close()
         at_file.setFile(data)
 
-    def set_page(self, page, obj, prefix_path, base, _collapse_map, _rename_map):
+    def set_page(self, page, obj, prefix_path, base, _collapse_map,
+        _rename_map):
         filename = '/'.join([base, '/'.join(prefix_path), obj])
         key = '/'.join(prefix_path) + '/' + obj
         if self.rename and key in _rename_map['reverse']:
@@ -753,7 +755,6 @@ class Recipe(object):
         utils = Utils()
         arguments = utils.process_recipe_args(self.options)
 
-
         if not _SETTINGS['paths']:
             # if the user does not set the paths parameter (which by default
             # they won't) we use path (aka /path/to/files)
@@ -804,13 +805,11 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     match=None, paths=None):
 
     _count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
-    logger = setup_logger()
     _rename_map = {'forward': {}, 'reverse': {}}
     _collapse_map = {'forward': {}, 'reverse': {}}
-    _replace_types_map = {
-        'Document': 'Document',
-        'Folder': 'Folder',
-    }
+    _replace_types_map = {'Document': 'Document', 'Folder': 'Folder'}
+
+    logger = setup_logger()
     utils = Utils()
 
     # Convert arg values passed in to main from csv to list;
