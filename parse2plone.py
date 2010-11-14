@@ -85,10 +85,9 @@ def _setup_logger():
     logger.addHandler(outfile)
     return logger
 
-_UNSET = ''
+_COUNT = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
 _LOG = _setup_logger()
-_recipe_args_expr = re.compile('\n(\S+)\s+(\S+)')
-_collapse_expr = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
+_UNSET_OPTION = ''
 
 
 # Adds "match" feature to ``parse2plone``.
@@ -172,8 +171,9 @@ def collapse_parts(object_paths, _collapse_map, base):
         _collapse_map{'reverse': {'/var/www/html/foo-20000101.html':
             '/var/www/html/2000/01/01/foo/index.html'}}
     """
+    expr = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
     for f in object_paths[base]:
-        result = _collapse_expr.search(f)
+        result = expr.search(f)
         if result:
             groups = result.groups()
             collapse_id = '%s-%s%s%s.html' % (groups[3], groups[0], groups[1],
@@ -238,8 +238,9 @@ class Utils(object):
         """
         Converts '\nfoo bar' to 'foo:bar'
         """
+        expr = re.compile('\n(\S+)\s+(\S+)')
         results = None
-        for group in _recipe_args_expr.findall(value):
+        for group in expr.findall(value):
             results = '%s:%s' % (group[0], group[1])
         return results
 
@@ -276,59 +277,59 @@ class Utils(object):
     def _create_option_parser(self):
         option_parser = optparse.OptionParser()
         option_parser.add_option('-p', '--path',
-            default=_UNSET,
+            default=_UNSET_OPTION,
             dest='path',
             help='Path to Plone site object or sub-folder')
         option_parser.add_option('--html-extensions',
-            default=_UNSET,
+            default=_UNSET_OPTION,
             dest='html_extensions',
             help='Specify HTML file extensions')
         option_parser.add_option('--illegal-chars',
-            default=_UNSET,
+            default=_UNSET_OPTION,
             dest='illegal_chars',
             help='Specify characters to ignore')
         option_parser.add_option('--image-extensions',
-            default=_UNSET,
+            default=_UNSET_OPTION,
             dest='image_extensions',
             help='Specify image file extensions')
         option_parser.add_option('--file-extensions',
-            default=_UNSET,
+            default=_UNSET_OPTION,
             dest='file_extensions',
             help='Specify generic file extensions')
         option_parser.add_option('--target-tags',
-            default=_UNSET,
+            default=_UNSET_OPTION,
             dest='target_tags',
             help='Specify HTML tags to parse')
         option_parser.add_option('--force',
             action='store_true',
-            default=_UNSET,
+            default=_UNSET_OPTION,
             dest='force',
             help='Force creation of folders')
         option_parser.add_option('--publish',
             action='store_true',
-            default=_UNSET,
+            default=_UNSET_OPTION,
             dest='publish',
             help='Optionally publish newly created content')
         option_parser.add_option('--collapse',
             action='store_true',
-            default=_UNSET,
+            default=_UNSET_OPTION,
             dest='collapse',
             help="""Optionally "collapse" content (see collapse_parts())""")
         option_parser.add_option('--rename',
-            default=_UNSET,
+            default=_UNSET_OPTION,
             dest='rename',
             help='Optionally rename content (see rename_parts())')
         option_parser.add_option('--replacetypes',
-            default=_UNSET,
+            default=_UNSET_OPTION,
             dest='replacetypes',
             help='Optionally use custom content types (see replace types())')
         option_parser.add_option('--match',
-            default=_UNSET,
+            default=_UNSET_OPTION,
             dest='match',
             help='Only import content that matches PATTERN (see match_files())'
             )
         option_parser.add_option('--paths',
-            default=_UNSET,
+            default=_UNSET_OPTION,
             dest='paths',
             help='Specify import_dirs:object_paths (--path will be ignored)')
         return option_parser
@@ -352,11 +353,11 @@ class Utils(object):
     def _get_results(self, paths_map, index):
         results = ''
         max = len(paths_map)
-        _count = 0
+        c = 0
         for i in paths_map:
             results += i.split(':')[index]
-            _count += 1
-            if _count != max:
+            c += 1
+            if c != max:
                 results += ', '
         return "'%s'" % results
 
@@ -487,29 +488,29 @@ class Utils(object):
         """
         Process command line args; save results in _SETTINGS dict
         """
-        if options.path is not _UNSET:
+        if options.path is not _UNSET_OPTION:
             _SETTINGS['path'] = self._clean_path(options.path)
-        if options.illegal_chars is not _UNSET:
+        if options.illegal_chars is not _UNSET_OPTION:
             _SETTINGS['illegal_chars'] = options.illegal_chars
-        if options.html_extensions is not _UNSET:
+        if options.html_extensions is not _UNSET_OPTION:
             _SETTINGS['html_extensions'] = options.html_extensions
-        if options.image_extensions is not _UNSET:
+        if options.image_extensions is not _UNSET_OPTION:
             _SETTINGS['image_extensions'] = options.image_extensions
-        if options.file_extensions is not _UNSET:
+        if options.file_extensions is not _UNSET_OPTION:
             _SETTINGS['file_extensions'] = options.file_extensions
-        if options.target_tags is not _UNSET:
+        if options.target_tags is not _UNSET_OPTION:
             _SETTINGS['target_tags'] = options.target_tags
-        if options.force is not _UNSET:
+        if options.force is not _UNSET_OPTION:
             _SETTINGS['force'] = options.force
-        if options.publish is not _UNSET:
+        if options.publish is not _UNSET_OPTION:
             _SETTINGS['publish'] = options.publish
-        if options.collapse is not _UNSET:
+        if options.collapse is not _UNSET_OPTION:
             _SETTINGS['collapse'] = options.collapse
-        if options.rename is not _UNSET:
+        if options.rename is not _UNSET_OPTION:
             _SETTINGS['rename'] = (options.rename).split(',')
-        if options.replacetypes is not _UNSET:
+        if options.replacetypes is not _UNSET_OPTION:
             _SETTINGS['replacetypes'] = (options.replacetypes).split(',')
-        if options.match is not _UNSET:
+        if options.match is not _UNSET_OPTION:
             _SETTINGS['match'] = (options.match).split(',')
 
     def _validate_recipe_args(self, options):
@@ -528,26 +529,26 @@ class Parse2Plone(object):
         if utils._is_folder(obj):
             folder = self.create_folder(parent, obj, _replace_types_map)
             self.set_title(folder, obj)
-            self._count['folders'] += 1
+            _COUNT['folders'] += 1
             commit()
-        elif utils._is_file(obj, self.html_extensions):
+        elif utils._is_file(obj, _SETTINGS['html_extensions']):
             page = self.create_page(parent, obj, _replace_types_map)
             self.set_title(page, obj)
             self.set_page(page, obj, prefix_path, base, _collapse_map,
                 _rename_map)
-            self._count['pages'] += 1
+            _COUNT['pages'] += 1
             commit()
         elif utils._is_file(obj, self.image_extensions):
             image = self.create_image(parent, obj, _replace_types_map)
             self.set_title(image, obj)
             self.set_image(image, obj, prefix_path, base)
-            self._count['images'] += 1
+            _COUNT['images'] += 1
             commit()
         elif utils._is_file(obj, self.file_extensions):
             at_file = self.create_file(parent, obj, _replace_types_map)
             self.set_title(at_file, obj)
             self.set_file(at_file, obj, prefix_path, base)
-            self._count['files'] += 1
+            _COUNT['files'] += 1
             commit()
 
     def create_folder(self, parent, obj, _replace_types_map):
@@ -557,7 +558,7 @@ class Parse2Plone(object):
         folder_type = _replace_types_map['Folder']
         parent.invokeFactory(folder_type, obj)
         folder = parent[obj]
-        if self.publish:
+        if _SETTINGS['publish']:
             self.set_state(folder)
             _LOG.info("publishing folder '%s'" % obj)
         return folder
@@ -585,7 +586,7 @@ class Parse2Plone(object):
         page_type = _replace_types_map['Document']
         parent.invokeFactory(page_type, obj)
         page = parent[obj]
-        if self.publish:
+        if _SETTINGS['publish']:
             self.set_state(page)
             _LOG.info("publishing page '%s'" % obj)
         return page
@@ -617,21 +618,22 @@ class Parse2Plone(object):
 
     def import_files(self, parent, object_paths, base, _collapse_map,
         _rename_map, _replace_types_map):
+        utils = Utils()
         for f in object_paths[base]:
-            parts = self._get_parts(f)
-            if self.rename and f in _rename_map['forward']:
+            parts = utils._get_parts(f)
+            if _SETTINGS['rename'] and f in _rename_map['forward']:
                 parts = _rename_map['forward'][f].split('/')
-            if self.collapse and f in _collapse_map['forward']:
+            if _SETTINGS['collapse'] and f in _collapse_map['forward']:
                 parts = _collapse_map['forward'][f].split('/')
             self.create_parts(parent, parts, base, _collapse_map, _rename_map,
                 _replace_types_map)
-        results = self._count.values()
+        results = _COUNT.values()
         return results
 
     def _process_root_element(self, results, root):
         # separate out the XPath selectors and ordinary tags
-        selectors = [x for x in self.target_tags if '/' in x]
-        tags = [x for x in self.target_tags if '/' not in x]
+        selectors = [x for x in _SETTINGS['target_tags'] if '/' in x]
+        tags = [x for x in _SETTINGS['target_tags'] if '/' not in x]
         # if we have selectors, replace the "root" document with a tree
         # containing only the matched elements
         if selectors:
@@ -647,7 +649,7 @@ class Parse2Plone(object):
             for element in root.iter():
                 tag = element.tag
                 text = element.text
-                if tag in self.target_tags and text is not None:
+                if tag in _SETTINGS['target_tags'] and text is not None:
                     results += '<%s>%s</%s>' % (tag, text, tag)
         else:
             # if we have XPath selectors, but no other tags, return the
@@ -672,10 +674,10 @@ class Parse2Plone(object):
         _rename_map):
         filename = '/'.join([base, '/'.join(prefix_path), obj])
         key = '/'.join(prefix_path) + '/' + obj
-        if self.rename and key in _rename_map['reverse']:
+        if _SETTINGS['rename'] and key in _rename_map['reverse']:
             value = _rename_map['reverse'][key]
             filename = '/'.join([base, value])
-        if self.collapse and obj in _collapse_map['reverse']:
+        if _SETTINGS['collapse'] and obj in _collapse_map['reverse']:
             value = _collapse_map['reverse'][obj]
             filename = '/'.join([base, value])
         f = open(filename, 'rb')
@@ -773,7 +775,6 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     force=False, publish=False, collapse=False, rename=None, replacetypes=None,
     match=None, paths=None):
 
-    _count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
     _rename_map = {'forward': {}, 'reverse': {}}
     _collapse_map = {'forward': {}, 'reverse': {}}
     _replace_types_map = {'Document': 'Document', 'Folder': 'Folder'}
