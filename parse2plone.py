@@ -286,9 +286,9 @@ class Utils(object):
         """
         """
         results = None
-        if _paths_expr.findall(value):
+        if _replace_types_expr.findall(value):
             results = []
-            for group in _paths_expr.findall(value):
+            for group in _replace_types_expr.findall(value):
                 results.append('%s:%s' % (
                     self._clean_path(group[0]),
                     self._clean_path(group[1])))

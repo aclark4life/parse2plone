@@ -176,10 +176,15 @@ class ConvertTypesToCSVTestCase(unittest.TestCase):
 
     def setUp(self): 
         self.utils = parse2plone.Utils()
+        self.recipe_input_before = "\nDocument MyDocumentType"
+        self.recipe_input_after = 'Document:MyDocumentType'
 
     def testConvertTypesToCSV(self):
-        # _convert_types_to_csv(self, value):
-        pass
+        utils = self.utils
+        recipe_input_before = self.recipe_input_before
+        recipe_input_after = self.recipe_input_after
+        self.assertEqual(recipe_input_after,
+        utils._convert_types_to_csv(recipe_input_before))
 
 
 # Test parse2plone
