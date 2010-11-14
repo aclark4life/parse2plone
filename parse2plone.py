@@ -438,7 +438,7 @@ class Utils(object):
             results[base].append('/'.join(f))
         return results
 
-    def _process_recipe_args(self, options):
+    def process_recipe_args(self, options):
         """
         Convert most recipe parameter values to csv; save in _SETTINGS dict
         """
@@ -497,7 +497,7 @@ class Utils(object):
             arguments += ", paths='%s'"
         return arguments
 
-    def _process_command_line_args(self, options):
+    def process_command_line_args(self, options):
         """
         Process command line args; save results in _SETTINGS dict
         """
@@ -743,7 +743,7 @@ class Recipe(object):
         utils = Utils()
 
         utils._validate_recipe_args(self.options)
-        arguments = utils._process_recipe_args(self.options)
+        arguments = utils.process_recipe_args(self.options)
 
         if not _SETTINGS['paths']:
             # if the user does not set the paths parameter (which by default
@@ -810,7 +810,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Process command line args; save results in _SETTINGS
     option_parser = utils._create_option_parser()
     options, args = option_parser.parse_args()
-    utils._process_command_line_args(options)
+    utils.process_command_line_args(options)
 
     # Process import dir or dirs
     paths_map = []
