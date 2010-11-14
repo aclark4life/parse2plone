@@ -170,6 +170,24 @@ class CleanPathTestCase(unittest.TestCase):
         self.assertEqual('foo/bar/baz', utils._clean_path(
             '/foo/bar/baz/'))
 
+
+class MockParent(object):
+
+    def objectIds(self):
+        return ['foo', 'bar', 'baz']
+
+
+class CheckExistsObjTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.utils = parse2plone.Utils()
+        self.parent = MockParent()
+
+    def testCheckExistsObj(self):
+        parent = self.parent
+        self.assertTrue(self.utils._check_exists_obj(parent, 'foo'))
+
+
 # Test parse2plone
 
 
