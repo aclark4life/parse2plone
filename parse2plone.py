@@ -254,22 +254,6 @@ class Utils(object):
             path = path[0:-1]
         return path
 
-    # BBB Because the ast module is not included with Python 2.4, we
-    # include this function to produce similar results (with our
-    # limited input set).
-    def _fake_literal_eval(self, input):
-        """
-        Returns False when 'False' is passed in, and so on.
-        """
-        if input == 'False':
-            return False
-        elif input == 'True':
-            return True
-        elif input == 'None':
-            return None
-        else:
-            return ValueError, 'malformed string'
-
     def _check_exists_obj(self, parent, obj):
         if obj in parent.objectIds():
             return True
@@ -373,6 +357,22 @@ class Utils(object):
             help='Specify import_dirs:object_paths (--path will be ignored)')
         return option_parser
 
+    # BBB Because the ast module is not included with Python 2.4, we
+    # include this function to produce similar results (with our
+    # limited input set).
+    def _fake_literal_eval(self, input):
+        """
+        Returns False when 'False' is passed in, and so on.
+        """
+        if input == 'False':
+            return False
+        elif input == 'True':
+            return True
+        elif input == 'None':
+            return None
+        else:
+            return ValueError, 'malformed string'
+
     def _get_results(self, paths_map, index):
         results = ''
         max = len(paths_map)
@@ -383,25 +383,6 @@ class Utils(object):
             if _count != max:
                 results += ', '
         return "'%s'" % results
-
-    def _is_file(self, obj, extensions):
-        result = False
-        for ext in extensions:
-            if obj.endswith(ext):
-                result = True
-        return result
-
-    def _is_folder(self, obj):
-        if len(obj.split('.')) == 1:
-            return True
-        else:
-            return False
-
-    def _is_legal(self, obj, illegal_chars):
-        results = True
-        if obj[:1] in illegal_chars:
-            results = False
-        return results
 
     def _convert_obj_to_path(self, obj):
         return '/'.join(obj.getPhysicalPath())
@@ -440,6 +421,25 @@ class Utils(object):
     def _get_prefix_path(self, path):
         return path.split('/')[:-1]
 
+    def _is_file(self, obj, extensions):
+        result = False
+        for ext in extensions:
+            if obj.endswith(ext):
+                result = True
+        return result
+
+    def _is_folder(self, obj):
+        if len(obj.split('.')) == 1:
+            return True
+        else:
+            return False
+
+    def _is_legal(self, obj, illegal_chars):
+        results = True
+        if obj[:1] in illegal_chars:
+            results = False
+        return results
+
     def _remove_parts(self, files, num_parts):
         results = []
         for f in files:
@@ -453,6 +453,23 @@ class Utils(object):
         files = self._remove_parts(files, num_parts)
         for f in files:
             results[base].append('/'.join(f))
+        return results
+
+    def _setup_attrs(self, parse2plone, _count, utils):
+        """
+        Make settings available as Parse2Plone class attributes
+        for convenience.
+        """
+        for option, value in _SETTINGS.items():
+            setattr(parse2plone, option, value)
+        parse2plone._count = _count
+        parse2plone.utils = utils
+        return parse2plone
+
+    def _setup_locals(self, *kwargs):
+        results = []
+        for arg in kwargs:
+            results.append(_SETTINGS[arg])
         return results
 
     def process_recipe_args(self, options):
@@ -536,23 +553,6 @@ class Utils(object):
             _SETTINGS['replacetypes'] = (options.replacetypes).split(',')
         if options.match is not _UNSET:
             _SETTINGS['match'] = (options.match).split(',')
-
-    def _setup_attrs(self, parse2plone, _count, utils):
-        """
-        Make settings available as Parse2Plone class attributes
-        for convenience.
-        """
-        for option, value in _SETTINGS.items():
-            setattr(parse2plone, option, value)
-        parse2plone._count = _count
-        parse2plone.utils = utils
-        return parse2plone
-
-    def _setup_locals(self, *kwargs):
-        results = []
-        for arg in kwargs:
-            results.append(_SETTINGS[arg])
-        return results
 
 
 class Parse2Plone(object):
