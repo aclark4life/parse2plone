@@ -65,14 +65,9 @@ _SETTINGS = {
     'publish': False,
     'collapse': False,
     'rename': None,
-    'customtypes': None,
+    'replacetypes': None,
     'match': None,
     'paths': None,
-}
-
-_CONTENT_TYPES_MAP = {
-    'Document': 'Document',
-    'Folder': 'Folder',
 }
 
 _UNSET = ''
@@ -218,13 +213,13 @@ def collapse_parts(object_paths, collapse_map, base):
     return collapse_map
 
 
-# Adds "customtypes" feature to ``parse2plone``.
-def replace_types(customtypes, logger):
+# Adds "replacetypes" feature to ``parse2plone``.
+def replace_types(replacetypes, _replace_types_map):
     """
     This allows the user to specify customize content types for use
     when importing content, by specifying a "default" content type followed by
     its replacement "custom" content type (e.g.
-    --customtypes=Document:MyCustomPageType).
+    --replacetypes=Document:MyCustomPageType).
 
     That means that instead of calling:
       parent.invokeFactory('Document','foo')
@@ -234,16 +229,15 @@ def replace_types(customtypes, logger):
 
     Update _CONTENT_TYPES_MAP with new types.
     """
-    for replace in customtypes:
+    for replace in replacetypes:
         types = replace.split(':')
         old = types[0]
         new = types[1]
-        if old in _CONTENT_TYPES_MAP:
-            _CONTENT_TYPES_MAP[old] = new
+        if old in _replace_types_map:
+            _replace_types_map[old] = new
         else:
-            logger.error("Can't replace '%s' with unknown type: '%s'" % (new,
-                old))
-            exit(1)
+            return ValueError
+    return _replace_types_map
 
 
 def _convert_types_to_csv(value):
@@ -292,7 +286,7 @@ class Utils(object):
 
     def _convert_csv_to_list(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
-        publish, collapse, rename, customtypes, match, paths):
+        publish, collapse, rename, replacetypes, match, paths):
         """
         Convert most recipe parameter values from csv; save results
         in _SETTINGS dict
@@ -311,10 +305,10 @@ class Utils(object):
             _SETTINGS['rename'] = rename.split(',')
         else:
             _SETTINGS['rename'] = rename
-        if customtypes is not None:
-            _SETTINGS['customtypes'] = customtypes.split(',')
+        if replacetypes is not None:
+            _SETTINGS['replacetypes'] = replacetypes.split(',')
         else:
-            _SETTINGS['customtypes'] = customtypes
+            _SETTINGS['replacetypes'] = replacetypes
         if match is not None:
             _SETTINGS['match'] = match.split(',')
         else:
@@ -365,9 +359,9 @@ class Utils(object):
             default=_UNSET,
             dest='rename',
             help='Optionally rename content (see rename_parts())')
-        option_parser.add_option('--customtypes',
+        option_parser.add_option('--replacetypes',
             default=_UNSET,
-            dest='customtypes',
+            dest='replacetypes',
             help='Optionally use custom content types (see replace types())')
         option_parser.add_option('--match',
             default=_UNSET,
@@ -424,7 +418,7 @@ class Utils(object):
                 if option in ('rename', 'paths', 'match'):
                     _SETTINGS[option] = _convert_paths_to_csv(options[option],
                         option)
-                elif option in ('customtypes'):
+                elif option in ('replacetypes'):
                     _SETTINGS[option] = _convert_types_to_csv(options[option])
                 elif option in ('illegal_chars', 'html_extensions',
                     'image_extensions', 'file_extensions', 'target_tags'):
@@ -454,10 +448,10 @@ class Utils(object):
             arguments += " rename='%s',"
         else:
             arguments += " rename=%s,"
-        if _SETTINGS['customtypes']:
-            arguments += " customtypes='%s',"
+        if _SETTINGS['replacetypes']:
+            arguments += " replacetypes='%s',"
         else:
-            arguments += " customtypes=%s,"
+            arguments += " replacetypes=%s,"
         if _SETTINGS['match']:
             arguments += " match='%s'"
         else:
@@ -491,8 +485,8 @@ class Utils(object):
             _SETTINGS['collapse'] = options.collapse
         if options.rename is not _UNSET:
             _SETTINGS['rename'] = (options.rename).split(',')
-        if options.customtypes is not _UNSET:
-            _SETTINGS['customtypes'] = (options.customtypes).split(',')
+        if options.replacetypes is not _UNSET:
+            _SETTINGS['replacetypes'] = (options.replacetypes).split(',')
         if options.match is not _UNSET:
             _SETTINGS['match'] = (options.match).split(',')
 
@@ -771,7 +765,7 @@ class Recipe(object):
                 _SETTINGS['publish'],
                 _SETTINGS['collapse'],
                 _SETTINGS['rename'],
-                _SETTINGS['customtypes'],
+                _SETTINGS['replacetypes'],
                 _SETTINGS['match'])
         else:
             # if the user sets the paths parameter, we use it (and ignore
@@ -786,7 +780,7 @@ class Recipe(object):
                 _SETTINGS['publish'],
                 _SETTINGS['collapse'],
                 _SETTINGS['rename'],
-                _SETTINGS['customtypes'],
+                _SETTINGS['replacetypes'],
                 _SETTINGS['match'],
                 _SETTINGS['paths'])
 
@@ -803,20 +797,24 @@ class Recipe(object):
 
 def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
-    force=False, publish=False, collapse=False, rename=None, customtypes=None,
+    force=False, publish=False, collapse=False, rename=None, replacetypes=None,
     match=None, paths=None):
 
     count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
     logger = setup_logger()
     rename_map = {'forward': {}, 'reverse': {}}
     collapse_map = {'forward': {}, 'reverse': {}}
+    _replace_types_map = {
+        'Document': 'Document',
+        'Folder': 'Folder',
+    }
     utils = Utils()
 
     # Convert arg values passed in to main from csv to list;
     # save results in _SETTINGS
     utils._convert_csv_to_list(illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force, publish,
-        collapse, rename, customtypes, match, paths)
+        collapse, rename, replacetypes, match, paths)
 
     # Process command line args; save results in _SETTINGS
     option_parser = utils._create_option_parser()
@@ -840,8 +838,8 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         num_parts = len(import_dir.split('/'))
         app = parse2plone._setup_app(app)
         base = parse2plone._get_base(import_dir, num_parts)
-        force, collapse, rename, customtypes, match = utils._setup_locals(
-            'force', 'collapse', 'rename', 'customtypes', 'match')
+        force, collapse, rename, replacetypes, match = utils._setup_locals(
+            'force', 'collapse', 'rename', 'replacetypes', 'match')
         if utils._check_exists_path(app, path):
             parent = parse2plone._get_parent(app, path)
         else:
@@ -861,8 +859,12 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             collapse_map = collapse_parts(object_paths, collapse_map, base)
         if rename:
             rename_map = rename_parts(object_paths, rename_map, base, rename)
-        if customtypes:
-            replace_types(customtypes, logger)
+        if replacetypes:
+            try:
+                replace_types(replacetypes, _replace_types_map)
+            except ValueError:
+                logger.error("Can't replace unknown type")
+                exit(1)
         results = parse2plone.import_files(parent, object_paths, base,
             collapse_map, rename_map)
 

@@ -46,7 +46,7 @@ here are this recipe's options::
     force = false
     publish = false
     collapse = false
-    customtypes =
+    replacetypes =
     rename =
     match =
     paths =
@@ -245,7 +245,7 @@ Options
 | ``rename``          |             | Rename content. (see rename_parts()    |
 |                     |             | in parse2plone.py                      | 
 +---------------------+-------------+----------------------------------------+
-| ``customtypes``     |             | Use custom types. (see replace_types())|
+| ``replacetypes``     |             | Use custom types. (see replace_types())|
 +---------------------+-------------+----------------------------------------+
 | ``match``           |             | Match files. (see match_files())       |
 +---------------------+-------------+----------------------------------------+
@@ -344,7 +344,7 @@ Publish newly created content.
 
 Rename content (see rename_files()).
 
-``'--customtypes'``
+``'--replacetypes'``
 *******************
 
 Customize types (see replace_types() in parse2plone.py).
@@ -368,33 +368,6 @@ And lastly, you can always ask ``parse2plone`` to tell you about its available o
 the ``--help`` or ``-h`` option::
 
     $ bin/plone run bin/import -h
-    Usage: import [options]
-
-    Options:
-      -h, --help            show this help message and exit
-      -p PATH, --path=PATH  Path to Plone site object or sub-folder
-      --html-extensions=HTML_EXTENSIONS
-                            Specify HTML file extensions
-      --illegal-chars=ILLEGAL_CHARS
-                            Specify characters to ignore
-      --image-extensions=IMAGE_EXTENSIONS
-                            Specify image file extensions
-      --file-extensions=FILE_EXTENSIONS
-                            Specify generic file extensions
-      --target-tags=TARGET_TAGS
-                            Specify HTML tags to parse
-      --force               Force creation of folders
-      --publish             Optionally publish newly created content
-      --collapse            Optionally "collapse" content (see collapse_parts())
-      --rename=RENAME       Optionally rename content (see rename_parts())
-      --customtypes=CUSTOMTYPES
-                            Optionally use custom content types (see replace
-                            types())
-      --match=MATCH         Only import content that matches PATTERN (see
-                            match_files())
-      --paths=PATHS         Specify import_dirs:object_paths (--path will be
-                            ignored)
-
 
 Example
 '''''''

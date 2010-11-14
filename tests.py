@@ -95,14 +95,26 @@ class MatchFilesTestCase(unittest.TestCase):
             parse2plone.match_files(files_before, base, ['2000']))
 
 
-# Test "customtypes" feature
-class CustomTypesTestCase(unittest.TestCase):
+# Test "replacetypes" feature
+class ReplaceTypesTestCase(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.replacetypes = ['Document:MyDocumentType', 'Folder:MyFolderType']
+        self._replace_types_map_before = {
+            'Document': 'Document',
+            'Folder': 'Folder',
+        }
+        self._replace_types_map_after = {
+            'Document': 'MyDocumentType',
+            'Folder': 'MyFolderType',
+        }
 
-    def testCollapse(self):
-        pass
+    def testReplaceTypes(self):
+        map_before = self._replace_types_map_before
+        map_after = self._replace_types_map_after
+        types = self.replacetypes
+        self.assertEqual(map_after, 
+            parse2plone.replace_types(types, map_before))
 
 # Test "collapse" feature
 class CollapseTestCase(unittest.TestCase):
@@ -118,7 +130,7 @@ class CollapseTestCase(unittest.TestCase):
             }
         self.object_paths = {self.base: ['2000/01/01/foo/index.html']}
 
-    def testCustomTypes(self):
+    def testCollapse(self):
         self.assertEqual(self.collapse_map_after,
             parse2plone.collapse_parts(
                 self.object_paths,
