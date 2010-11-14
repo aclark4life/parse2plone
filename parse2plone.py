@@ -446,9 +446,11 @@ class Utils(object):
             if option in options:
                 # the user set a recipe parameter we need to process
                 if option in ('rename', 'paths', 'match'):
-                    _SETTINGS[option] = self._convert_line_to_csv(options[option])
+                    _SETTINGS[option] = self._convert_line_to_csv(
+                        options[option])
                 elif option in ('replacetypes'):
-                    _SETTINGS[option] = self._convert_line_to_csv(options[option])
+                    _SETTINGS[option] = self._convert_line_to_csv(
+                        options[option])
                 elif option in ('illegal_chars', 'html_extensions',
                     'image_extensions', 'file_extensions', 'target_tags'):
                     _SETTINGS[option] = ', '.join(re.split('\s+',
@@ -461,7 +463,8 @@ class Utils(object):
                     if option in ('rename', 'paths', 'match'):
                         _SETTINGS[option] = None
                     else:
-                        # the user set a recipe parameter we do not need to process
+                        # the user set a recipe parameter we do not
+                        # need to process
                         _SETTINGS[option] = options[option]
             else:
                 # the user did not set any recipe parameters
@@ -532,7 +535,7 @@ class Utils(object):
     def _validate_recipe_args(self, options):
         for option in options:
             if option not in _SETTINGS.keys() and option != 'recipe':
-                raise ValueError, "Unknown recipe parameter '%s'." % option
+                raise ValueError("Unknown recipe parameter '%s'." % option)
 
 
 class Parse2Plone(object):
@@ -808,7 +811,6 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     option_parser = utils._create_option_parser()
     options, args = option_parser.parse_args()
     utils._process_command_line_args(options)
-
 
     # Process import dir or dirs
     paths_map = []

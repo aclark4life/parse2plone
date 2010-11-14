@@ -170,11 +170,6 @@ class CleanPathTestCase(unittest.TestCase):
         self.assertEqual('foo/bar/baz', utils._clean_path(
             '/foo/bar/baz/'))
 
-
-
-
-
-
 # Test parse2plone
 
 
