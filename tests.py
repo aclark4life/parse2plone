@@ -138,5 +138,27 @@ class CollapseTestCase(unittest.TestCase):
                 self.collapse_map_before,
                 self.base))
 
+
+class LoggerTestCase(unittest.TestCase):
+
+    def setUp(self):
+        import logging
+        self.test_logger = logging.getLogger("test_logger")
+        self.test_logger.setLevel(logging.INFO)
+        handler = logging.StreamHandler()
+        outfile = logging.FileHandler(filename='test_logger.log')
+        handler.setLevel(logging.INFO)
+        outfile.setLevel(logging.INFO)
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        handler.setFormatter(formatter)
+        self.test_logger.addHandler(handler)
+        self.test_logger.addHandler(outfile)
+
+    def testLogger(self):
+        logger = parse2plone.setup_logger()
+        self.assertTrue(isinstance(logger, self.test_logger.__class__))
+
+
 if __name__ == '__main__':
     unittest.main()
