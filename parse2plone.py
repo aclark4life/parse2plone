@@ -73,6 +73,7 @@ _SETTINGS = {
 _UNSET = ''
 
 _paths_expr = re.compile('\n(\S+)\s+(\S+)')
+_replace_types_expr = re.compile('\n(\S+)\s+(\S+)')
 _collapse_expr = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
 
 
@@ -227,7 +228,7 @@ def replace_types(replacetypes, _replace_types_map):
     ``parse2plone`` will call:
       parent.invokeFactory('MyCustomPageType','foo')
 
-    Update _CONTENT_TYPES_MAP with new types.
+    Update _replace_types_map with new types.
     """
     for replace in replacetypes:
         types = replace.split(':')
@@ -236,7 +237,7 @@ def replace_types(replacetypes, _replace_types_map):
         if old in _replace_types_map:
             _replace_types_map[old] = new
         else:
-            return ValueError
+            raise ValueError
     return _replace_types_map
 
 
@@ -511,39 +512,39 @@ class Utils(object):
 
 class Parse2Plone(object):
     def create_content(self, parent, obj, prefix_path, base, collapse_map,
-        rename_map):
+        rename_map, _replace_types_map):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
         from transaction import commit
         if self.utils._is_folder(obj):
-            folder = self.create_folder(parent, obj)
+            folder = self.create_folder(parent, obj, _replace_types_map)
             self.set_title(folder, obj)
             self.count['folders'] += 1
             commit()
         elif self.utils._is_file(obj, self.html_extensions):
-            page = self.create_page(parent, obj)
+            page = self.create_page(parent, obj, _replace_types_map)
             self.set_title(page, obj)
             self.set_page(page, obj, prefix_path, base, collapse_map,
                 rename_map)
             self.count['pages'] += 1
             commit()
         elif self.utils._is_file(obj, self.image_extensions):
-            image = self.create_image(parent, obj)
+            image = self.create_image(parent, obj, _replace_types_map)
             self.set_title(image, obj)
             self.set_image(image, obj, prefix_path, base)
             self.count['images'] += 1
             commit()
         elif self.utils._is_file(obj, self.file_extensions):
-            at_file = self.create_file(parent, obj)
+            at_file = self.create_file(parent, obj, _replace_types_map)
             self.set_title(at_file, obj)
             self.set_file(at_file, obj, prefix_path, base)
             self.count['files'] += 1
             commit()
 
-    def create_folder(self, parent, obj):
+    def create_folder(self, parent, obj, _replace_types_map):
         self.logger.info("creating folder '%s' inside parent folder '%s'" % (
             obj, self.utils._convert_obj_to_path(parent)))
-        folder_type = _CONTENT_TYPES_MAP['Folder']
+        folder_type = _replace_types_map['Folder']
         parent.invokeFactory(folder_type, obj)
         folder = parent[obj]
         if self.publish:
@@ -551,24 +552,24 @@ class Parse2Plone(object):
             self.logger.info("publishing folder '%s'" % obj)
         return folder
 
-    def create_file(self, parent, obj):
+    def create_file(self, parent, obj, _replace_types_map):
         self.logger.info("creating file '%s' inside parent folder '%s'" % (obj,
             self.utils._convert_obj_to_path(parent)))
         parent.invokeFactory('File', obj)
         file = parent[obj]
         return file
 
-    def create_image(self, parent, obj):
+    def create_image(self, parent, obj, _replace_types_map):
         self.logger.info("creating image '%s' inside parent folder '%s'" % (
             obj, self.utils._convert_obj_to_path(parent)))
         parent.invokeFactory('Image', obj)
         image = parent[obj]
         return image
 
-    def create_page(self, parent, obj):
+    def create_page(self, parent, obj, _replace_types_map):
         self.logger.info("creating page '%s' inside parent folder '%s'" % (obj,
             self.utils._convert_obj_to_path(parent)))
-        page_type = _CONTENT_TYPES_MAP['Document']
+        page_type = _replace_types_map['Document']
         parent.invokeFactory(page_type, obj)
         page = parent[obj]
         if self.publish:
@@ -576,7 +577,7 @@ class Parse2Plone(object):
             self.logger.info("publishing page '%s'" % obj)
         return page
 
-    def create_parts(self, parent, parts, base, collapse_map, rename_map):
+    def create_parts(self, parent, parts, base, collapse_map, rename_map, _replace_types_map):
         self.logger.info("creating parts for '%s'" % '/'.join(parts))
         for i in range(len(parts)):
             path = self._get_path(parts, i)
@@ -592,7 +593,7 @@ class Parse2Plone(object):
                         "object '%s' does not exist inside '%s'"
                         % (obj, self.utils._convert_obj_to_path(parent)))
                     self.create_content(parent, obj, prefix_path, base,
-                        collapse_map, rename_map)
+                        collapse_map, rename_map, _replace_types_map)
             else:
                 self.logger.info("object '%s' has illegal chars" % obj)
                 break
@@ -640,14 +641,15 @@ class Parse2Plone(object):
         return results
 
     def import_files(self, parent, object_paths, base, collapse_map,
-        rename_map):
+        rename_map, _replace_types_map):
         for f in object_paths[base]:
             parts = self._get_parts(f)
             if self.rename and f in rename_map['forward']:
                 parts = rename_map['forward'][f].split('/')
             if self.collapse and f in collapse_map['forward']:
                 parts = collapse_map['forward'][f].split('/')
-            self.create_parts(parent, parts, base, collapse_map, rename_map)
+            self.create_parts(parent, parts, base, collapse_map, rename_map,
+                _replace_types_map)
 
         results = self.count.values()
         return results
@@ -750,6 +752,7 @@ class Recipe(object):
         bindir = self.buildout['buildout']['bin-directory']
         utils = Utils()
         arguments = utils.process_recipe_args(self.options)
+
 
         if not _SETTINGS['paths']:
             # if the user does not set the paths parameter (which by default
@@ -866,7 +869,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
                 logger.error("Can't replace unknown type")
                 exit(1)
         results = parse2plone.import_files(parent, object_paths, base,
-            collapse_map, rename_map)
+            collapse_map, rename_map, _replace_types_map)
 
     # Print results
     msg = "Imported %s folders, %s images, %s pages, and %s files from:"
