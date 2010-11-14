@@ -245,7 +245,7 @@ Options
 | ``rename``          |             | Rename content. (see rename_parts()    |
 |                     |             | in parse2plone.py                      | 
 +---------------------+-------------+----------------------------------------+
-| ``replacetypes``     |             | Use custom types. (see replace_types())|
+| ``replacetypes``    |             | Use custom types. (see replace_types())|
 +---------------------+-------------+----------------------------------------+
 | ``match``           |             | Match files. (see match_files())       |
 +---------------------+-------------+----------------------------------------+
