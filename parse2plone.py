@@ -379,11 +379,11 @@ class Utils(object):
     def _get_results(self, paths_map, index):
         results = ''
         max = len(paths_map)
-        count = 0
+        _count = 0
         for i in paths_map:
             results += i.split(':')[index]
-            count += 1
-            if count != max:
+            _count += 1
+            if _count != max:
                 results += ', '
         return "'%s'" % results
 
@@ -491,14 +491,14 @@ class Utils(object):
         if options.match is not _UNSET:
             _SETTINGS['match'] = (options.match).split(',')
 
-    def _setup_attrs(self, parse2plone, count, logger, utils):
+    def _setup_attrs(self, parse2plone, _count, logger, utils):
         """
         Make settings available as Parse2Plone class attributes
         for convenience.
         """
         for option, value in _SETTINGS.items():
             setattr(parse2plone, option, value)
-        parse2plone.count = count
+        parse2plone._count = _count
         parse2plone.logger = logger
         parse2plone.utils = utils
         return parse2plone
@@ -519,26 +519,26 @@ class Parse2Plone(object):
         if self.utils._is_folder(obj):
             folder = self.create_folder(parent, obj, _replace_types_map)
             self.set_title(folder, obj)
-            self.count['folders'] += 1
+            self._count['folders'] += 1
             commit()
         elif self.utils._is_file(obj, self.html_extensions):
             page = self.create_page(parent, obj, _replace_types_map)
             self.set_title(page, obj)
             self.set_page(page, obj, prefix_path, base, _collapse_map,
                 _rename_map)
-            self.count['pages'] += 1
+            self._count['pages'] += 1
             commit()
         elif self.utils._is_file(obj, self.image_extensions):
             image = self.create_image(parent, obj, _replace_types_map)
             self.set_title(image, obj)
             self.set_image(image, obj, prefix_path, base)
-            self.count['images'] += 1
+            self._count['images'] += 1
             commit()
         elif self.utils._is_file(obj, self.file_extensions):
             at_file = self.create_file(parent, obj, _replace_types_map)
             self.set_title(at_file, obj)
             self.set_file(at_file, obj, prefix_path, base)
-            self.count['files'] += 1
+            self._count['files'] += 1
             commit()
 
     def create_folder(self, parent, obj, _replace_types_map):
@@ -651,7 +651,7 @@ class Parse2Plone(object):
             self.create_parts(parent, parts, base, _collapse_map, _rename_map,
                 _replace_types_map)
 
-        results = self.count.values()
+        results = self._count.values()
         return results
 
     def _remove_base(self, files, num_parts, base):
@@ -803,7 +803,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     force=False, publish=False, collapse=False, rename=None, replacetypes=None,
     match=None, paths=None):
 
-    count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
+    _count = {'folders': 0, 'images': 0, 'pages': 0, 'files': 0}
     logger = setup_logger()
     _rename_map = {'forward': {}, 'reverse': {}}
     _collapse_map = {'forward': {}, 'reverse': {}}
@@ -832,7 +832,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         paths_map = paths.split(',')
 
     parse2plone = Parse2Plone()
-    parse2plone = utils._setup_attrs(parse2plone, count, logger, utils)
+    parse2plone = utils._setup_attrs(parse2plone, _count, logger, utils)
     for entry in paths_map:
         import_dir, path = entry.split(':')
 
