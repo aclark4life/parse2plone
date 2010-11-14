@@ -431,23 +431,6 @@ class Utils(object):
             results[base].append('/'.join(f))
         return results
 
-    def _setup_attrs(self, parse2plone, _count, utils):
-        """
-        Make settings available as Parse2Plone class attributes
-        for convenience.
-        """
-        for option, value in _SETTINGS.items():
-            setattr(parse2plone, option, value)
-        parse2plone._count = _count
-        parse2plone.utils = utils
-        return parse2plone
-
-    def _setup_locals(self, *kwargs):
-        results = []
-        for arg in kwargs:
-            results.append(_SETTINGS[arg])
-        return results
-
     def _process_recipe_args(self, options):
         """
         Convert most recipe parameter values to csv; save in _SETTINGS dict
@@ -540,25 +523,26 @@ class Parse2Plone(object):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
         from transaction import commit
-        if self.utils._is_folder(obj):
+        utils = Utils()
+        if utils._is_folder(obj):
             folder = self.create_folder(parent, obj, _replace_types_map)
             self.set_title(folder, obj)
             self._count['folders'] += 1
             commit()
-        elif self.utils._is_file(obj, self.html_extensions):
+        elif utils._is_file(obj, self.html_extensions):
             page = self.create_page(parent, obj, _replace_types_map)
             self.set_title(page, obj)
             self.set_page(page, obj, prefix_path, base, _collapse_map,
                 _rename_map)
             self._count['pages'] += 1
             commit()
-        elif self.utils._is_file(obj, self.image_extensions):
+        elif utils._is_file(obj, self.image_extensions):
             image = self.create_image(parent, obj, _replace_types_map)
             self.set_title(image, obj)
             self.set_image(image, obj, prefix_path, base)
             self._count['images'] += 1
             commit()
-        elif self.utils._is_file(obj, self.file_extensions):
+        elif utils._is_file(obj, self.file_extensions):
             at_file = self.create_file(parent, obj, _replace_types_map)
             self.set_title(at_file, obj)
             self.set_file(at_file, obj, prefix_path, base)
@@ -566,8 +550,9 @@ class Parse2Plone(object):
             commit()
 
     def create_folder(self, parent, obj, _replace_types_map):
+        utils = Utils()
         _LOG.info("creating folder '%s' inside parent folder '%s'" % (
-            obj, self.utils._convert_obj_to_path(parent)))
+            obj, utils._convert_obj_to_path(parent)))
         folder_type = _replace_types_map['Folder']
         parent.invokeFactory(folder_type, obj)
         folder = parent[obj]
@@ -577,22 +562,25 @@ class Parse2Plone(object):
         return folder
 
     def create_file(self, parent, obj, _replace_types_map):
+        utils = Utils()
         _LOG.info("creating file '%s' inside parent folder '%s'" % (obj,
-            self.utils._convert_obj_to_path(parent)))
+            utils._convert_obj_to_path(parent)))
         parent.invokeFactory('File', obj)
         file = parent[obj]
         return file
 
     def create_image(self, parent, obj, _replace_types_map):
+        utils = Utils()
         _LOG.info("creating image '%s' inside parent folder '%s'" % (
-            obj, self.utils._convert_obj_to_path(parent)))
+            obj, utils._convert_obj_to_path(parent)))
         parent.invokeFactory('Image', obj)
         image = parent[obj]
         return image
 
     def create_page(self, parent, obj, _replace_types_map):
+        utils = Utils()
         _LOG.info("creating page '%s' inside parent folder '%s'" % (obj,
-            self.utils._convert_obj_to_path(parent)))
+            utils._convert_obj_to_path(parent)))
         page_type = _replace_types_map['Document']
         parent.invokeFactory(page_type, obj)
         page = parent[obj]
@@ -604,19 +592,20 @@ class Parse2Plone(object):
     def create_parts(self, parent, parts, base, _collapse_map, _rename_map,
         _replace_types_map):
         _LOG.info("creating parts for '%s'" % '/'.join(parts))
+        utils = Utils()
         for i in range(len(parts)):
-            path = self._get_path(parts, i)
-            prefix_path = self._get_prefix_path(path)
-            obj = self._get_obj(path)
-            parent = self._get_parent(parent, '/'.join(prefix_path))
-            if self.utils._is_legal(obj, _SETTINGS['illegal_chars']):
-                if self.utils._check_exists_obj(parent, obj):
+            path = utils._get_path(parts, i)
+            prefix_path = utils._get_prefix_path(path)
+            obj = utils._get_obj(path)
+            parent = utils._get_parent(parent, '/'.join(prefix_path))
+            if utils._is_legal(obj, _SETTINGS['illegal_chars']):
+                if utils._check_exists_obj(parent, obj):
                     _LOG.info("object '%s' exists inside '%s'" % (
-                        obj, self.utils._convert_obj_to_path(parent)))
+                        obj, utils._convert_obj_to_path(parent)))
                 else:
                     _LOG.info(
                         "object '%s' does not exist inside '%s'"
-                        % (obj, self.utils._convert_obj_to_path(parent)))
+                        % (obj, utils._convert_obj_to_path(parent)))
                     self.create_content(parent, obj, prefix_path, base,
                         _collapse_map, _rename_map, _replace_types_map)
             else:
@@ -801,7 +790,6 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
 
     # Setup parse2plone
     parse2plone = Parse2Plone()
-    parse2plone = utils._setup_attrs(parse2plone, _count, utils)
 
     # Process import dir or dirs
     paths_map = []
@@ -817,14 +805,12 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         num_parts = len(import_dir.split('/'))
         app = parse2plone._setup_app(app)
         base = utils._get_base(import_dir, num_parts)
-        force, collapse, rename, replacetypes, match = utils._setup_locals(
-            'force', 'collapse', 'rename', 'replacetypes', 'match')
         if utils._check_exists_path(app, path):
             parent = utils._get_parent(app, path)
         else:
             if force:
                 parse2plone.create_parts(app, utils._get_parts(path),
-                    base, _collapse_map, _rename_map)
+                    base, _collapse_map, _rename_map, _replace_types_map)
                 parent = utils._get_parent(app, path)
             else:
                 msg = "object in path '%s' does not exist, use --force"
