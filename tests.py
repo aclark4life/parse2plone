@@ -156,7 +156,7 @@ class LoggerTestCase(unittest.TestCase):
         self.test_logger.addHandler(outfile)
 
     def testLogger(self):
-        logger = parse2plone.setup_logger()
+        logger = parse2plone._setup_logger()
         self.assertTrue(isinstance(logger, self.test_logger.__class__))
 
 

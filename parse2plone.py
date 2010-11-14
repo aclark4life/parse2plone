@@ -254,7 +254,7 @@ def _convert_types_to_csv(value):
     return results
 
 
-def setup_logger():
+def _setup_logger():
     # log levels: debug, info, warn, error, critical
     logger = logging.getLogger("parse2plone")
     logger.setLevel(logging.INFO)
@@ -407,6 +407,55 @@ class Utils(object):
     def _convert_obj_to_path(self, obj):
         return '/'.join(obj.getPhysicalPath())
 
+    def _get_base(self, import_dir, num_parts):
+        return '/'.join(import_dir.split('/')[:num_parts])
+
+    def _get_files(self, import_dir):
+        results = []
+        for path, subdirs, files in os.walk(import_dir):
+            _LOG.info("path '%s', has subdirs '%s', and files '%s'" % (
+                path, ' '.join(subdirs), ' '.join(files)))
+            for f in fnmatch.filter(files, '*'):
+                if self._is_legal(f, _SETTINGS['illegal_chars']):
+                    results.append(os_path.join(path, f))
+                else:
+                    _LOG.info("object '%s' has illegal chars" % f)
+        return results
+
+    def _get_obj(self, path):
+        return path.split('/')[-1:][0]
+
+    def _get_parent(self, current_parent, prefix_path):
+        updated_parent = current_parent.restrictedTraverse(prefix_path)
+        _LOG.info("updating parent from '%s' to '%s'" % (
+             self._convert_obj_to_path(current_parent),
+             self._convert_obj_to_path(updated_parent)))
+        return updated_parent
+
+    def _get_parts(self, path):
+        return path.split('/')
+
+    def _get_path(self, parts, i):
+        return '/'.join(parts[:i + 1])
+
+    def _get_prefix_path(self, path):
+        return path.split('/')[:-1]
+
+    def _remove_parts(self, files, num_parts):
+        results = []
+        for f in files:
+            parts = self._get_parts(f)
+            parts = parts[num_parts:]
+            results.append(parts)
+        return results
+
+    def _remove_base(self, files, num_parts, base):
+        results = {base: []}
+        files = self._remove_parts(files, num_parts)
+        for f in files:
+            results[base].append('/'.join(f))
+        return results
+
     def process_recipe_args(self, options):
         """
         Convert most recipe parameter values to csv; save in _SETTINGS dict
@@ -488,7 +537,7 @@ class Utils(object):
         if options.match is not _UNSET:
             _SETTINGS['match'] = (options.match).split(',')
 
-    def _setup_attrs(self, parse2plone, _count, logger, utils):
+    def _setup_attrs(self, parse2plone, _count, utils):
         """
         Make settings available as Parse2Plone class attributes
         for convenience.
@@ -496,7 +545,6 @@ class Utils(object):
         for option, value in _SETTINGS.items():
             setattr(parse2plone, option, value)
         parse2plone._count = _count
-        parse2plone.logger = logger
         parse2plone.utils = utils
         return parse2plone
 
@@ -539,104 +587,62 @@ class Parse2Plone(object):
             commit()
 
     def create_folder(self, parent, obj, _replace_types_map):
-        self.logger.info("creating folder '%s' inside parent folder '%s'" % (
+        _LOG.info("creating folder '%s' inside parent folder '%s'" % (
             obj, self.utils._convert_obj_to_path(parent)))
         folder_type = _replace_types_map['Folder']
         parent.invokeFactory(folder_type, obj)
         folder = parent[obj]
         if self.publish:
             self.set_state(folder)
-            self.logger.info("publishing folder '%s'" % obj)
+            _LOG.info("publishing folder '%s'" % obj)
         return folder
 
     def create_file(self, parent, obj, _replace_types_map):
-        self.logger.info("creating file '%s' inside parent folder '%s'" % (obj,
+        _LOG.info("creating file '%s' inside parent folder '%s'" % (obj,
             self.utils._convert_obj_to_path(parent)))
         parent.invokeFactory('File', obj)
         file = parent[obj]
         return file
 
     def create_image(self, parent, obj, _replace_types_map):
-        self.logger.info("creating image '%s' inside parent folder '%s'" % (
+        _LOG.info("creating image '%s' inside parent folder '%s'" % (
             obj, self.utils._convert_obj_to_path(parent)))
         parent.invokeFactory('Image', obj)
         image = parent[obj]
         return image
 
     def create_page(self, parent, obj, _replace_types_map):
-        self.logger.info("creating page '%s' inside parent folder '%s'" % (obj,
+        _LOG.info("creating page '%s' inside parent folder '%s'" % (obj,
             self.utils._convert_obj_to_path(parent)))
         page_type = _replace_types_map['Document']
         parent.invokeFactory(page_type, obj)
         page = parent[obj]
         if self.publish:
             self.set_state(page)
-            self.logger.info("publishing page '%s'" % obj)
+            _LOG.info("publishing page '%s'" % obj)
         return page
 
     def create_parts(self, parent, parts, base, _collapse_map, _rename_map,
         _replace_types_map):
-        self.logger.info("creating parts for '%s'" % '/'.join(parts))
+        _LOG.info("creating parts for '%s'" % '/'.join(parts))
         for i in range(len(parts)):
             path = self._get_path(parts, i)
             prefix_path = self._get_prefix_path(path)
             obj = self._get_obj(path)
             parent = self._get_parent(parent, '/'.join(prefix_path))
-            if self.utils._is_legal(obj, self.illegal_chars):
+            if self.utils._is_legal(obj, _SETTINGS['illegal_chars']):
                 if self.utils._check_exists_obj(parent, obj):
-                    self.logger.info("object '%s' exists inside '%s'" % (
+                    _LOG.info("object '%s' exists inside '%s'" % (
                         obj, self.utils._convert_obj_to_path(parent)))
                 else:
-                    self.logger.info(
+                    _LOG.info(
                         "object '%s' does not exist inside '%s'"
                         % (obj, self.utils._convert_obj_to_path(parent)))
                     self.create_content(parent, obj, prefix_path, base,
                         _collapse_map, _rename_map, _replace_types_map)
             else:
-                self.logger.info("object '%s' has illegal chars" % obj)
+                _LOG.info("object '%s' has illegal chars" % obj)
                 break
-
-    def _get_base(self, import_dir, num_parts):
-        return '/'.join(import_dir.split('/')[:num_parts])
-
-    def _get_files(self, import_dir):
-        results = []
-        for path, subdirs, files in os.walk(import_dir):
-            self.logger.info("path '%s', has subdirs '%s', and files '%s'" % (
-                path, ' '.join(subdirs), ' '.join(files)))
-            for f in fnmatch.filter(files, '*'):
-                if self.utils._is_legal(f, self.illegal_chars):
-                    results.append(os_path.join(path, f))
-                else:
-                    self.logger.info("object '%s' has illegal chars" % f)
-        return results
-
-    def _get_obj(self, path):
-        return path.split('/')[-1:][0]
-
-    def _get_parent(self, current_parent, prefix_path):
-        updated_parent = current_parent.restrictedTraverse(prefix_path)
-        self.logger.info("updating parent from '%s' to '%s'" % (
-             self.utils._convert_obj_to_path(current_parent),
-             self.utils._convert_obj_to_path(updated_parent)))
-        return updated_parent
-
-    def _get_parts(self, path):
-        return path.split('/')
-
-    def _get_path(self, parts, i):
-        return '/'.join(parts[:i + 1])
-
-    def _get_prefix_path(self, path):
-        return path.split('/')[:-1]
-
-    def _remove_parts(self, files, num_parts):
-        results = []
-        for f in files:
-            parts = self._get_parts(f)
-            parts = parts[num_parts:]
-            results.append(parts)
-        return results
 
     def import_files(self, parent, object_paths, base, _collapse_map,
         _rename_map, _replace_types_map):
@@ -649,13 +655,6 @@ class Parse2Plone(object):
             self.create_parts(parent, parts, base, _collapse_map, _rename_map,
                 _replace_types_map)
         results = self._count.values()
-        return results
-
-    def _remove_base(self, files, num_parts, base):
-        results = {base: []}
-        files = self._remove_parts(files, num_parts)
-        for f in files:
-            results[base].append('/'.join(f))
         return results
 
     def process_root_element(self, results, root):
@@ -717,7 +716,7 @@ class Parse2Plone(object):
         except lxml.etree.XMLSyntaxError:
             msg = "unable to import data from '%s', "
             msg = "make sure file contains HTML"
-            self.logger.error(msg % filename)
+            _LOG.error(msg % filename)
             exit(1)
         results = self.process_root_element(results, root)
         page.setText(results)
@@ -794,6 +793,7 @@ class Recipe(object):
         """Updater"""
         pass
 
+_LOG = _setup_logger()
 
 def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
@@ -805,7 +805,6 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     _collapse_map = {'forward': {}, 'reverse': {}}
     _replace_types_map = {'Document': 'Document', 'Folder': 'Folder'}
 
-    logger = setup_logger()
     utils = Utils()
 
     # Convert arg values passed in to main from csv to list;
@@ -821,7 +820,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
 
     # Setup parse2plone
     parse2plone = Parse2Plone()
-    parse2plone = utils._setup_attrs(parse2plone, _count, logger, utils)
+    parse2plone = utils._setup_attrs(parse2plone, _count, utils)
 
     # Process import dir or dirs
     paths_map = []
@@ -833,25 +832,25 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Run parse2plone
     for entry in paths_map:
         import_dir, path = entry.split(':')
-        files = parse2plone._get_files(import_dir)
+        files = utils._get_files(import_dir)
         num_parts = len(import_dir.split('/'))
         app = parse2plone._setup_app(app)
-        base = parse2plone._get_base(import_dir, num_parts)
+        base = utils._get_base(import_dir, num_parts)
         force, collapse, rename, replacetypes, match = utils._setup_locals(
             'force', 'collapse', 'rename', 'replacetypes', 'match')
         if utils._check_exists_path(app, path):
-            parent = parse2plone._get_parent(app, path)
+            parent = utils._get_parent(app, path)
         else:
             if force:
-                parse2plone.create_parts(app, parse2plone._get_parts(path),
+                parse2plone.create_parts(app, utils._get_parts(path),
                     base, _collapse_map, _rename_map)
-                parent = parse2plone._get_parent(app, path)
+                parent = utils._get_parent(app, path)
             else:
                 msg = "object in path '%s' does not exist, use --force"
                 msg += " to create"
                 logger.error(msg % path)
                 exit(1)
-        object_paths = parse2plone._remove_base(files, num_parts, base)
+        object_paths = utils._remove_base(files, num_parts, base)
         if match:
             object_paths = match_files(object_paths, base, match)
         if collapse:
@@ -862,7 +861,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             try:
                 replace_types(replacetypes, _replace_types_map)
             except ValueError:
-                logger.error("Can't replace unknown type")
+                _LOG.error("Can't replace unknown type")
                 exit(1)
         results = parse2plone.import_files(parent, object_paths, base,
             _collapse_map, _rename_map, _replace_types_map)
@@ -872,5 +871,5 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     msg += " %s to %s."
     results.append(utils._get_results(paths_map, 0))
     results.append(utils._get_results(paths_map, 1))
-    logger.info(msg % tuple(results))
+    _LOG.info(msg % tuple(results))
     exit(0)
