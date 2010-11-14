@@ -150,25 +150,6 @@ def rename_parts(files, _rename_map, base, rename):
     return _rename_map
 
 
-def _convert_paths_to_csv(value, option):
-    """
-    This function applies the `paths` regular expression to a value.
-    """
-    results = None
-    utils = Utils()
-    if _paths_expr.findall(value):
-        results = []
-        for group in _paths_expr.findall(value):
-            if option is not 'paths':
-                group_0 = utils._clean_path(group[0])
-            else:
-                group_0 = group[0]
-            group_1 = utils._clean_path(group[1])
-            results.append('%s:%s' % (group_0, group_1))
-        results = ','.join(results)
-    return results
-
-
 # Adds "collapse" feature to ``parse2plone``.
 def collapse_parts(object_paths, _collapse_map, base):
     """
@@ -230,20 +211,6 @@ def replace_types(replacetypes, _replace_types_map):
     return _replace_types_map
 
 
-def _convert_types_to_csv(self, value):
-    """
-    """
-    results = None
-    if _paths_expr.findall(value):
-        results = []
-        for group in _paths_expr.findall(value):
-            results.append('%s:%s' % (
-                _clean_path(group[0]),
-                _clean_path(group[1])))
-        results = ','.join(results)
-    return results
-
-
 class Utils(object):
     def _clean_path(self, path):
         """
@@ -268,6 +235,23 @@ class Utils(object):
         except:
             return False
 
+    def _convert_paths_to_csv(self, value, option):
+        """
+        This function applies the `paths` regular expression to a value.
+        """
+        results = None
+        if _paths_expr.findall(value):
+            results = []
+            for group in _paths_expr.findall(value):
+                if option is not 'paths':
+                    group_0 = self._clean_path(group[0])
+                else:
+                    group_0 = group[0]
+                group_1 = self._clean_path(group[1])
+                results.append('%s:%s' % (group_0, group_1))
+            results = ','.join(results)
+        return results
+
     def _convert_csv_to_list(self, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force,
         publish, collapse, rename, replacetypes, match, paths):
@@ -281,7 +265,7 @@ class Utils(object):
         _SETTINGS['file_extensions'] = file_extensions.split(',')
         _SETTINGS['target_tags'] = target_tags.split(',')
         if not paths:
-            _SETTINGS['path'] = _clean_path(path)
+            _SETTINGS['path'] = self._clean_path(path)
         _SETTINGS['force'] = force
         _SETTINGS['publish'] = publish
         _SETTINGS['collapse'] = collapse
@@ -297,6 +281,19 @@ class Utils(object):
             _SETTINGS['match'] = match.split(',')
         else:
             _SETTINGS['match'] = match
+
+    def _convert_types_to_csv(self, value):
+        """
+        """
+        results = None
+        if _paths_expr.findall(value):
+            results = []
+            for group in _paths_expr.findall(value):
+                results.append('%s:%s' % (
+                    self._clean_path(group[0]),
+                    self._clean_path(group[1])))
+            results = ','.join(results)
+        return results
 
     def _create_option_parser(self):
         option_parser = optparse.OptionParser()
@@ -477,21 +474,20 @@ class Utils(object):
         """
         Convert most recipe parameter values to csv; save in _SETTINGS dict
         """
-        utils = Utils()
         for option, existing_value in _SETTINGS.items():
             if option in options:
                 # the user set a recipe parameter
                 if option in ('rename', 'paths', 'match'):
-                    _SETTINGS[option] = _convert_paths_to_csv(options[option],
+                    _SETTINGS[option] = self._convert_paths_to_csv(options[option],
                         option)
                 elif option in ('replacetypes'):
-                    _SETTINGS[option] = _convert_types_to_csv(options[option])
+                    _SETTINGS[option] = self._convert_types_to_csv(options[option])
                 elif option in ('illegal_chars', 'html_extensions',
                     'image_extensions', 'file_extensions', 'target_tags'):
                     _SETTINGS[option] = ', '.join(re.split('\s+',
                         options[option]))
                 elif option in ('force', 'publish', 'collapse'):
-                    _SETTINGS[option] = utils._fake_literal_eval(
+                    _SETTINGS[option] = self._fake_literal_eval(
                         options[option].capitalize())
                 else:
                     _SETTINGS[option] = options[option]
@@ -531,7 +527,7 @@ class Utils(object):
         Process command line args; save results in _SETTINGS dict
         """
         if options.path is not _UNSET:
-            _SETTINGS['path'] = _clean_path(options.path)
+            _SETTINGS['path'] = self._clean_path(options.path)
         if options.illegal_chars is not _UNSET:
             _SETTINGS['illegal_chars'] = options.illegal_chars
         if options.html_extensions is not _UNSET:
@@ -825,7 +821,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Process import dir or dirs
     paths_map = []
     if not paths:
-        paths_map.append(':'.join(_clean_path(args[0]), path))
+        paths_map.append(':'.join(utils._clean_path(args[0]), path))
     else:
         paths_map = paths.split(',')
 
@@ -848,7 +844,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
             else:
                 msg = "object in path '%s' does not exist, use --force"
                 msg += " to create"
-                logger.error(msg % path)
+                _LOG.error(msg % path)
                 exit(1)
         object_paths = utils._remove_base(files, num_parts, base)
         if match:
