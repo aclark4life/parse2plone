@@ -829,9 +829,10 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         paths_map.append(':'.join(_clean_path(args[0]), path))
     else:
         paths_map = paths.split(',')
+
+    # Run parse2plone
     for entry in paths_map:
         import_dir, path = entry.split(':')
-        # Run parse2plone
         files = parse2plone._get_files(import_dir)
         num_parts = len(import_dir.split('/'))
         app = parse2plone._setup_app(app)
