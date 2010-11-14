@@ -444,7 +444,7 @@ class Utils(object):
         """
         for option, existing_value in _SETTINGS.items():
             if option in options:
-                # the user set a recipe parameter
+                # the user set a recipe parameter we need to process
                 if option in ('rename', 'paths', 'match'):
                     _SETTINGS[option] = self._convert_line_to_csv(options[option])
                 elif option in ('replacetypes'):
@@ -457,7 +457,12 @@ class Utils(object):
                     _SETTINGS[option] = self._fake_literal_eval(
                         options[option].capitalize())
                 else:
-                    _SETTINGS[option] = options[option]
+                    # the user set an empty recipe parameter
+                    if option in ('rename', 'paths', 'match'):
+                        _SETTINGS[option] = None
+                    else:
+                        # the user set a recipe parameter we do not need to process
+                        _SETTINGS[option] = options[option]
             else:
                 # the user did not set any recipe parameters
                 if option in ('illegal_chars', 'html_extensions',
@@ -513,10 +518,16 @@ class Utils(object):
             _SETTINGS['collapse'] = options.collapse
         if options.rename is not _UNSET_OPTION:
             _SETTINGS['rename'] = (options.rename).split(',')
+        else:
+            _SETTINGS['rename'] = None
         if options.replacetypes is not _UNSET_OPTION:
             _SETTINGS['replacetypes'] = (options.replacetypes).split(',')
+        else:
+            _SETTINGS['replacetypes'] = None
         if options.match is not _UNSET_OPTION:
             _SETTINGS['match'] = (options.match).split(',')
+        else:
+            _SETTINGS['match'] = None
 
     def _validate_recipe_args(self, options):
         for option in options:
