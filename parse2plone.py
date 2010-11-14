@@ -464,10 +464,10 @@ class Utils(object):
             if option in options:
                 # the user set a recipe parameter
                 if option in ('rename', 'paths', 'match'):
-                    _SETTINGS[option] = _convert_paths_to_csv(options[option],
+                    _SETTINGS[option] = utils._convert_paths_to_csv(options[option],
                         option)
                 elif option in ('replacetypes'):
-                    _SETTINGS[option] = _convert_types_to_csv(options[option])
+                    _SETTINGS[option] = utils._convert_types_to_csv(options[option])
                 elif option in ('illegal_chars', 'html_extensions',
                     'image_extensions', 'file_extensions', 'target_tags'):
                     _SETTINGS[option] = ', '.join(re.split('\s+',

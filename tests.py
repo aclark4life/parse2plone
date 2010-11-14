@@ -2,40 +2,6 @@ import parse2plone
 import unittest
 
 
-class FakeLiteralEvalTestCase(unittest.TestCase):
-
-    def setUp(self):
-        self.utils = parse2plone.Utils()
-
-    def testFakeLiteralEvalTrue(self):
-        utils = self.utils
-        self.assertEqual(True, utils._fake_literal_eval('True'))
-
-    def testFakeLiteralEvalFalse(self):
-        utils = self.utils
-        self.assertEqual(False, utils._fake_literal_eval('False'))
-
-    def testFakeLiteralEvalNone(self):
-        utils = self.utils
-        self.assertEqual(None, utils._fake_literal_eval('None'))
-
-    def testFakeLiteralEvalMalformedString(self):
-        utils = self.utils
-        self.assertEqual((ValueError, 'malformed string'),
-            utils._fake_literal_eval('asdf'))
-
-
-class CleanPathTestCase(unittest.TestCase):
-
-    def setUp(self):
-        self.utils = parse2plone.Utils()
-
-    def testCleanPath(self):
-        utils = self.utils
-        self.assertEqual('foo/bar/baz', utils._clean_path(
-            '/foo/bar/baz/'))
-
-
 # Test "rename" feature
 class RenameOldNewTestCase(unittest.TestCase):
 
@@ -167,6 +133,47 @@ class LoggerTestCase(unittest.TestCase):
     def testLogger(self):
         logger = parse2plone._setup_logger()
         self.assertTrue(isinstance(logger, self.test_logger.__class__))
+
+
+class FakeLiteralEvalTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.utils = parse2plone.Utils()
+
+    def testFakeLiteralEvalTrue(self):
+        utils = self.utils
+        self.assertEqual(True, utils._fake_literal_eval('True'))
+
+    def testFakeLiteralEvalFalse(self):
+        utils = self.utils
+        self.assertEqual(False, utils._fake_literal_eval('False'))
+
+    def testFakeLiteralEvalNone(self):
+        utils = self.utils
+        self.assertEqual(None, utils._fake_literal_eval('None'))
+
+    def testFakeLiteralEvalMalformedString(self):
+        utils = self.utils
+        self.assertEqual((ValueError, 'malformed string'),
+            utils._fake_literal_eval('asdf'))
+
+
+class CleanPathTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.utils = parse2plone.Utils()
+
+    def testCleanPath(self):
+        utils = self.utils
+        self.assertEqual('foo/bar/baz', utils._clean_path(
+            '/foo/bar/baz/'))
+
+
+class ConvertTypesToCSVTestCase(unittest.TestCase):
+
+    # _convert_types_to_csv(self, value):
+    def setUp(self): 
+        pass
 
 
 if __name__ == '__main__':
