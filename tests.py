@@ -44,7 +44,7 @@ class RenameOldNewTestCase(unittest.TestCase):
         recipe_input_after = self.recipe_input_after
 
         for recipe_input in recipe_input_before:
-            results.append(utils._convert_line_to_csv(recipe_input))
+            results.append(utils._convert_str_to_csv(recipe_input))
 
         self.assertEqual(results, recipe_input_after)
 
