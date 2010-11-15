@@ -253,31 +253,34 @@ class Utils(object):
         image_extensions, file_extensions, target_tags, path, force,
         publish, collapse, rename, replacetypes, match, paths):
         """
-        Convert most recipe parameter values from csv; save results
-        in _SETTINGS dict
+        Convert recipe parameter values
         """
-        _SETTINGS['illegal_chars'] = illegal_chars.split(',')
-        _SETTINGS['html_extensions'] = html_extensions.split(',')
-        _SETTINGS['image_extensions'] = image_extensions.split(',')
-        _SETTINGS['file_extensions'] = file_extensions.split(',')
-        _SETTINGS['target_tags'] = target_tags.split(',')
+        illegal_chars = illegal_chars.split(',')
+        html_extensions = html_extensions.split(',')
+        image_extensions = image_extensions.split(',')
+        file_extensions = file_extensions.split(',')
+        target_tags = target_tags.split(',')
         if not paths:
-            _SETTINGS['path'] = self._clean_path(path)
-        _SETTINGS['force'] = force
-        _SETTINGS['publish'] = publish
-        _SETTINGS['collapse'] = collapse
+            path = self._clean_path(path)
+        force = force
+        publish = publish
+        collapse = collapse
         if rename is not None:
-            _SETTINGS['rename'] = rename.split(',')
+            rename = rename.split(',')
         else:
-            _SETTINGS['rename'] = rename
+            rename = rename
         if replacetypes is not None:
-            _SETTINGS['replacetypes'] = replacetypes.split(',')
+            replacetypes = replacetypes.split(',')
         else:
-            _SETTINGS['replacetypes'] = replacetypes
+            replacetypes = replacetypes
         if match is not None:
-            _SETTINGS['match'] = match.split(',')
+            match = match.split(',')
         else:
-            _SETTINGS['match'] = match
+            match = match
+
+        return (illegal_chars, html_extensions,
+        image_extensions, file_extensions, target_tags, path, force,
+        publish, collapse, rename, replacetypes, match, paths)
 
     def _create_option_parser(self):
         option_parser = optparse.OptionParser()
@@ -363,7 +366,7 @@ class Utils(object):
             results += i.split(':')[index]
             c += 1
             if c != max:
-                results += ', '
+                results += ','
         return "'%s'" % results
 
     def _convert_obj_to_path(self, obj):
@@ -805,9 +808,25 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
 
     # Convert arg values passed in to main from csv to list;
     # save results in _SETTINGS
-    utils._convert_csv_to_list(illegal_chars, html_extensions,
+    (illegal_chars, html_extensions, image_extensions, file_extensions, target_tags,
+        path, force, publish, collapse, rename, replacetypes, match, paths) = (
+        utils._convert_csv_to_list(illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force, publish,
-        collapse, rename, replacetypes, match, paths)
+        collapse, rename, replacetypes, match, paths))
+
+    _SETTINGS['path'] = path
+    _SETTINGS['illegal_chars'] = illegal_chars
+    _SETTINGS['html_extensions'] = html_extensions
+    _SETTINGS['image_extensions'] = image_extensions
+    _SETTINGS['file_extensions'] = file_extensions
+    _SETTINGS['target_tags'] = target_tags
+    _SETTINGS['force'] = force
+    _SETTINGS['publish'] = publish
+    _SETTINGS['collapse'] = collapse
+    _SETTINGS['rename'] = rename
+    _SETTINGS['replacetypes'] = replacetypes
+    _SETTINGS['match'] = match
+    _SETTINGS['paths'] = paths
 
     # Process command line args; save results in _SETTINGS
     option_parser = utils._create_option_parser()
