@@ -438,6 +438,16 @@ class Utils(object):
             results[base].append('/'.join(f))
         return results
 
+    def _setup_app(self, app):
+        # BBB Move imports here to avoid calling them on script installation,
+        # makes parse2plone work with Plone 2.5 (non-egg release).
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SpecialUsers import system
+        from Testing.makerequest import makerequest
+        app = makerequest(app)
+        newSecurityManager(None, system)
+        return app
+
     def process_recipe_args(self, options):
         """
         Convert most recipe parameter values to csv; save in _SETTINGS dict
@@ -720,15 +730,6 @@ class Parse2Plone(object):
         obj.setTitle(title.title())
         obj.reindexObject()
 
-    def setup_app(self, app):
-        # BBB Move imports here to avoid calling them on script installation,
-        # makes parse2plone work with Plone 2.5 (non-egg release).
-        from AccessControl.SecurityManagement import newSecurityManager
-        from AccessControl.SpecialUsers import system
-        from Testing.makerequest import makerequest
-        app = makerequest(app)
-        newSecurityManager(None, system)
-        return app
 
 
 class Recipe(object):
@@ -824,7 +825,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         import_dir, path = entry.split(':')
         files = utils._get_files(import_dir)
         num_parts = len(import_dir.split('/'))
-        app = parse2plone.setup_app(app)
+        app = utils._setup_app(app)
         base = utils._get_base(import_dir, num_parts)
         if utils._check_exists_path(app, path):
             parent = utils._get_parent(app, path)
