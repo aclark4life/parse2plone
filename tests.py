@@ -473,6 +473,24 @@ class GetObjTestCase(unittest.TestCase):
         utils = self.utils
         self.assertEqual(obj, utils._get_obj(path))
 
+class GetParentTestCase(PloneTestCase.PloneTestCase):
+
+    def afterSetUp(self):
+        import parse2plone
+        self.utils = parse2plone.Utils()
+        self.app = self.utils._setup_app(self.app)
+        self.portal.invokeFactory('Folder', 'foo')
+        self.obj = self.portal.foo
+        self.parent_path = '/plone/foo/'
+
+    def testGetParent(self):
+        utils = self.utils
+        obj = self.obj
+        app = self.app
+        parent_path = self.parent_path
+        self.assertEqual(self.obj, utils._update_parent(self.portal, parent_path))
+
+
 # Test parse2plone
 
 if __name__ == '__main__':

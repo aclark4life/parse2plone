@@ -391,13 +391,6 @@ class Utils(object):
     def _get_obj(self, path):
         return path.split('/')[-1:][0]
 
-    def _get_parent(self, current_parent, prefix_path):
-        updated_parent = current_parent.restrictedTraverse(prefix_path)
-        _LOG.info("updating parent from '%s' to '%s'" % (
-             self._convert_obj_to_path(current_parent),
-             self._convert_obj_to_path(updated_parent)))
-        return updated_parent
-
     def _get_parts(self, path):
         path = self._clean_path(path)
         return path.split('/')
@@ -405,7 +398,7 @@ class Utils(object):
     def _get_path(self, parts, i):
         return '/'.join(parts[:i + 1])
 
-    def _get_prefix_path(self, path):
+    def _get_parent_path(self, path):
         return path.split('/')[:-1]
 
     def _is_file(self, obj, extensions):
@@ -451,6 +444,13 @@ class Utils(object):
         app = makerequest(app)
         newSecurityManager(None, system)
         return app
+
+    def _update_parent(self, current_parent, parent_path):
+        updated_parent = current_parent.restrictedTraverse(parent_path)
+        _LOG.info("updating parent from '%s' to '%s'" % (
+             self._convert_obj_to_path(current_parent),
+             self._convert_obj_to_path(updated_parent)))
+        return updated_parent
 
     def process_recipe_args(self, options):
         """
@@ -555,7 +555,7 @@ class Utils(object):
 
 
 class Parse2Plone(object):
-    def create_content(self, parent, obj, prefix_path, import_dir,
+    def create_content(self, parent, obj, parent_path, import_dir,
         _collapse_map, _rename_map, _replace_types_map):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
@@ -569,20 +569,20 @@ class Parse2Plone(object):
         elif utils._is_file(obj, _SETTINGS['html_extensions']):
             page = self.create_page(parent, obj, _replace_types_map)
             self.set_title(page, obj)
-            self.set_page(page, obj, prefix_path, import_dir, _collapse_map,
+            self.set_page(page, obj, parent_path, import_dir, _collapse_map,
                 _rename_map)
             _COUNT['pages'] += 1
             commit()
         elif utils._is_file(obj, self.image_extensions):
             image = self.create_image(parent, obj, _replace_types_map)
             self.set_title(image, obj)
-            self.set_image(image, obj, prefix_path, import_dir)
+            self.set_image(image, obj, parent_path, import_dir)
             _COUNT['images'] += 1
             commit()
         elif utils._is_file(obj, self.file_extensions):
             at_file = self.create_file(parent, obj, _replace_types_map)
             self.set_title(at_file, obj)
-            self.set_file(at_file, obj, prefix_path, import_dir)
+            self.set_file(at_file, obj, parent_path, import_dir)
             _COUNT['files'] += 1
             commit()
 
@@ -634,9 +634,9 @@ class Parse2Plone(object):
 
         for i in range(len(parts)):
             path = utils._get_path(parts, i)
-            prefix_path = utils._get_prefix_path(path)
+            parent_path = utils._get_parent_path(path)
             obj = utils._get_obj(path)
-            parent = utils._get_parent(parent, '/'.join(prefix_path))
+            parent = utils._update_parent(parent, '/'.join(parent_path))
             if utils._is_legal(obj):
                 if utils._check_exists_obj(parent, obj):
                     _LOG.info("object '%s' exists inside '%s'" % (
@@ -645,7 +645,7 @@ class Parse2Plone(object):
                     _LOG.info(
                         "object '%s' does not exist inside '%s'"
                         % (obj, utils._convert_obj_to_path(parent)))
-                    self.create_content(parent, obj, prefix_path, import_dir,
+                    self.create_content(parent, obj, parent_path, import_dir,
                         _collapse_map, _rename_map, _replace_types_map)
             else:
                 _LOG.info("object '%s' has illegal chars" % obj)
@@ -693,22 +693,22 @@ class Parse2Plone(object):
                 results += lxml.etree.tostring(element)
         return results
 
-    def set_image(self, image, obj, prefix_path, import_dir):
-        f = open('/'.join([import_dir, '/'.join(prefix_path), obj]), 'rb')
+    def set_image(self, image, obj, parent_path, import_dir):
+        f = open('/'.join([import_dir, '/'.join(parent_path), obj]), 'rb')
         data = f.read()
         f.close()
         image.setImage(data)
 
-    def set_file(self, at_file, obj, prefix_path, import_dir):
-        f = open('/'.join([import_dir, '/'.join(prefix_path), obj]), 'rb')
+    def set_file(self, at_file, obj, parent_path, import_dir):
+        f = open('/'.join([import_dir, '/'.join(parent_path), obj]), 'rb')
         data = f.read()
         f.close()
         at_file.setFile(data)
 
-    def set_page(self, page, obj, prefix_path, import_dir, _collapse_map,
+    def set_page(self, page, obj, parent_path, import_dir, _collapse_map,
         _rename_map):
-        filename = '/'.join([import_dir, '/'.join(prefix_path), obj])
-        key = '/'.join(prefix_path) + '/' + obj
+        filename = '/'.join([import_dir, '/'.join(parent_path), obj])
+        key = '/'.join(parent_path) + '/' + obj
         if _SETTINGS['rename'] and key in _rename_map['reverse']:
             value = _rename_map['reverse'][key]
             filename = '/'.join([import_dir, value])
@@ -849,12 +849,12 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         num_parts = len(import_dir.split('/'))
         app = utils._setup_app(app)
         if utils._check_exists_path(app, path):
-            parent = utils._get_parent(app, path)
+            parent = utils._update_parent(app, path)
         else:
             if force:
                 parse2plone.create_parts(app, utils._get_parts(path),
                     import_dir, _collapse_map, _rename_map, _replace_types_map)
-                parent = utils._get_parent(app, path)
+                parent = utils._update_parent(app, path)
             else:
                 msg = "object in path '%s' does not exist, use --force"
                 msg += " to create"
