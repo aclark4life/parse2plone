@@ -377,11 +377,16 @@ class Utils(object):
         for path, subdirs, files in os.walk(import_dir):
             _LOG.info("path '%s', has subdirs '%s', and files '%s'" % (
                 path, ' '.join(subdirs), ' '.join(files)))
-            for f in fnmatch.filter(files, '*'):
-                if self._is_legal(f, _SETTINGS['illegal_chars']):
-                    results.append(os_path.join(path, f))
+
+            for f in files:
+                if self._is_legal(f):
+                    if self._is_legal(path.split('/')[-1:][0]):
+                        results.append(os_path.join(path, f))
+                    else:
+                        _LOG.info("path '%s' has illegal chars" % path)
                 else:
-                    _LOG.info("object '%s' has illegal chars" % f)
+                    _LOG.info("file '%s' has illegal chars" % f)
+
         return results
 
     def _get_obj(self, path):
@@ -417,9 +422,9 @@ class Utils(object):
         else:
             return False
 
-    def _is_legal(self, obj, illegal_chars):
+    def _is_legal(self, obj):
         results = True
-        if obj[:1] in illegal_chars:
+        if obj[:1] in _SETTINGS['illegal_chars']:
             results = False
         return results
 
@@ -633,7 +638,7 @@ class Parse2Plone(object):
             prefix_path = utils._get_prefix_path(path)
             obj = utils._get_obj(path)
             parent = utils._get_parent(parent, '/'.join(prefix_path))
-            if utils._is_legal(obj, _SETTINGS['illegal_chars']):
+            if utils._is_legal(obj):
                 if utils._check_exists_obj(parent, obj):
                     _LOG.info("object '%s' exists inside '%s'" % (
                         obj, utils._convert_obj_to_path(parent)))

@@ -433,6 +433,28 @@ class RemoveBaseTestCase(unittest.TestCase):
         results = self.results
         self.assertEqual(results, utils._remove_base(files, num_parts, import_dir))
 
+
+class GetFilesTestCase(unittest.TestCase):
+
+    def setUp(self):
+        import parse2plone
+        import tempfile
+
+        self.utils = parse2plone.Utils()
+
+        # Tests run in parts/test
+        self.import_dir = '../../sample'
+
+        self.results = ['../../sample/index.html', '../../sample/2000/01/01/foo/index.html',
+            '../../sample/about/index.html', '../../sample/baz/index.html',
+            '../../sample/foo/index.html']
+
+    def testRemoveBase(self):
+        utils = self.utils
+        import_dir = self.import_dir
+        results = self.results
+        self.assertEqual(results, utils._get_files(import_dir))
+
 # Test parse2plone
 
 if __name__ == '__main__':
