@@ -480,8 +480,10 @@ class Utils(object):
                 # the user did not set any recipe parameters
                 if option in ('illegal_chars', 'html_extensions',
                     'image_extensions', 'file_extensions', 'target_tags'):
+                    # but some values must be converted to csv
                     _SETTINGS[option] = ','.join(existing_value)
                 else:
+                    # and others do not have to be converted to csv
                     _SETTINGS[option] = existing_value
 
         arguments = "app,"
