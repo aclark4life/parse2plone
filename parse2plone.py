@@ -379,7 +379,7 @@ class Utils(object):
 
             for f in files:
                 if self._is_legal(f):
-                    if self._is_legal(path.split('/')[-1:][0]):
+                    if self._is_legal(self._get_obj(path)):
                         results.append(os_path.join(path, f))
                     else:
                         _LOG.info("path '%s' has illegal chars" % path)
