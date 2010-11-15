@@ -465,11 +465,13 @@ class GetObjTestCase(unittest.TestCase):
         import parse2plone
         self.path = '../../sample/foo'
         self.obj = 'foo'
+        self.utils = parse2plone.Utils()
 
     def testGetObj(self):
         path = self.path
         obj = self.obj
-        self.assertEqual(obj, path)
+        utils = self.utils
+        self.assertEqual(obj, utils._get_obj(path))
 
 # Test parse2plone
 
