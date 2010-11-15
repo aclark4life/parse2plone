@@ -517,7 +517,7 @@ class GetParentPathTestCase(unittest.TestCase):
         path = self.path
         utils = self.utils
         parent_path = self.parent_path
-        self.assertEqual(results, utils._get_parent_path(path))
+        self.assertEqual(parent_path, utils._get_parent_path(path))
 
 
 # Test parse2plone
