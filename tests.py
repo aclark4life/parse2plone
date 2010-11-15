@@ -437,6 +437,21 @@ class RemoveBaseTestCase(unittest.TestCase):
             import_dir))
 
 
+class RemovePartsTestCase(unittest.TestCase):
+
+    def setUp(self):
+        import parse2plone
+        self.utils = parse2plone.Utils()
+        self.parts_before = ['/var/www/html/foo']
+        self.parts_after = [['foo']]
+
+    def testRemoveParts(self):
+        utils = self.utils
+        before = self.parts_before
+        after = self.parts_after
+        self.assertEqual(after, utils._remove_parts(before, 3))
+
+
 class GetFilesTestCase(unittest.TestCase):
 
     def setUp(self):
