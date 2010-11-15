@@ -288,6 +288,84 @@ class ConvertCSVToListTestCase(unittest.TestCase):
         self.assertEqual(match, self.match_after)
         self.assertEqual(paths, self.paths_after)
 
+
+class CreateOptionParserTestCase(unittest.TestCase):
+
+    def setUp(self):
+        import optparse
+
+        _UNSET_OPTION = ''
+        self.utils = parse2plone.Utils()
+
+        self.option_parser_test = optparse.OptionParser()
+        self.option_parser_test.add_option('-p', '--path',
+            default=_UNSET_OPTION,
+            dest='path',
+            help='Path to Plone site object or sub-folder')
+        self.option_parser_test.add_option('--html-extensions',
+            default=_UNSET_OPTION,
+            dest='html_extensions',
+            help='Specify HTML file extensions')
+        self.option_parser_test.add_option('--illegal-chars',
+            default=_UNSET_OPTION,
+            dest='illegal_chars',
+            help='Specify characters to ignore')
+        self.option_parser_test.add_option('--image-extensions',
+            default=_UNSET_OPTION,
+            dest='image_extensions',
+            help='Specify image file extensions')
+        self.option_parser_test.add_option('--file-extensions',
+            default=_UNSET_OPTION,
+            dest='file_extensions',
+            help='Specify generic file extensions')
+        self.option_parser_test.add_option('--target-tags',
+            default=_UNSET_OPTION,
+            dest='target_tags',
+            help='Specify HTML tags to parse')
+        self.option_parser_test.add_option('--force',
+            action='store_true',
+            default=_UNSET_OPTION,
+            dest='force',
+            help='Force creation of folders')
+        self.option_parser_test.add_option('--publish',
+            action='store_true',
+            default=_UNSET_OPTION,
+            dest='publish',
+            help='Optionally publish newly created content')
+        self.option_parser_test.add_option('--collapse',
+            action='store_true',
+            default=_UNSET_OPTION,
+            dest='collapse',
+            help="""Optionally "collapse" content (see collapse_parts())""")
+        self.option_parser_test.add_option('--rename',
+            default=_UNSET_OPTION,
+            dest='rename',
+            help='Optionally rename content (see rename_parts())')
+        self.option_parser_test.add_option('--replacetypes',
+            default=_UNSET_OPTION,
+            dest='replacetypes',
+            help='Optionally use custom content types (see replace types())')
+        self.option_parser_test.add_option('--match',
+            default=_UNSET_OPTION,
+            dest='match',
+            help='Only import content that matches PATTERN (see match_files())'
+            )
+        self.option_parser_test.add_option('--paths',
+            default=_UNSET_OPTION,
+            dest='paths',
+            help='Specify import_dirs:object_paths (--path will be ignored)')
+
+
+    def testCreateOptionParser(self):
+        utils = self.utils
+        option_parser_test = self.option_parser_test
+        option_parser = utils._create_option_parser()
+        # Make sure all the opts are the same e.g. '-p/--path'
+        self.assertEqual(
+            [i.__str__() for i in option_parser_test.option_list],
+            [i.__str__() for i in option_parser.option_list])
+
+
 # Test parse2plone
 
 
