@@ -202,6 +202,20 @@ class CheckExistsPathTestCase(PloneTestCase.PloneTestCase):
         self.assertTrue(self.utils._check_exists_path(self.app, path))
 
 
+class ConvertStrToCSVTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.utils = parse2plone.Utils()
+        self.value_before = '\nfoo bar\nbaz qux'
+        self.value_after = 'foo:bar,baz:qux'
+
+    def testConvertStrToCSV(self):
+        utils = self.utils
+        before = self.value_before
+        after = self.value_after
+        self.assertEqual(after, utils._convert_str_to_csv(before))
+
+
 # Test parse2plone
 
 
