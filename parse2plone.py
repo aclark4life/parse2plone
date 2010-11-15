@@ -40,7 +40,6 @@
 #                                                                             #
 ###############################################################################
 
-import fnmatch
 import logging
 import lxml
 import lxml.html
@@ -556,8 +555,8 @@ class Utils(object):
 
 
 class Parse2Plone(object):
-    def create_content(self, parent, obj, prefix_path, import_dir, _collapse_map,
-        _rename_map, _replace_types_map):
+    def create_content(self, parent, obj, prefix_path, import_dir,
+        _collapse_map, _rename_map, _replace_types_map):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
         from transaction import commit
@@ -627,8 +626,8 @@ class Parse2Plone(object):
             _LOG.info("publishing page '%s'" % obj)
         return page
 
-    def create_parts(self, parent, parts, import_dir, _collapse_map, _rename_map,
-        _replace_types_map):
+    def create_parts(self, parent, parts, import_dir, _collapse_map,
+        _rename_map, _replace_types_map):
 
         _LOG.info("creating parts for '%s'" % '/'.join(parts))
         utils = Utils()
@@ -661,8 +660,8 @@ class Parse2Plone(object):
                 parts = _rename_map['forward'][f].split('/')
             if _SETTINGS['collapse'] and f in _collapse_map['forward']:
                 parts = _collapse_map['forward'][f].split('/')
-            self.create_parts(parent, parts, import_dir, _collapse_map, _rename_map,
-                _replace_types_map)
+            self.create_parts(parent, parts, import_dir, _collapse_map,
+                _rename_map, _replace_types_map)
         results = _COUNT.values()
         return results
 
@@ -865,9 +864,11 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         if match:
             object_paths = match_files(object_paths, import_dir, match)
         if collapse:
-            _collapse_map = collapse_parts(object_paths, _collapse_map, import_dir)
+            _collapse_map = collapse_parts(object_paths, _collapse_map,
+            import_dir)
         if rename:
-            _rename_map = rename_parts(object_paths, _rename_map, import_dir, rename)
+            _rename_map = rename_parts(object_paths, _rename_map, import_dir,
+            rename)
         if replacetypes:
             try:
                 replace_types(replacetypes, _replace_types_map)

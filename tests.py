@@ -376,6 +376,7 @@ class CreateOptionParserTestCase(unittest.TestCase):
             [i.__str__() for i in option_parser_test.option_list],
             [i.__str__() for i in option_parser.option_list])
 
+
 class GetResultsTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -383,7 +384,7 @@ class GetResultsTestCase(unittest.TestCase):
         self.utils = parse2plone.Utils()
         self.results_0 = "'sample,sample2'"
         self.results_1 = "'/Plone/sample,/Plone/sample2'"
-        self.paths_map = ['sample:/Plone/sample','sample2:/Plone/sample2']
+        self.paths_map = ['sample:/Plone/sample', 'sample2:/Plone/sample2']
 
     def testGetResults(self):
         utils = self.utils
@@ -410,6 +411,7 @@ class ConvertObjToPathTestCase(PloneTestCase.PloneTestCase):
         obj = self.obj
         self.assertEqual(results, utils._convert_obj_to_path(obj))
 
+
 class RemoveBaseTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -421,9 +423,9 @@ class RemoveBaseTestCase(unittest.TestCase):
             'sample/_illegal_directory/index.html', 'sample/about/index.html',
             'sample/baz/index.html', 'sample/foo/index.html']
 
-        self.results = {self.import_dir: ['index.html', '2000/01/01/foo/index.html',
-            '_illegal_directory/index.html', 'about/index.html', 'baz/index.html',
-            'foo/index.html']}
+        self.results = {self.import_dir: ['index.html',
+            '2000/01/01/foo/index.html', '_illegal_directory/index.html',
+            'about/index.html', 'baz/index.html', 'foo/index.html']}
 
     def testRemoveBase(self):
         utils = self.utils
@@ -431,21 +433,22 @@ class RemoveBaseTestCase(unittest.TestCase):
         num_parts = self.num_parts
         files = self.files
         results = self.results
-        self.assertEqual(results, utils._remove_base(files, num_parts, import_dir))
+        self.assertEqual(results, utils._remove_base(files, num_parts,
+            import_dir))
 
 
 class GetFilesTestCase(unittest.TestCase):
 
     def setUp(self):
         import parse2plone
-        import tempfile
 
         self.utils = parse2plone.Utils()
 
         # Tests run in parts/test
         self.import_dir = '../../sample'
 
-        self.results = ['../../sample/index.html', '../../sample/2000/01/01/foo/index.html',
+        self.results = ['../../sample/index.html',
+            '../../sample/2000/01/01/foo/index.html',
             '../../sample/about/index.html', '../../sample/baz/index.html',
             '../../sample/foo/index.html']
 
