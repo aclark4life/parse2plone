@@ -473,7 +473,7 @@ class GetObjTestCase(unittest.TestCase):
         utils = self.utils
         self.assertEqual(obj, utils._get_obj(path))
 
-class GetParentTestCase(PloneTestCase.PloneTestCase):
+class UpdateParentTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
         import parse2plone
@@ -483,12 +483,26 @@ class GetParentTestCase(PloneTestCase.PloneTestCase):
         self.obj = self.portal.foo
         self.parent_path = '/plone/foo/'
 
-    def testGetParent(self):
+    def testUpdateParent(self):
         utils = self.utils
         obj = self.obj
         app = self.app
         parent_path = self.parent_path
         self.assertEqual(self.obj, utils._update_parent(self.portal, parent_path))
+
+class GetPartsTestCase(unittest.testcase):
+
+    def setUp(self):
+        import parse2plone
+        self.utils = parse2plone.Utils()
+        self.path = '/foo/bar/baz'
+        self.results = ['foo','bar','baz']
+
+    def testGetParts(self):
+        path = self.path
+        utils = self.utils
+        results = self.results
+        self.assertEqual(results, utils._get_parts(path))
 
 
 # Test parse2plone
