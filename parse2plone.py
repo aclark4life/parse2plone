@@ -808,8 +808,9 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
 
     # Convert arg values passed in to main from csv to list;
     # save results in _SETTINGS
-    (illegal_chars, html_extensions, image_extensions, file_extensions, target_tags,
-        path, force, publish, collapse, rename, replacetypes, match, paths) = (
+    (illegal_chars, html_extensions, image_extensions, file_extensions,
+        target_tags, path, force, publish, collapse, rename, replacetypes,
+        match, paths) = (
         utils._convert_csv_to_list(illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, path, force, publish,
         collapse, rename, replacetypes, match, paths))

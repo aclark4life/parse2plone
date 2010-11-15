@@ -215,8 +215,8 @@ class ConvertStrToCSVTestCase(unittest.TestCase):
         after = self.value_after
         self.assertEqual(after, utils._convert_str_to_csv(before))
 
-class ConvertCSVToListTestCase(unittest.TestCase):
 
+class ConvertCSVToListTestCase(unittest.TestCase):
     def setUp(self):
         self.utils = parse2plone.Utils()
 
@@ -229,30 +229,28 @@ class ConvertCSVToListTestCase(unittest.TestCase):
         self.force_before = False
         self.publish_before = False
         self.collapse_before = False
-        self.rename_before ='foo:bar,baz:qux'
+        self.rename_before = 'foo:bar,baz:qux'
         self.replacetypes_before = 'Document:MyDocument,Folder:MyFolder'
         self.match_before = '2000'
         self.paths_before = 'sample:/Plone/sample,sample2:/Plone/sample2'
 
         self.path_after = '/Plone'
-        self.illegal_chars_after = ['_','.']
+        self.illegal_chars_after = ['_', '.']
         self.html_extensions_after = ['html']
-        self.image_extensions_after = ['gif','jpg','jpeg','png']
+        self.image_extensions_after = ['gif', 'jpg', 'jpeg', 'png']
         self.file_extensions_after = ['mp3']
-        self.target_tags_after = ['a','div','h1','h2','p']
+        self.target_tags_after = ['a', 'div', 'h1', 'h2', 'p']
         self.force_after = False
         self.publish_after = False
         self.collapse_after = False
-        self.rename_after = ['foo:bar','baz:qux']
-        self.replacetypes_after = ['Document:MyDocument','Folder:MyFolder']
+        self.rename_after = ['foo:bar', 'baz:qux']
+        self.replacetypes_after = ['Document:MyDocument', 'Folder:MyFolder']
         self.match_after = ['2000']
         self.paths_after = 'sample:/Plone/sample,sample2:/Plone/sample2'
 
-
-
     def testConvertCSVToList(self):
         utils = self.utils
-        
+
         path_before = self.path_before
         illegal_chars_before = self.illegal_chars_before
         html_extensions_before = self.html_extensions_before
@@ -267,27 +265,16 @@ class ConvertCSVToListTestCase(unittest.TestCase):
         match_before = self.match_before
         paths_before = self.paths_before
 
-        path_after = self.path_after
-        illegal_chars_after= self.illegal_chars_after
-        html_extensions_after= self.html_extensions_after
-        image_extensions_after= self.image_extensions_after
-        file_extensions_after= self.file_extensions_after
-        target_tags_after= self.target_tags_after
-        force_after= self.force_after
-        publish_after= self.publish_after
-        collapse_after= self.collapse_after
-        rename_after= self.rename_after
-        replacetypes_after= self.replacetypes_after
-        match_after= self.match_after
-        paths_after= self.paths_after
-
         (illegal_chars, html_extensions, image_extensions, file_extensions,
         target_tags, path, force, publish, collapse, rename, replacetypes,
-        match, paths) = (utils._convert_csv_to_list(illegal_chars_before,
-        html_extensions_before, image_extensions_before, file_extensions_before,
-        target_tags_before, path_before, force_before, publish_before,
-        collapse_before, rename_before, replacetypes_before, match_before, paths_before))
+        match, paths) = (
+            utils._convert_csv_to_list(illegal_chars_before,
+            html_extensions_before, image_extensions_before,
+            file_extensions_before, target_tags_before, path_before,
+            force_before, publish_before, collapse_before, rename_before,
+            replacetypes_before, match_before, paths_before))
 
+        self.assertEqual(path, self.path_after)
         self.assertEqual(illegal_chars, self.illegal_chars_after)
         self.assertEqual(html_extensions, self.html_extensions_after)
         self.assertEqual(image_extensions, self.image_extensions_after)
