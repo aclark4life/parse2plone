@@ -1,6 +1,9 @@
 import parse2plone
 import unittest
 
+from Products.CMFPlone.tests import PloneTestCase
+
+PloneTestCase.setupPloneSite()
 
 # Test "rename" feature
 class RenameOldNewTestCase(unittest.TestCase):
@@ -176,9 +179,6 @@ class MockParent(object):
     def objectIds(self):
         return ['foo', 'bar', 'baz']
 
-    def restrictedTraverse(self, path)
-        if path == 'Plone/foo'
-
 
 class CheckExistsObjTestCase(unittest.TestCase):
 
@@ -195,16 +195,19 @@ class CheckExistsObjTestCase(unittest.TestCase):
         self.assertFalse(self.utils._check_exists_obj(parent, 'qux'))
 
 
-class CheckExistsPathTestCase(unittest.TestCase):
+class CheckExistsPathTestCase(PloneTestCase.PloneTestCase):
 
-    def setUp(self):
-        self.utils = parse2plone.Utils()
-        self.parent = MockParent()
-        self.path = 'Plone/foo'
+#    def setUp(self):
+#        self.utils = parse2plone.Utils()
+#        self.path = 'Plone/foo'
+
+    def afterSetup(self):
+        import pdb; pdb.set_trace()
 
     def testCheckExistsPathTrue(self):
-        path = self.path
-        self.assertTrue(self.utils._check_exists_path(parent, path):
+#        path = self.path
+#        self.assertTrue(self.utils._check_exists_path(parent, path):
+        pass
 
 
 
