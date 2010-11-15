@@ -490,7 +490,7 @@ class UpdateParentTestCase(PloneTestCase.PloneTestCase):
         parent_path = self.parent_path
         self.assertEqual(self.obj, utils._update_parent(self.portal, parent_path))
 
-class GetPartsTestCase(unittest.testcase):
+class GetPartsTestCase(unittest.TestCase):
 
     def setUp(self):
         import parse2plone
