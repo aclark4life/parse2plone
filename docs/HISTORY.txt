@@ -2,6 +2,11 @@
 History
 -------
 
+0.9.9 (11/15/2010)
+~~~~~~~~~~~~~~~~~~
+
+* Added a large number of tests; associated refactoring
+
 0.9.8 (11/12/2010)
 ~~~~~~~~~~~~~~~~~~
 

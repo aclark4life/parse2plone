@@ -376,6 +376,23 @@ class CreateOptionParserTestCase(unittest.TestCase):
             [i.__str__() for i in option_parser_test.option_list],
             [i.__str__() for i in option_parser.option_list])
 
+class GetResultsTestCase(unittest.TestCase):
+
+    def setUp(self):
+        import parse2plone
+        self.utils = parse2plone.Utils()
+        self.results_0 = "'sample,sample2'"
+        self.results_1 = "'/Plone/sample,/Plone/sample2'"
+        self.paths_map = ['sample:/Plone/sample','sample2:/Plone/sample2']
+
+    def testGetResults(self):
+        utils = self.utils
+        results_0 = self.results_0
+        results_1 = self.results_1
+        paths_map = self.paths_map
+        self.assertEqual(results_0, utils._get_results(paths_map, 0))
+        self.assertEqual(results_1, utils._get_results(paths_map, 1))
+
 
 # Test parse2plone
 
