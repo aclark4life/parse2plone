@@ -415,15 +415,23 @@ class RemoveBaseTestCase(unittest.TestCase):
     def setUp(self):
         import parse2plone
         self.utils = parse2plone.Utils()
-        self.import_dir = '/var/www/html/'
-        self.num_parts = len(self.import_dir)
+        self.import_dir = 'sample'
+        self.num_parts = len((self.import_dir).split('/'))
+        self.files = ['sample/index.html', 'sample/2000/01/01/foo/index.html',
+            'sample/_illegal_directory/index.html', 'sample/about/index.html',
+            'sample/baz/index.html', 'sample/foo/index.html']
+
+        self.results = {self.import_dir: ['index.html', '2000/01/01/foo/index.html',
+            '_illegal_directory/index.html', 'about/index.html', 'baz/index.html',
+            'foo/index.html']}
 
     def testRemoveBase(self):
         utils = self.utils
         import_dir = self.import_dir
         num_parts = self.num_parts
-        self.assertEqual('/var/www/html',utils._get_base(import_dir, num_parts))
-
+        files = self.files
+        results = self.results
+        self.assertEqual(results, utils._remove_base(files, num_parts, import_dir))
 
 # Test parse2plone
 
