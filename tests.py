@@ -505,19 +505,19 @@ class GetPartsTestCase(unittest.TestCase):
         self.assertEqual(results, utils._get_parts(path))
 
 
-class GetParentPathTestCase(unittest.TestCase):
+class GetParentPartsTestCase(unittest.TestCase):
 
     def setUp(self):
         import parse2plone
         self.utils = parse2plone.Utils()
-        self.path = '/foo/bar/baz'
-        self.parent_path = '/foo/bar'
+        self.path = 'foo/bar/baz'
+        self.parent_parts = ['foo','bar']
 
-    def testGetParts(self):
+    def testGetParentParts(self):
         path = self.path
         utils = self.utils
-        parent_path = self.parent_path
-        self.assertEqual(parent_path, utils._get_parent_path(path))
+        parent_parts = self.parent_parts
+        self.assertEqual(parent_parts, utils._get_parent_parts(path))
 
 
 # Test parse2plone

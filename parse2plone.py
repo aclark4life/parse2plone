@@ -398,7 +398,7 @@ class Utils(object):
     def _get_path(self, parts, i):
         return '/'.join(parts[:i + 1])
 
-    def _get_parent_path(self, path):
+    def _get_parent_parts(self, path):
         return path.split('/')[:-1]
 
     def _is_file(self, obj, extensions):
@@ -634,7 +634,7 @@ class Parse2Plone(object):
 
         for i in range(len(parts)):
             path = utils._get_path(parts, i)
-            parent_path = utils._get_parent_path(path)
+            parent_path = utils._get_parent_parts(path)
             obj = utils._get_obj(path)
             parent = utils._update_parent(parent, '/'.join(parent_path))
             if utils._is_legal(obj):
