@@ -91,7 +91,7 @@ _UNSET_OPTION = ''
 
 
 # Adds "match" feature to ``parse2plone``.
-def match_files(files, base, match):
+def match_files(files, import_dir, match):
     """
     The user may specify a string to match file names against; only content
     from files that match the string will be imported. E.g.
@@ -106,16 +106,16 @@ def match_files(files, base, match):
 
         /var/www/html/2001/01/01/foo/index.html
     """
-    results = {base: []}
-    for f in files[base]:
+    results = {import_dir: []}
+    for f in files[import_dir]:
         for m in match:
             if f.find(m) >= 0:
-                results[base].append(f)
+                results[import_dir].append(f)
     return results
 
 
 # Adds "rename" feature to ``parse2plone``.
-def rename_parts(files, _rename_map, base, rename):
+def rename_parts(files, _rename_map, import_dir, rename):
     """
     This allows the user to specify two paths: old and new (e.g.
     --rename=old:new ).
@@ -137,7 +137,7 @@ def rename_parts(files, _rename_map, base, rename):
         _rename_map{'reverse': {'/var/www/html/new/2000/01/01/foo/index.html':
             '/var/www/html/old/2000/01/01/foo/index.html'}}
     """
-    for f in files[base]:
+    for f in files[import_dir]:
         for path in rename:
             parts = path.split(':')
             old = parts[0]
@@ -149,7 +149,7 @@ def rename_parts(files, _rename_map, base, rename):
 
 
 # Adds "collapse" feature to ``parse2plone``.
-def collapse_parts(object_paths, _collapse_map, base):
+def collapse_parts(object_paths, _collapse_map, import_dir):
     """
     If a path like this is discovered:
 
@@ -172,7 +172,7 @@ def collapse_parts(object_paths, _collapse_map, base):
             '/var/www/html/2000/01/01/foo/index.html'}}
     """
     expr = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
-    for f in object_paths[base]:
+    for f in object_paths[import_dir]:
         result = expr.search(f)
         if result:
             groups = result.groups()
@@ -372,9 +372,6 @@ class Utils(object):
     def _convert_obj_to_path(self, obj):
         return '/'.join(obj.getPhysicalPath())
 
-    def _get_base(self, import_dir, num_parts):
-        return '/'.join(import_dir.split('/')[:num_parts])
-
     def _get_files(self, import_dir):
         results = []
         for path, subdirs, files in os.walk(import_dir):
@@ -434,11 +431,11 @@ class Utils(object):
             results.append(parts)
         return results
 
-    def _remove_base(self, files, num_parts, base):
-        results = {base: []}
+    def _remove_base(self, files, num_parts, import_dir):
+        results = {import_dir: []}
         files = self._remove_parts(files, num_parts)
         for f in files:
-            results[base].append('/'.join(f))
+            results[import_dir].append('/'.join(f))
         return results
 
     def _setup_app(self, app):
@@ -554,7 +551,7 @@ class Utils(object):
 
 
 class Parse2Plone(object):
-    def create_content(self, parent, obj, prefix_path, base, _collapse_map,
+    def create_content(self, parent, obj, prefix_path, import_dir, _collapse_map,
         _rename_map, _replace_types_map):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
@@ -568,20 +565,20 @@ class Parse2Plone(object):
         elif utils._is_file(obj, _SETTINGS['html_extensions']):
             page = self.create_page(parent, obj, _replace_types_map)
             self.set_title(page, obj)
-            self.set_page(page, obj, prefix_path, base, _collapse_map,
+            self.set_page(page, obj, prefix_path, import_dir, _collapse_map,
                 _rename_map)
             _COUNT['pages'] += 1
             commit()
         elif utils._is_file(obj, self.image_extensions):
             image = self.create_image(parent, obj, _replace_types_map)
             self.set_title(image, obj)
-            self.set_image(image, obj, prefix_path, base)
+            self.set_image(image, obj, prefix_path, import_dir)
             _COUNT['images'] += 1
             commit()
         elif utils._is_file(obj, self.file_extensions):
             at_file = self.create_file(parent, obj, _replace_types_map)
             self.set_title(at_file, obj)
-            self.set_file(at_file, obj, prefix_path, base)
+            self.set_file(at_file, obj, prefix_path, import_dir)
             _COUNT['files'] += 1
             commit()
 
@@ -625,7 +622,7 @@ class Parse2Plone(object):
             _LOG.info("publishing page '%s'" % obj)
         return page
 
-    def create_parts(self, parent, parts, base, _collapse_map, _rename_map,
+    def create_parts(self, parent, parts, import_dir, _collapse_map, _rename_map,
         _replace_types_map):
 
         _LOG.info("creating parts for '%s'" % '/'.join(parts))
@@ -644,22 +641,22 @@ class Parse2Plone(object):
                     _LOG.info(
                         "object '%s' does not exist inside '%s'"
                         % (obj, utils._convert_obj_to_path(parent)))
-                    self.create_content(parent, obj, prefix_path, base,
+                    self.create_content(parent, obj, prefix_path, import_dir,
                         _collapse_map, _rename_map, _replace_types_map)
             else:
                 _LOG.info("object '%s' has illegal chars" % obj)
                 break
 
-    def import_files(self, parent, object_paths, base, _collapse_map,
+    def import_files(self, parent, object_paths, import_dir, _collapse_map,
         _rename_map, _replace_types_map):
         utils = Utils()
-        for f in object_paths[base]:
+        for f in object_paths[import_dir]:
             parts = utils._get_parts(f)
             if _SETTINGS['rename'] and f in _rename_map['forward']:
                 parts = _rename_map['forward'][f].split('/')
             if _SETTINGS['collapse'] and f in _collapse_map['forward']:
                 parts = _collapse_map['forward'][f].split('/')
-            self.create_parts(parent, parts, base, _collapse_map, _rename_map,
+            self.create_parts(parent, parts, import_dir, _collapse_map, _rename_map,
                 _replace_types_map)
         results = _COUNT.values()
         return results
@@ -692,28 +689,28 @@ class Parse2Plone(object):
                 results += lxml.etree.tostring(element)
         return results
 
-    def set_image(self, image, obj, prefix_path, base):
-        f = open('/'.join([base, '/'.join(prefix_path), obj]), 'rb')
+    def set_image(self, image, obj, prefix_path, import_dir):
+        f = open('/'.join([import_dir, '/'.join(prefix_path), obj]), 'rb')
         data = f.read()
         f.close()
         image.setImage(data)
 
-    def set_file(self, at_file, obj, prefix_path, base):
-        f = open('/'.join([base, '/'.join(prefix_path), obj]), 'rb')
+    def set_file(self, at_file, obj, prefix_path, import_dir):
+        f = open('/'.join([import_dir, '/'.join(prefix_path), obj]), 'rb')
         data = f.read()
         f.close()
         at_file.setFile(data)
 
-    def set_page(self, page, obj, prefix_path, base, _collapse_map,
+    def set_page(self, page, obj, prefix_path, import_dir, _collapse_map,
         _rename_map):
-        filename = '/'.join([base, '/'.join(prefix_path), obj])
+        filename = '/'.join([import_dir, '/'.join(prefix_path), obj])
         key = '/'.join(prefix_path) + '/' + obj
         if _SETTINGS['rename'] and key in _rename_map['reverse']:
             value = _rename_map['reverse'][key]
-            filename = '/'.join([base, value])
+            filename = '/'.join([import_dir, value])
         if _SETTINGS['collapse'] and obj in _collapse_map['reverse']:
             value = _collapse_map['reverse'][obj]
-            filename = '/'.join([base, value])
+            filename = '/'.join([import_dir, value])
         f = open(filename, 'rb')
         results = ''
         data = f.read()
@@ -847,33 +844,32 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
         files = utils._get_files(import_dir)
         num_parts = len(import_dir.split('/'))
         app = utils._setup_app(app)
-        base = utils._get_base(import_dir, num_parts)
         if utils._check_exists_path(app, path):
             parent = utils._get_parent(app, path)
         else:
             if force:
                 parse2plone.create_parts(app, utils._get_parts(path),
-                    base, _collapse_map, _rename_map, _replace_types_map)
+                    import_dir, _collapse_map, _rename_map, _replace_types_map)
                 parent = utils._get_parent(app, path)
             else:
                 msg = "object in path '%s' does not exist, use --force"
                 msg += " to create"
                 _LOG.error(msg % path)
                 exit(1)
-        object_paths = utils._remove_base(files, num_parts, base)
+        object_paths = utils._remove_base(files, num_parts, import_dir)
         if match:
-            object_paths = match_files(object_paths, base, match)
+            object_paths = match_files(object_paths, import_dir, match)
         if collapse:
-            _collapse_map = collapse_parts(object_paths, _collapse_map, base)
+            _collapse_map = collapse_parts(object_paths, _collapse_map, import_dir)
         if rename:
-            _rename_map = rename_parts(object_paths, _rename_map, base, rename)
+            _rename_map = rename_parts(object_paths, _rename_map, import_dir, rename)
         if replacetypes:
             try:
                 replace_types(replacetypes, _replace_types_map)
             except ValueError:
                 _LOG.error("Can't replace unknown type")
                 exit(1)
-        results = parse2plone.import_files(parent, object_paths, base,
+        results = parse2plone.import_files(parent, object_paths, import_dir,
             _collapse_map, _rename_map, _replace_types_map)
 
     # Print results

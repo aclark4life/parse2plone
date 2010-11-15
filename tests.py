@@ -410,6 +410,21 @@ class ConvertObjToPathTestCase(PloneTestCase.PloneTestCase):
         obj = self.obj
         self.assertEqual(results, utils._convert_obj_to_path(obj))
 
+class RemoveBaseTestCase(unittest.TestCase):
+
+    def setUp(self):
+        import parse2plone
+        self.utils = parse2plone.Utils()
+        self.import_dir = '/var/www/html/'
+        self.num_parts = len(self.import_dir)
+
+    def testRemoveBase(self):
+        utils = self.utils
+        import_dir = self.import_dir
+        num_parts = self.num_parts
+        self.assertEqual('/var/www/html',utils._get_base(import_dir, num_parts))
+
+
 # Test parse2plone
 
 if __name__ == '__main__':
