@@ -5,6 +5,7 @@ from Products.CMFPlone.tests import PloneTestCase
 
 PloneTestCase.setupPloneSite()
 
+
 # Test "rename" feature
 class RenameOldNewTestCase(unittest.TestCase):
 
@@ -200,8 +201,8 @@ class CheckExistsPathTestCase(PloneTestCase.PloneTestCase):
         self.utils = parse2plone.Utils()
         self.path = 'plone/foo'
         self.app = self.utils._setup_app(self.app)
-        self.portal.invokeFactory('Folder','foo')
-        
+        self.portal.invokeFactory('Folder', 'foo')
+
     def testCheckExistsPathTrue(self):
         path = self.path
         self.assertTrue(self.utils._check_exists_path(self.app, path))

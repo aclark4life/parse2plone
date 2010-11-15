@@ -731,7 +731,6 @@ class Parse2Plone(object):
         obj.reindexObject()
 
 
-
 class Recipe(object):
     """zc.buildout recipe"""
     def __init__(self, buildout, name, options):
