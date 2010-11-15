@@ -519,6 +519,43 @@ class GetParentPartsTestCase(unittest.TestCase):
         parent_parts = self.parent_parts
         self.assertEqual(parent_parts, utils._get_parent_parts(path))
 
+class IsFileTestCase(unittest.TestCase):
+
+    def setUp(self):
+        import parse2plone
+        self.utils = parse2plone.Utils()
+        self.html_file = 'index.html'
+        self.image_file = 'foo.png'
+        self.file = 'foo.mp3'
+        self.html_extensions = ['html']
+        self.image_extensions = ['png']
+        self.file_extensions = ['mp3']
+
+    def testIsHTMLFile(self):
+        file = self.html_file
+        utils = self.utils
+        extensions = self.html_extensions
+        self.assertTrue(utils._is_file(file, extensions))
+
+    def testIsImageFile(self):
+        file = self.image_file
+        utils = self.utils
+        extensions = self.image_extensions
+        self.assertTrue(utils._is_file(file, extensions))
+
+    def testIsFile(self):
+        file = self.file
+        utils = self.utils
+        extensions = self.file_extensions
+        self.assertTrue(utils._is_file(file, extensions))
+
+
+
+#    def _is_file(self, obj, extensions):
+#    def _is_folder(self, obj):
+#    def _is_legal(self, obj):
+
+
 
 # Test parse2plone
 
