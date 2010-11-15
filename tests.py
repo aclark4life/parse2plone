@@ -569,11 +569,27 @@ class IsFolderTestCase(unittest.TestCase):
         self.assertFalse(utils._is_folder(folder))
 
 
-#    def _is_legal(self, obj):
+class IsLegalTestCase(unittest.TestCase):
 
+    def setUp(self):
+        import parse2plone
+        self.utils = parse2plone.Utils()
+        self.obj_good = 'foo'
+        self.obj_bad = '_foo'
+
+    def testIsLegalGood(self):
+        utils = self.utils
+        obj = self.obj_good
+        self.assertTrue(utils._is_legal(obj))
+
+    def testIsLegalBad(self):
+        utils = self.utils
+        obj = self.obj_bad
+        self.assertFalse(utils._is_legal(obj))
 
 
 # Test parse2plone
 
 if __name__ == '__main__':
     unittest.main()
+
