@@ -554,6 +554,7 @@ class IsFolderTestCase(unittest.TestCase):
 
     def setUp(self):
         import parse2plone
+        self.utils = parse2plone.Utils()
         self.folder_good = 'foo'
         self.folder_bad = 'foo.bar'
 
@@ -562,7 +563,7 @@ class IsFolderTestCase(unittest.TestCase):
         folder = self.folder_good
         self.assertTrue(utils._is_folder(folder))
 
-    def testIsFolderBad(self) 
+    def testIsFolderBad(self):
         utils = self.utils
         folder = self.folder_bad
         self.assertFalse(utils._is_folder(folder))
