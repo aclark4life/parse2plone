@@ -550,9 +550,24 @@ class IsFileTestCase(unittest.TestCase):
         self.assertTrue(utils._is_file(file, extensions))
 
 
+class IsFolderTestCase(unittest.TestCase):
 
-#    def _is_file(self, obj, extensions):
-#    def _is_folder(self, obj):
+    def setUp(self):
+        import parse2plone
+        self.folder_good = 'foo'
+        self.folder_bad = 'foo.bar'
+
+    def testIsFolderGood(self):
+        utils = self.utils
+        folder = self.folder_good
+        self.assertTrue(utils._is_folder(folder))
+
+    def testIsFolderBad(self) 
+        utils = self.utils
+        folder = self.folder_bad
+        self.assertFalse(utils._is_folder(folder))
+
+
 #    def _is_legal(self, obj):
 
 
