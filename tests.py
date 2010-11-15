@@ -458,6 +458,19 @@ class GetFilesTestCase(unittest.TestCase):
         results = self.results
         self.assertEqual(results, utils._get_files(import_dir))
 
+
+class GetObjTestCase(unittest.TestCase):
+
+    def setUp(self):
+        import parse2plone
+        self.path = '../../sample/foo'
+        self.obj = 'foo'
+
+    def testGetObj(self):
+        path = self.path
+        obj = self.obj
+        self.assertEqual(obj, path)
+
 # Test parse2plone
 
 if __name__ == '__main__':
