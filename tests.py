@@ -1,4 +1,3 @@
-import parse2plone
 import unittest
 
 from Products.CMFPlone.tests import PloneTestCase
@@ -32,6 +31,7 @@ class RenameOldNewTestCase(unittest.TestCase):
         self.recipe_input_after = ['/foo:/bar', '/baz:/qux']
 
     def testRenameOldNew(self):
+        import parse2plone
         rename_map_before = self.rename_map_before
         rename_map_after = self.rename_map_after
         files = self.files
@@ -42,6 +42,7 @@ class RenameOldNewTestCase(unittest.TestCase):
             files, rename_map_before, base, rename))
 
     def testConvertRecipeInputToCSV(self):
+        import parse2plone
         utils = parse2plone.Utils()
         results = []
         recipe_input_before = self.recipe_input_before
@@ -67,6 +68,7 @@ class MatchFilesTestCase(unittest.TestCase):
         ]}
 
     def testMatchFiles(self):
+        import parse2plone
         base = self.base
         files_before = self.files_before
         files_after = self.files_after
@@ -89,6 +91,7 @@ class ReplaceTypesTestCase(unittest.TestCase):
         }
 
     def testReplaceTypes(self):
+        import parse2plone
         map_before = self._replace_types_map_before
         map_after = self._replace_types_map_after
         types = self.replacetypes
@@ -111,6 +114,7 @@ class CollapseTestCase(unittest.TestCase):
         self.object_paths = {self.base: ['2000/01/01/foo/index.html']}
 
     def testCollapse(self):
+        import parse2plone
         self.assertEqual(self.collapse_map_after,
             parse2plone.collapse_parts(
                 self.object_paths,
@@ -136,6 +140,7 @@ class LoggerTestCase(unittest.TestCase):
         self.test_logger.addHandler(outfile)
 
     def testLogger(self):
+        import parse2plone
         logger = parse2plone._setup_logger()
         self.assertTrue(isinstance(logger, self.test_logger.__class__))
 
@@ -144,6 +149,7 @@ class LoggerTestCase(unittest.TestCase):
 class FakeLiteralEvalTestCase(unittest.TestCase):
 
     def setUp(self):
+        import parse2plone
         self.utils = parse2plone.Utils()
 
     def testFakeLiteralEvalTrue(self):
@@ -167,6 +173,7 @@ class FakeLiteralEvalTestCase(unittest.TestCase):
 class CleanPathTestCase(unittest.TestCase):
 
     def setUp(self):
+        import parse2plone
         self.utils = parse2plone.Utils()
 
     def testCleanPath(self):
@@ -178,6 +185,7 @@ class CleanPathTestCase(unittest.TestCase):
 class CheckExistsObjTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
+        import parse2plone
         self.utils = parse2plone.Utils()
         self.app = self.utils._setup_app(self.app)
         self.portal.invokeFactory('Folder', 'foo')
@@ -192,6 +200,7 @@ class CheckExistsObjTestCase(PloneTestCase.PloneTestCase):
 class CheckExistsPathTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
+        import parse2plone
         self.utils = parse2plone.Utils()
         self.path = 'plone/foo'
         self.app = self.utils._setup_app(self.app)
@@ -205,6 +214,7 @@ class CheckExistsPathTestCase(PloneTestCase.PloneTestCase):
 class ConvertStrToCSVTestCase(unittest.TestCase):
 
     def setUp(self):
+        import parse2plone
         self.utils = parse2plone.Utils()
         self.value_before = '\nfoo bar\nbaz qux'
         self.value_after = 'foo:bar,baz:qux'
@@ -218,6 +228,7 @@ class ConvertStrToCSVTestCase(unittest.TestCase):
 
 class ConvertCSVToListTestCase(unittest.TestCase):
     def setUp(self):
+        import parse2plone
         self.utils = parse2plone.Utils()
 
         self.path_before = '/Plone'
@@ -293,6 +304,7 @@ class CreateOptionParserTestCase(unittest.TestCase):
 
     def setUp(self):
         import optparse
+        import parse2plone
 
         _UNSET_OPTION = ''
         self.utils = parse2plone.Utils()
