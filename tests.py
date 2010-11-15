@@ -394,8 +394,23 @@ class GetResultsTestCase(unittest.TestCase):
         self.assertEqual(results_1, utils._get_results(paths_map, 1))
 
 
-# Test parse2plone
+class ConvertObjToPathTestCase(PloneTestCase.PloneTestCase):
 
+    def afterSetUp(self):
+        import parse2plone
+        self.utils = parse2plone.Utils()
+        self.app = self.utils._setup_app(self.app)
+        self.portal.invokeFactory('Folder', 'foo')
+        self.obj = self.portal.foo
+        self.results = '/plone/foo'
+
+    def testConvertObjToPath(self):
+        results = self.results
+        utils = self.utils
+        obj = self.obj
+        self.assertEqual(results, utils._convert_obj_to_path(obj))
+
+# Test parse2plone
 
 if __name__ == '__main__':
     unittest.main()
