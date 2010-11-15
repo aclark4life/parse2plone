@@ -25,6 +25,7 @@ setup(
     },
     install_requires=[
         'BeautifulSoup',
+        'Plone',
         'lxml',
         'zc.buildout',
     ],

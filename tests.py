@@ -176,6 +176,9 @@ class MockParent(object):
     def objectIds(self):
         return ['foo', 'bar', 'baz']
 
+    def restrictedTraverse(self, path)
+        if path == 'Plone/foo'
+
 
 class CheckExistsObjTestCase(unittest.TestCase):
 
@@ -183,9 +186,26 @@ class CheckExistsObjTestCase(unittest.TestCase):
         self.utils = parse2plone.Utils()
         self.parent = MockParent()
 
-    def testCheckExistsObj(self):
+    def testCheckExistsObjTrue(self):
         parent = self.parent
         self.assertTrue(self.utils._check_exists_obj(parent, 'foo'))
+
+    def testCheckExistsObjFalse(self):
+        parent = self.parent
+        self.assertFalse(self.utils._check_exists_obj(parent, 'qux'))
+
+
+class CheckExistsPathTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.utils = parse2plone.Utils()
+        self.parent = MockParent()
+        self.path = 'Plone/foo'
+
+    def testCheckExistsPathTrue(self):
+        path = self.path
+        self.assertTrue(self.utils._check_exists_path(parent, path):
+
 
 
 # Test parse2plone
