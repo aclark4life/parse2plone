@@ -175,24 +175,18 @@ class CleanPathTestCase(unittest.TestCase):
             '/foo/bar/baz/'))
 
 
-class MockParent(object):
-    def objectIds(self):
-        return ['foo', 'bar', 'baz']
+class CheckExistsObjTestCase(PloneTestCase.PloneTestCase):
 
-
-class CheckExistsObjTestCase(unittest.TestCase):
-
-    def setUp(self):
+    def afterSetUp(self):
         self.utils = parse2plone.Utils()
-        self.parent = MockParent()
+        self.app = self.utils._setup_app(self.app)
+        self.portal.invokeFactory('Folder', 'foo')
 
     def testCheckExistsObjTrue(self):
-        parent = self.parent
-        self.assertTrue(self.utils._check_exists_obj(parent, 'foo'))
+        self.assertTrue(self.utils._check_exists_obj(self.portal, 'foo'))
 
     def testCheckExistsObjFalse(self):
-        parent = self.parent
-        self.assertFalse(self.utils._check_exists_obj(parent, 'qux'))
+        self.assertFalse(self.utils._check_exists_obj(self.portal, 'qux'))
 
 
 class CheckExistsPathTestCase(PloneTestCase.PloneTestCase):
