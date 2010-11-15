@@ -355,7 +355,6 @@ class CreateOptionParserTestCase(unittest.TestCase):
             dest='paths',
             help='Specify import_dirs:object_paths (--path will be ignored)')
 
-
     def testCreateOptionParser(self):
         utils = self.utils
         option_parser_test = self.option_parser_test
