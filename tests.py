@@ -648,12 +648,12 @@ class ValidateRecipeArgsTestCase(unittest.TestCase):
     def testValidateRecipeArgsGood(self):
         utils = self.utils
         options = self.options_good
-        self.assertTrue(utils._validate_recipe_args(self, options))
+        self.assertTrue(utils._validate_recipe_args(options))
 
     def testValidateRecipeArgsBad(self):
         utils = self.utils
         options = self.options_bad
-        self.assertFalse(utils._validate_recipe_args(self, options))
+        self.assertFalse(utils._validate_recipe_args(options))
 
 
 
