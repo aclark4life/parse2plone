@@ -619,6 +619,18 @@ class IsLegalTestCase(unittest.TestCase):
         self.assertFalse(utils._is_legal(obj))
 
 
+class SetupAppTestCase(PloneTestCase.PloneTestCase):
+
+    def afterSetUp(self):
+        import parse2plone 
+        self.utils = parse2plone.Utils()
+        self.app = utils._setup_app(self.app)
+
+    def testSetupApp(self):
+        # If we are setup we can do this
+        self.portal.invokeFactory('Folder','foo')
+
+
 # Test parse2plone
 
 if __name__ == '__main__':
