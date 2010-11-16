@@ -345,7 +345,7 @@ Publish newly created content.
 Rename content (see rename_files()).
 
 ``'--replacetypes'``
-*******************
+********************
 
 Customize types (see replace_types() in parse2plone.py).
 

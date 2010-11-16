@@ -2,11 +2,10 @@
 History
 -------
 
-0.9.9 (11/15/2010)
+0.9.9 (11/16/2010)
 ~~~~~~~~~~~~~~~~~~
 
-* Added a large number of tests; performed associated refactoring; now at 50%
-  test coverage
+* Added a large number of tests; performed associated refactoring; 50% test coverage
 
 
 0.9.8 (11/12/2010)
