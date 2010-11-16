@@ -514,40 +514,47 @@ class Utils(object):
             arguments += ", paths='%s'"
         return arguments
 
-    def process_command_line_args(self, options):
+    def process_command_line_args(self, options,
+            path, illegal_chars, html_extensions, image_extensions,
+            file_extensions, target_tags, force, publish, collapse,
+            rename, replacetypes, match, paths):
         """
-        Process command line args; save results in _SETTINGS dict
+        Process command line args
         """
         if options.path is not _UNSET_OPTION:
-            _SETTINGS['path'] = self._clean_path(options.path)
+            path = self._clean_path(options.path)
         if options.illegal_chars is not _UNSET_OPTION:
-            _SETTINGS['illegal_chars'] = options.illegal_chars
+            illegal_chars = options.illegal_chars
         if options.html_extensions is not _UNSET_OPTION:
-            _SETTINGS['html_extensions'] = options.html_extensions
+            html_extensions = options.html_extensions
         if options.image_extensions is not _UNSET_OPTION:
-            _SETTINGS['image_extensions'] = options.image_extensions
+            image_extensions = options.image_extensions
         if options.file_extensions is not _UNSET_OPTION:
-            _SETTINGS['file_extensions'] = options.file_extensions
+            file_extensions = options.file_extensions
         if options.target_tags is not _UNSET_OPTION:
-            _SETTINGS['target_tags'] = options.target_tags
+            target_tags = options.target_tags
         if options.force is not _UNSET_OPTION:
-            _SETTINGS['force'] = options.force
+            force = options.force
         if options.publish is not _UNSET_OPTION:
-            _SETTINGS['publish'] = options.publish
+            publish = options.publish
         if options.collapse is not _UNSET_OPTION:
-            _SETTINGS['collapse'] = options.collapse
+            collapse = options.collapse
         if options.rename is not _UNSET_OPTION:
-            _SETTINGS['rename'] = (options.rename).split(',')
+            rename = (options.rename).split(',')
         else:
-            _SETTINGS['rename'] = None
+            rename = None
         if options.replacetypes is not _UNSET_OPTION:
-            _SETTINGS['replacetypes'] = (options.replacetypes).split(',')
+            replacetypes = (options.replacetypes).split(',')
         else:
-            _SETTINGS['replacetypes'] = None
+            replacetypes = None
         if options.match is not _UNSET_OPTION:
-            _SETTINGS['match'] = (options.match).split(',')
+            match = (options.match).split(',')
         else:
-            _SETTINGS['match'] = None
+            match = None
+
+        return (path, illegal_chars, html_extensions, image_extensions,
+            file_extensions, target_tags, force, publish, collapse,
+            rename, replacetypes, match, paths)
 
     def _validate_recipe_args(self, options):
         for option in options:
@@ -838,7 +845,26 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # Process command line args; save results in _SETTINGS
     option_parser = utils._create_option_parser()
     options, args = option_parser.parse_args()
-    utils.process_command_line_args(options)
+    (path, illegal_chars, html_extensions, image_extensions, file_extensions,
+        target_tags, force, publish, collapse, rename, replacetypes,
+        match, paths) = (utils.process_command_line_args(options,
+            path, illegal_chars, html_extensions, image_extensions,
+            file_extensions, target_tags, force, publish, collapse, rename,
+            replacetypes, match, paths))
+
+    _SETTINGS['path'] = path
+    _SETTINGS['illegal_chars'] = illegal_chars
+    _SETTINGS['html_extensions'] = html_extensions
+    _SETTINGS['image_extensions'] = image_extensions
+    _SETTINGS['file_extensions'] = file_extensions
+    _SETTINGS['target_tags'] = target_tags
+    _SETTINGS['force'] = force
+    _SETTINGS['publish'] = publish
+    _SETTINGS['collapse'] = collapse
+    _SETTINGS['rename'] = rename
+    _SETTINGS['replacetypes'] = replacetypes
+    _SETTINGS['match'] = match
+    _SETTINGS['paths'] = paths
 
     # Process import dir or dirs
     paths_map = []
