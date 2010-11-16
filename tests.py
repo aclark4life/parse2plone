@@ -623,15 +623,18 @@ class SetupAppTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
         import parse2plone 
+    
         self.utils = parse2plone.Utils()
 
     def testSetupApp(self):
         # If we are setup we can do this
         utils = self.utils
-#        self.app = utils._setup_app(self.app)
-        self.portal.invokeFactory('Folder','foo')
-        self.assertTrue('foo' in self.portal.objectIds())
-
+        from Products.CMFCore.exceptions import AccessControl_Unauthorized as Unauthorized
+        self.app = utils._setup_app(self.app)
+        try:
+            self.portal.invokeFactory('Folder','foo')
+        except Unauthorized:
+            self.assertTrue(False)
 
 # Test parse2plone
 
