@@ -551,7 +551,8 @@ class Utils(object):
     def _validate_recipe_args(self, options):
         for option in options:
             if option not in _SETTINGS.keys() and option != 'recipe':
-                raise ValueError("Unknown recipe parameter '%s'." % option)
+                return False
+        return True
 
 
 class Parse2Plone(object):
@@ -748,7 +749,9 @@ class Recipe(object):
 
         utils = Utils()
 
-        utils._validate_recipe_args(self.options)
+        if not utils._validate_recipe_args(self.options):
+            raise ValueError("Unknown recipe parameter '%s'." % option)
+
         arguments = utils.process_recipe_args(self.options)
 
         if not _SETTINGS['paths']:

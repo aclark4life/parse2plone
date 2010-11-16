@@ -636,6 +636,27 @@ class SetupAppTestCase(PloneTestCase.PloneTestCase):
         except Unauthorized:
             self.fail()
 
+
+class ValidateRecipeArgsTestCase(unittest.TestCase):
+
+    def setUp(self):
+        import parse2plone
+        self.utils = parse2plone.Utils()
+        self.options_good = ['path']
+        self.options_bad = ['foo']
+
+    def testValidateRecipeArgsGood(self):
+        utils = self.utils
+        options = self.options_good
+        self.assertTrue(utils._validate_recipe_args(self, options))
+
+    def testValidateRecipeArgsBad(self):
+        utils = self.utils
+        options = self.options_bad
+        self.assertFalse(utils._validate_recipe_args(self, options))
+
+
+
 # Test parse2plone
 
 if __name__ == '__main__':
