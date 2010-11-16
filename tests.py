@@ -624,11 +624,13 @@ class SetupAppTestCase(PloneTestCase.PloneTestCase):
     def afterSetUp(self):
         import parse2plone 
         self.utils = parse2plone.Utils()
-        self.app = utils._setup_app(self.app)
 
     def testSetupApp(self):
         # If we are setup we can do this
+        utils = self.utils
+#        self.app = utils._setup_app(self.app)
         self.portal.invokeFactory('Folder','foo')
+        self.assertTrue('foo' in self.portal.objectIds())
 
 
 # Test parse2plone
