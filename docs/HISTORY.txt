@@ -7,7 +7,6 @@ History
 
 * Added a large number of tests; performed associated refactoring; 50% test coverage
 
-
 0.9.8 (11/12/2010)
 ~~~~~~~~~~~~~~~~~~
 
