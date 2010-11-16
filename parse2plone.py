@@ -750,7 +750,8 @@ class Recipe(object):
         utils = Utils()
 
         if not utils._validate_recipe_args(self.options):
-            raise ValueError("Unknown recipe parameter '%s'." % option)
+            raise ValueError("Unknown recipe parameter in '%s'." %
+                self.options)
 
         arguments = utils.process_recipe_args(self.options)
 

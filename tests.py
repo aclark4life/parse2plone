@@ -500,6 +500,7 @@ class GetObjTestCase(unittest.TestCase):
         utils = self.utils
         self.assertEqual(obj, utils._get_obj(path))
 
+
 class UpdateParentTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
@@ -519,7 +520,9 @@ class UpdateParentTestCase(PloneTestCase.PloneTestCase):
         obj = self.obj
         app = self.app
         parent_path = self.parent_path
-        self.assertEqual(self.obj, utils._update_parent(self.portal, parent_path))
+        self.assertEqual(self.obj, utils._update_parent(self.portal,
+            parent_path))
+
 
 class GetPartsTestCase(unittest.TestCase):
 
@@ -527,7 +530,7 @@ class GetPartsTestCase(unittest.TestCase):
         import parse2plone
         self.utils = parse2plone.Utils()
         self.path = '/foo/bar/baz'
-        self.results = ['foo','bar','baz']
+        self.results = ['foo', 'bar', 'baz']
 
     def testGetParts(self):
         path = self.path
@@ -542,13 +545,14 @@ class GetParentPartsTestCase(unittest.TestCase):
         import parse2plone
         self.utils = parse2plone.Utils()
         self.path = 'foo/bar/baz'
-        self.parent_parts = ['foo','bar']
+        self.parent_parts = ['foo', 'bar']
 
     def testGetParentParts(self):
         path = self.path
         utils = self.utils
         parent_parts = self.parent_parts
         self.assertEqual(parent_parts, utils._get_parent_parts(path))
+
 
 class IsFileTestCase(unittest.TestCase):
 
@@ -622,18 +626,17 @@ class IsLegalTestCase(unittest.TestCase):
 class SetupAppTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
-        import parse2plone 
-    
+        import parse2plone
         self.utils = parse2plone.Utils()
 
     def testSetupApp(self):
         # If we are setup we can do this
         utils = self.utils
-        from Products.CMFCore.exceptions import AccessControl_Unauthorized as Unauthorized
+        from Products.CMFCore.exceptions import AccessControl_Unauthorized
         self.app = utils._setup_app(self.app)
         try:
-            self.portal.invokeFactory('Folder','foo')
-        except Unauthorized:
+            self.portal.invokeFactory('Folder', 'foo')
+        except AccessControl_Unauthorized:
             self.fail()
 
 
@@ -655,10 +658,7 @@ class ValidateRecipeArgsTestCase(unittest.TestCase):
         options = self.options_bad
         self.assertFalse(utils._validate_recipe_args(options))
 
-
-
 # Test parse2plone
 
 if __name__ == '__main__':
     unittest.main()
-
