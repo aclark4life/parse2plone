@@ -308,9 +308,24 @@ class ProcessRecipeArgsTestCase(unittest.TestCase):
         self.assertEqual(paths, self.paths_after)
 
 class ProcessCommandLineArgsTestCase(unittest.TestCase):
+
     def setUp(self):
         import parse2plone
         self.utils = parse2plone.Utils()
+
+        self.path = 'Plone'
+        self.illegal_chars = ['_', '.']
+        self.html_extensions = ['html']
+        self.image_extensions = ['gif', 'jpg', 'jpeg', 'png']
+        self.file_extensions = ['mp3']
+        self.target_tags = [' a', 'div', 'h1', 'h2', 'p']
+        self.force = False    
+        self.publish = False  
+        self.collapse = False 
+        self.rename = ''
+        self.replacetypes = ''
+        self.match = ''
+        self.paths = ''
 
         self.path_before = '/Plone'
         self.illegal_chars_before = '_,.'
@@ -321,50 +336,37 @@ class ProcessCommandLineArgsTestCase(unittest.TestCase):
         self.force_before = False
         self.publish_before = False
         self.collapse_before = False
-        self.rename_before = 'foo:bar,baz:qux'
-        self.replacetypes_before = 'Document:MyDocument,Folder:MyFolder'
-        self.match_before = '2000'
-        self.paths_before = 'sample:/Plone/sample,sample2:/Plone/sample2'
+        self.rename_before = None
+        self.replacetypes_before = None
+        self.match_before = None
+        self.paths_before = None
 
-        self.path_after = '/Plone'
-        self.illegal_chars_after = ['_', '.']
-        self.html_extensions_after = ['html']
-        self.image_extensions_after = ['gif', 'jpg', 'jpeg', 'png']
-        self.file_extensions_after = ['mp3']
-        self.target_tags_after = ['a', 'div', 'h1', 'h2', 'p']
-        self.force_after = False
-        self.publish_after = False
-        self.collapse_after = False
-        self.rename_after = ['foo:bar', 'baz:qux']
-        self.replacetypes_after = ['Document:MyDocument', 'Folder:MyFolder']
-        self.match_after = ['2000']
-        self.paths_after = 'sample:/Plone/sample,sample2:/Plone/sample2'
+        self.path_after = 'Plone'
+        self.illegal_chars_after =  ['_', '.']
+        self.html_extensions_after  = ['html']
+        self.image_extensions_after  = ['gif', 'jpg', 'jpeg', 'png']
+        self.file_extensions_after  = ['mp3']
+        self.target_tags_after = [' a', 'div', 'h1', 'h2', 'p']
+        self.force_after = False    
+        self.publish_after = False  
+        self.collapse_after = False 
+        self.rename_after = None
+        self.replacetypes_after = None
+        self.match_after = None
+        self.paths_after = None
 
-    def testProcessRecipeArgs(self):
+    def testProcessCommandLineArgs(self):
         utils = self.utils
-
-        path_before = self.path_before
-        illegal_chars_before = self.illegal_chars_before
-        html_extensions_before = self.html_extensions_before
-        image_extensions_before = self.image_extensions_before
-        file_extensions_before = self.file_extensions_before
-        target_tags_before = self.target_tags_before
-        force_before = self.force_before
-        publish_before = self.publish_before
-        collapse_before = self.collapse_before
-        rename_before = self.rename_before
-        replacetypes_before = self.replacetypes_before
-        match_before = self.match_before
-        paths_before = self.paths_before
-
-        (path, illegal_chars, html_extensions, image_extensions, file_extensions,
-        target_tags, force, publish, collapse, rename, replacetypes,
-        match, paths) = (
-            utils.process_recipe_args(path_before, illegal_chars_before,
-            html_extensions_before, image_extensions_before,
-            file_extensions_before, target_tags_before,
-            force_before, publish_before, collapse_before, rename_before,
-            replacetypes_before, match_before, paths_before))
+        (path, illegal_chars, html_extensions, image_extensions,
+        file_extensions, target_tags, force, publish, collapse,
+        rename, replacetypes, match, paths) = (
+            utils.process_command_line_args(self, self.path_before,
+                self.illegal_chars_before, self.html_extensions_before,
+                self.image_extensions_before, self.file_extensions_before,
+                self.target_tags_before, self.force_before,
+                self.publish_before, self.collapse_before,
+                self.rename_before, self.replacetypes_before,
+                self.match_before, self.paths_before))
 
         self.assertEqual(path, self.path_after)
         self.assertEqual(illegal_chars, self.illegal_chars_after)
