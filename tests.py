@@ -284,9 +284,9 @@ class ProcessRecipeArgsTestCase(unittest.TestCase):
         match_before = self.match_before
         paths_before = self.paths_before
 
-        (path, illegal_chars, html_extensions, image_extensions, file_extensions,
-        target_tags, force, publish, collapse, rename, replacetypes,
-        match, paths) = (
+        (path, illegal_chars, html_extensions, image_extensions,
+        file_extensions, target_tags, force, publish, collapse, rename,
+        replacetypes, match, paths) = (
             utils.process_recipe_args(path_before, illegal_chars_before,
             html_extensions_before, image_extensions_before,
             file_extensions_before, target_tags_before,
@@ -307,6 +307,7 @@ class ProcessRecipeArgsTestCase(unittest.TestCase):
         self.assertEqual(match, self.match_after)
         self.assertEqual(paths, self.paths_after)
 
+
 class ProcessCommandLineArgsTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -319,9 +320,9 @@ class ProcessCommandLineArgsTestCase(unittest.TestCase):
         self.image_extensions = ['gif', 'jpg', 'jpeg', 'png']
         self.file_extensions = ['mp3']
         self.target_tags = [' a', 'div', 'h1', 'h2', 'p']
-        self.force = False    
-        self.publish = False  
-        self.collapse = False 
+        self.force = False
+        self.publish = False
+        self.collapse = False
         self.rename = ''
         self.replacetypes = ''
         self.match = ''
@@ -342,14 +343,14 @@ class ProcessCommandLineArgsTestCase(unittest.TestCase):
         self.paths_before = None
 
         self.path_after = 'Plone'
-        self.illegal_chars_after =  ['_', '.']
-        self.html_extensions_after  = ['html']
-        self.image_extensions_after  = ['gif', 'jpg', 'jpeg', 'png']
-        self.file_extensions_after  = ['mp3']
+        self.illegal_chars_after = ['_', '.']
+        self.html_extensions_after = ['html']
+        self.image_extensions_after = ['gif', 'jpg', 'jpeg', 'png']
+        self.file_extensions_after = ['mp3']
         self.target_tags_after = [' a', 'div', 'h1', 'h2', 'p']
-        self.force_after = False    
-        self.publish_after = False  
-        self.collapse_after = False 
+        self.force_after = False
+        self.publish_after = False
+        self.collapse_after = False
         self.rename_after = None
         self.replacetypes_after = None
         self.match_after = None
@@ -592,8 +593,6 @@ class UpdateParentTestCase(PloneTestCase.PloneTestCase):
 
     def testUpdateParent(self):
         utils = self.utils
-        obj = self.obj
-        app = self.app
         parent_path = self.parent_path
         self.assertEqual(self.obj, utils._update_parent(self.portal,
             parent_path))
