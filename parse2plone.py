@@ -248,12 +248,13 @@ class Utils(object):
             c += 1
         return results
 
-    def _convert_csv_to_list(self, illegal_chars, html_extensions,
-        image_extensions, file_extensions, target_tags, path, force,
+    def process_recipe_args(self, path, illegal_chars, html_extensions,
+        image_extensions, file_extensions, target_tags, force,
         publish, collapse, rename, replacetypes, match, paths):
         """
         Convert recipe parameter values
         """
+        path = path
         illegal_chars = illegal_chars.split(',')
         html_extensions = html_extensions.split(',')
         image_extensions = image_extensions.split(',')
@@ -277,8 +278,8 @@ class Utils(object):
         else:
             match = match
 
-        return (illegal_chars, html_extensions,
-        image_extensions, file_extensions, target_tags, path, force,
+        return (path, illegal_chars, html_extensions,
+        image_extensions, file_extensions, target_tags, force,
         publish, collapse, rename, replacetypes, match, paths)
 
     def _create_option_parser(self):
@@ -452,7 +453,7 @@ class Utils(object):
              self._convert_obj_to_path(updated_parent)))
         return updated_parent
 
-    def process_recipe_args(self, options):
+    def process_config_params(self, options):
         """
         Convert most recipe parameter values to csv; save in _SETTINGS dict
         """
@@ -753,7 +754,7 @@ class Recipe(object):
             raise ValueError("Unknown recipe parameter in '%s'." %
                 self.options)
 
-        arguments = utils.process_recipe_args(self.options)
+        arguments = utils.process_config_params(self.options)
 
         if not _SETTINGS['paths']:
             # if the user does not set the paths parameter (which by default
@@ -813,11 +814,11 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
 
     # Convert arg values passed in to main from csv to list;
     # save results in _SETTINGS
-    (illegal_chars, html_extensions, image_extensions, file_extensions,
-        target_tags, path, force, publish, collapse, rename, replacetypes,
+    (path, illegal_chars, html_extensions, image_extensions, file_extensions,
+        target_tags, force, publish, collapse, rename, replacetypes,
         match, paths) = (
-        utils._convert_csv_to_list(illegal_chars, html_extensions,
-        image_extensions, file_extensions, target_tags, path, force, publish,
+        utils.process_recipe_args(path, illegal_chars, html_extensions,
+        image_extensions, file_extensions, target_tags, force, publish,
         collapse, rename, replacetypes, match, paths))
 
     _SETTINGS['path'] = path

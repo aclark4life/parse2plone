@@ -284,12 +284,12 @@ class ConvertCSVToListTestCase(unittest.TestCase):
         match_before = self.match_before
         paths_before = self.paths_before
 
-        (illegal_chars, html_extensions, image_extensions, file_extensions,
-        target_tags, path, force, publish, collapse, rename, replacetypes,
+        (path, illegal_chars, html_extensions, image_extensions, file_extensions,
+        target_tags, force, publish, collapse, rename, replacetypes,
         match, paths) = (
-            utils._convert_csv_to_list(illegal_chars_before,
+            utils.process_recipe_args(path_before, illegal_chars_before,
             html_extensions_before, image_extensions_before,
-            file_extensions_before, target_tags_before, path_before,
+            file_extensions_before, target_tags_before,
             force_before, publish_before, collapse_before, rename_before,
             replacetypes_before, match_before, paths_before))
 
