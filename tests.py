@@ -634,7 +634,7 @@ class SetupAppTestCase(PloneTestCase.PloneTestCase):
         try:
             self.portal.invokeFactory('Folder','foo')
         except Unauthorized:
-            self.assertTrue(False)
+            self.fail()
 
 # Test parse2plone
 
