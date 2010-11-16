@@ -186,8 +186,12 @@ class CheckExistsObjTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
         import parse2plone
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SpecialUsers import system
+        from Testing.makerequest import makerequest
+        self.app = makerequest(self.app)
+        newSecurityManager(None, system)
         self.utils = parse2plone.Utils()
-        self.app = self.utils._setup_app(self.app)
         self.portal.invokeFactory('Folder', 'foo')
 
     def testCheckExistsObjTrue(self):
@@ -201,9 +205,13 @@ class CheckExistsPathTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
         import parse2plone
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SpecialUsers import system
+        from Testing.makerequest import makerequest
+        self.app = makerequest(self.app)
+        newSecurityManager(None, system)
         self.utils = parse2plone.Utils()
         self.path = 'plone/foo'
-        self.app = self.utils._setup_app(self.app)
         self.portal.invokeFactory('Folder', 'foo')
 
     def testCheckExistsPathTrue(self):
@@ -399,8 +407,12 @@ class ConvertObjToPathTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
         import parse2plone
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SpecialUsers import system
+        from Testing.makerequest import makerequest
+        self.app = makerequest(self.app)
+        newSecurityManager(None, system)
         self.utils = parse2plone.Utils()
-        self.app = self.utils._setup_app(self.app)
         self.portal.invokeFactory('Folder', 'foo')
         self.obj = self.portal.foo
         self.results = '/plone/foo'
@@ -492,8 +504,12 @@ class UpdateParentTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
         import parse2plone
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SpecialUsers import system
+        from Testing.makerequest import makerequest
+        self.app = makerequest(self.app)
+        newSecurityManager(None, system)
         self.utils = parse2plone.Utils()
-        self.app = self.utils._setup_app(self.app)
         self.portal.invokeFactory('Folder', 'foo')
         self.obj = self.portal.foo
         self.parent_path = '/plone/foo/'
