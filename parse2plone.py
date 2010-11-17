@@ -102,11 +102,18 @@ def create_spreadsheet(page, obj, parent_path, import_dir):
     http://localhost:8080/Plone/foo will be created as a page, with the
     contents of the spreadsheet in an HTML table.
     """
+    import xlrd
     filename = '/'.join([import_dir, '/'.join(parent_path), obj])
-    f = open(filename, 'rb')
-    data = f.read()
-    f.close()
-    page.setText(data)
+    results = '<table>'
+    wb = xlrd.open_workbook(filename) 
+    for sheet in wb.sheets():
+        for row in range(sheet.nrows):
+            results += '<tr>'
+            for col in sheet.row(row):
+                results += '<td>%s</td>' % col.value
+            results += '</tr>'
+    results += '</table>'
+    page.setText(results)
 
 
 # Adds "match" feature to ``parse2plone``.
@@ -628,11 +635,15 @@ class Parse2Plone(object):
             else:
                 # Try to import the contents of the spreadsheet
                 if obj.endswith('.xls'):
-                    page = self.create_page(parent, utils._remove_ext(obj), _replace_types_map)
-                    self.set_title(page, utils._remove_ext(obj))
-                    create_spreadsheet(page, obj, parent_path, import_dir)
-                    _COUNT['files'] += 1
-                    commit()
+                    if not utils._check_exists_obj(utils._remove_ext(obj)):
+                        page = self.create_page(parent, utils._remove_ext(obj), _replace_types_map)
+                        self.set_title(page, utils._remove_ext(obj))
+                        create_spreadsheet(page, obj, parent_path, import_dir)
+                        _COUNT['files'] += 1
+                        commit()
+                    else:
+                        _LOG.info("object '%s' exists inside '%s'" % (
+                            obj, utils._convert_obj_to_path(parent)))
                 else:
                     msg = "you specified --create-spreadsheet but '%s' is not"
                     msg += " a spreadhseet"
