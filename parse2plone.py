@@ -467,8 +467,9 @@ class Utils(object):
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SpecialUsers import system
         from Testing.makerequest import makerequest
+#        newSecurityManager(None, system)
+        newSecurityManager(None, app.acl_users.getUser('admin'))
         app = makerequest(app)
-        newSecurityManager(None, system)
         return app
 
     def _update_parent(self, current_parent, parent_path):
@@ -608,13 +609,13 @@ class Parse2Plone(object):
                 _rename_map)
             _COUNT['pages'] += 1
             commit()
-        elif utils._is_file(obj, self.image_extensions):
+        elif utils._is_file(obj, _SETTINGS['image_extensions']):
             image = self.create_image(parent, obj, _replace_types_map)
             self.set_title(image, obj)
             self.set_image(image, obj, parent_path, import_dir)
             _COUNT['images'] += 1
             commit()
-        elif utils._is_file(obj, self.file_extensions):
+        elif utils._is_file(obj, _SETTINGS['file_extensions']):
             if not _SETTINGS['create_spreadsheet']:
                 at_file = self.create_file(parent, obj, _replace_types_map)
                 self.set_title(at_file, obj)
@@ -636,14 +637,19 @@ class Parse2Plone(object):
 
     def create_folder(self, parent, obj, _replace_types_map):
         utils = Utils()
-        _LOG.info("creating folder '%s' inside parent folder '%s'" % (
-            obj, utils._convert_obj_to_path(parent)))
-        folder_type = _replace_types_map['Folder']
-        parent.invokeFactory(folder_type, obj)
-        folder = parent[obj]
-        if _SETTINGS['publish']:
-            self.set_state(folder)
-            _LOG.info("publishing folder '%s'" % obj)
+        # XXX Need a better check
+        if not obj == 'Plone':
+            _LOG.info("creating folder '%s' inside parent folder '%s'" % (
+                obj, utils._convert_obj_to_path(parent)))
+            folder_type = _replace_types_map['Folder']
+            parent.invokeFactory(folder_type, obj)
+            folder = parent[obj]
+            if _SETTINGS['publish']:
+                self.set_state(folder)
+                _LOG.info("publishing folder '%s'" % obj)
+        else:
+            self.create_plonesite(parent, obj)
+            folder = parent[obj]
         return folder
 
     def create_file(self, parent, obj, _replace_types_map):
@@ -698,6 +704,13 @@ class Parse2Plone(object):
             else:
                 _LOG.info("object '%s' has illegal chars" % obj)
                 break
+
+    def create_plonesite(self, parent, obj):
+        utils = Utils()
+        from Products.CMFPlone.factory import addPloneSite
+        addPloneSite(parent, obj)
+        _LOG.info("creating plone site '%s' inside parent folder '%s'" % (
+            obj, utils._convert_obj_to_path(parent)))
 
     def import_files(self, parent, object_paths, import_dir, _collapse_map,
         _rename_map, _replace_types_map):
