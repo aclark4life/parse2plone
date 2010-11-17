@@ -93,22 +93,20 @@ _UNSET_OPTION = ''
 # Adds "create spreadsheet" feature to ``parse2plone``.
 def create_spreadsheet(page, obj, parent_path, import_dir):
     """
-    You can optionally tell ``parse2plone`` to try and import the contents of any
-    spreadsheets it finds, by doing this::
+    You can optionally tell ``parse2plone`` to try and import the contents of
+    any spreadsheets it finds, by doing this::
 
         $ bin/plone run bin/import --create-spreadsheet /var/www/html
 
-    If /var/www/html/foo.xls exists and has content, then a 
-    http://localhost:8080/Plone/foo will be created as a page, with the contents
-    of the spreadsheet in an HTML table.
+    If /var/www/html/foo.xls exists and has content, then a
+    http://localhost:8080/Plone/foo will be created as a page, with the
+    contents of the spreadsheet in an HTML table.
     """
     filename = '/'.join([import_dir, '/'.join(parent_path), obj])
     f = open(filename, 'rb')
-    results = ''
     data = f.read()
     f.close()
     page.setText(data)
-    
 
 
 # Adds "match" feature to ``parse2plone``.
@@ -497,7 +495,8 @@ class Utils(object):
                     'image_extensions', 'file_extensions', 'target_tags'):
                     _SETTINGS[option] = ', '.join(re.split('\s+',
                         options[option]))
-                elif option in ('force', 'publish', 'collapse', 'create_spreadsheet'):
+                elif option in ('force', 'publish', 'collapse',
+                    'create_spreadsheet'):
                     _SETTINGS[option] = self._fake_literal_eval(
                         options[option].capitalize())
                 else:
@@ -632,10 +631,10 @@ class Parse2Plone(object):
                     _COUNT['files'] += 1
                     commit()
                 else:
-                    msg = "you specified --create-spreadsheet but '%s' is not a spreadhseet"
+                    msg = "you specified --create-spreadsheet but '%s' is not"
+                    msg += " a spreadhseet"
                     _LOG.error(msg % obj)
                     exit(1)
-                
 
     def create_folder(self, parent, obj, _replace_types_map):
         utils = Utils()

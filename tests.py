@@ -390,7 +390,6 @@ class CreateOptionParserTestCase(unittest.TestCase):
         import optparse
         import parse2plone
 
-        _UNSET_OPTION = ''
         self.utils = parse2plone.Utils()
 
         self.option_parser_test = optparse.OptionParser()
@@ -408,7 +407,6 @@ class CreateOptionParserTestCase(unittest.TestCase):
         self.option_parser_test.add_option('--match')
         self.option_parser_test.add_option('--paths')
         self.option_parser_test.add_option('--create-spreadsheet')
-
 
     def testCreateOptionParser(self):
         utils = self.utils
