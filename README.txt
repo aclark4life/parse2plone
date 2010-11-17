@@ -276,7 +276,7 @@ Instead of accepting the default ``parse2plone`` behaviour, in your
     image_extensions = png
     target_tags = p
 
-This will configure ``parse2plone`` to (only) import content *from*:
+This will configure ``parse2plone`` to (only) import content from:
 
 * Images ending in ``.png``
 * HTML files ending in ``.htm``
@@ -396,7 +396,7 @@ may specify the following::
     $ bin/plone run bin/import /path/to/files -p /Plone/foo --html-extensions=html \
         --image-extensions=png --target-tags=p
 
-This will configure ``parse2plone`` to (only) import content *from*:
+This will configure ``parse2plone`` to (only) import content from:
 
 * Images ending in ``.png``
 * HTML files ending in ``.htm``
