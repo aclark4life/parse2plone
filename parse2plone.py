@@ -851,7 +851,7 @@ class Recipe(object):
 def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
     force=False, publish=False, collapse=False, rename=None, replacetypes=None,
-    match=None, paths=None):
+    match=None, paths=None, create_spreadsheet=None):
 
     _rename_map = {'forward': {}, 'reverse': {}}
     _collapse_map = {'forward': {}, 'reverse': {}}
