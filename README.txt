@@ -39,7 +39,7 @@ here are this recipe's options::
     illegal_chars = _ .
     html_extensions = html
     image_extensions = gif jpg jpeg png
-    file_extensions = mp3
+    file_extensions = mp3 xls
     target_tags = a div h1 h2 p
    
     # additional bells & whistles
@@ -194,68 +194,73 @@ the ``parse2plone`` recipe section.
 
 Options
 '''''''
-+---------------------+-------------+----------------------------------------+
-| **Parameter**       | **Default** | **Description**                        |
-|                     | **value**   |                                        |
-+---------------------+-------------+----------------------------------------+
-| ``path``            | /Plone      | Specify an alternate location in the   |
-|                     |             | database for the import to occur.      |
-+---------------------+-------------+----------------------------------------+
-| ``illegal_chars``   | _ .         | Specify illegal characters.            |
-|                     |             | ``parse2plone`` will ignore files that |
-|                     |             | contain these characters.              |
-+---------------------+-------------+----------------------------------------+
-| ``html_extensions`` | html        | Specify HTML file extensions.          |
-|                     |             | ``parse2plone`` will import HTML files |
-|                     |             | with these extensions                  |
-+---------------------+-------------+----------------------------------------+
-| ``image_extensions``| png, gif,   | Specify image file extensions.         |
-|                     | jpg, jpeg,  | ``parse2plone`` will import image files|
-|                     |             | with these extensions.                 |
-+---------------------+-------------+----------------------------------------+
-| ``file_extensions`` | mp3         | Specify image file extensions.         |
-|                     |             | ``parse2plone`` will import files with |
-|                     |             | with these extensions.                 |
-+---------------------+-------------+----------------------------------------+
-| ``target_tags``     | a h1 h2 p   | Specify target tags. ``parse2plone``   |
-|                     |             | will parse the contents of HTML tags   |
-|                     |             | listed. If any tag is provided as an   |
-|                     |             | XPath expression (any expression       |
-|                     |             | begining with /) the matching elements |
-|                     |             | will first be extracted from the root  |
-|                     |             | document.  Selections for the contents |
-|                     |             | of other tags will then be performed   |
-|                     |             | only on the document subset.           |
-|                     |             | If only XPath expressions are given,   |
-|                     |             | then the entire subtree of the matched |
-|                     |             | elements are returned (including HTML) |
-+---------------------+-------------+----------------------------------------+
-| ``force``           | false       | Force create folders that do not exist.|
-|                     |             | For example, if you do                 |
-|                     |             | --path=/Plone/foo and foo does not     |
-|                     |             | exist, you will get an error message.  |
-|                     |             | Use --force to tell ``parse2plone`` to |
-|                     |             | create it.                             |
-+---------------------+-------------+----------------------------------------+
-| ``publish``         | false       | Publish newly created content.         |
-+---------------------+-------------+----------------------------------------+
-| ``collapse``        | false       | "collapse" content. (see               |
-|                     |             | collapse_parts() in parse2plone.py)    |
-+---------------------+-------------+----------------------------------------+
-| ``rename``          |             | Rename content. (see rename_parts()    |
-|                     |             | in parse2plone.py                      | 
-+---------------------+-------------+----------------------------------------+
-| ``replacetypes``    |             | Use custom types. (see replace_types())|
-+---------------------+-------------+----------------------------------------+
-| ``match``           |             | Match files. (see match_files())       |
-+---------------------+-------------+----------------------------------------+
-| ``paths``           |             | Specify a series of locations on the   |
-|                     |             | filesystem, with corresponding         |
-|                     |             | locations in the database for imports, |
-|                     |             | with syntax:                           |
-|                     |             | --paths=import_dirs:object_paths       |
-|                     |             | (--path will be ignored)               |
-+---------------------+-------------+----------------------------------------+
++----------------------+------------+----------------------------------------+
+| **Parameter**        |**Default** | **Description**                        |
+|                      |**value**   |                                        |
++----------------------+------------+----------------------------------------+
+| ``path``             |/Plone      | Specify an alternate location in the   |
+|                      |            | database for the import to occur.      |
++----------------------+------------+----------------------------------------+
+| ``illegal_chars``    |_ .         | Specify illegal characters.            |
+|                      |            | ``parse2plone`` will ignore files that |
+|                      |            | contain these characters.              |
++----------------------+------------+----------------------------------------+
+| ``html_extensions``  |html        | Specify HTML file extensions.          |
+|                      |            | ``parse2plone`` will import HTML files |
+|                      |            | with these extensions                  |
++----------------------+------------+----------------------------------------+
+| ``image_extensions`` |png, gif,   | Specify image file extensions.         |
+|                      |jpg, jpeg,  | ``parse2plone`` will import image files|
+|                      |            | with these extensions.                 |
++----------------------+------------+----------------------------------------+
+| ``file_extensions``  |mp3, xls    | Specify image file extensions.         |
+|                      |            | ``parse2plone`` will import files with |
+|                      |            | with these extensions as files in Plone|
+|                      |            | (unless you configure                  |
+|                      |            | create_spreadsheet=true, see below)    |
++----------------------+------------+----------------------------------------+
+| ``target_tags``      |a h1 h2 p   | Specify target tags. ``parse2plone``   |
+|                      |            | will parse the contents of HTML tags   |
+|                      |            | listed. If any tag is provided as an   |
+|                      |            | XPath expression (any expression       |
+|                      |            | begining with /) the matching elements |
+|                      |            | will first be extracted from the root  |
+|                      |            | document.  Selections for the contents |
+|                      |            | of other tags will then be performed   |
+|                      |            | only on the document subset.           |
+|                      |            | If only XPath expressions are given,   |
+|                      |            | then the entire subtree of the matched |
+|                      |            | elements are returned (including HTML) |
++----------------------+------------+----------------------------------------+
+| ``force``            |false       | Force create folders that do not exist.|
+|                      |            | For example, if you do                 |
+|                      |            | --path=/Plone/foo and foo does not     |
+|                      |            | exist, you will get an error message.  |
+|                      |            | Use --force to tell ``parse2plone`` to |
+|                      |            | create it.                             |
++----------------------+------------+----------------------------------------+
+| ``publish``          |false       | Publish newly created content.         |
++----------------------+------------+----------------------------------------+
+| ``collapse``         |false       | "collapse" content. (see               |
+|                      |            | collapse_parts() in parse2plone.py)    |
++----------------------+------------+----------------------------------------+
+| ``rename``           |            | Rename content. (see rename_parts()    |
+|                      |            | in parse2plone.py                      | 
++----------------------+------------+----------------------------------------+
+| ``replacetypes``     |            | Use custom types. (see replace_types())|
++----------------------+------------+----------------------------------------+
+| ``match``            |            | Match files. (see match_files())       |
++----------------------+------------+----------------------------------------+
+| ``paths``            |            | Specify a series of locations on the   |
+|                      |            | filesystem, with corresponding         |
+|                      |            | locations in the database for imports, |
+|                      |            | with syntax:                           |
+|                      |            | --paths=import_dirs:object_paths       |
+|                      |            | (--path will be ignored)               |
++----------------------+------------+----------------------------------------+
+|``create_spreadsheet``| false      | Create "spreadsheets". (see            |
+|                      |            | create_spreadsheet() in parse2plone.py)|
++----------------------+------------+----------------------------------------+
 
 Example
 '''''''
@@ -337,7 +342,7 @@ Publish newly created content.
 ``'--collapse'``
 ****************
 
-"collapse" content (see collapse_parts()).
+"collapse" content (see collapse_parts() in parse2plone.py).
 
 ``'--rename'``
 ***************
@@ -352,7 +357,7 @@ Customize types (see replace_types() in parse2plone.py).
 ``'--match'``
 ****************
 
-Match files (see match_files()).
+Match files (see match_files() parse2plone.py).
 
 ``'--paths'``
 *************
@@ -360,6 +365,18 @@ Match files (see match_files()).
 You can specify a series of import paths and corresponding object paths::
 
     $ bin/plone run bin/import --paths=sample:Plone/sample,sample2:Plone/sample2
+
+``'--create-spreadsheet'``
+*************
+
+You can optionally tell ``parse2plone`` to try and import the contents of any
+spreadsheets it finds, by doing this::
+
+    $ bin/plone run bin/import --create-spreadsheet /var/www/html
+
+If /var/www/html/foo.xls exists and has content, then a 
+http://localhost:8080/Plone/foo will be created as a page, with the contents
+of the spreadsheet in an HTML table.
 
 ``'--help'``
 ************

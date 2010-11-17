@@ -66,6 +66,7 @@ _SETTINGS = {
     'replacetypes': None,
     'match': None,
     'paths': None,
+    'create_spreadsheet': False,
 }
 
 
@@ -470,7 +471,7 @@ class Utils(object):
                     'image_extensions', 'file_extensions', 'target_tags'):
                     _SETTINGS[option] = ', '.join(re.split('\s+',
                         options[option]))
-                elif option in ('force', 'publish', 'collapse'):
+                elif option in ('force', 'publish', 'collapse', 'create_spreadsheet'):
                     _SETTINGS[option] = self._fake_literal_eval(
                         options[option].capitalize())
                 else:
@@ -507,9 +508,10 @@ class Utils(object):
         else:
             arguments += " replacetypes=%s,"
         if _SETTINGS['match']:
-            arguments += " match='%s'"
+            arguments += " match='%s',"
         else:
-            arguments += " match=%s"
+            arguments += " match=%s,"
+        arguments += " create_spreadsheet=%s,"
         if _SETTINGS['paths']:
             arguments += ", paths='%s'"
         return arguments
@@ -589,11 +591,22 @@ class Parse2Plone(object):
             _COUNT['images'] += 1
             commit()
         elif utils._is_file(obj, self.file_extensions):
-            at_file = self.create_file(parent, obj, _replace_types_map)
-            self.set_title(at_file, obj)
-            self.set_file(at_file, obj, parent_path, import_dir)
-            _COUNT['files'] += 1
-            commit()
+            if not _SETTINGS['create_spreadsheet']:
+                at_file = self.create_file(parent, obj, _replace_types_map)
+                self.set_title(at_file, obj)
+                self.set_file(at_file, obj, parent_path, import_dir)
+                _COUNT['files'] += 1
+                commit()
+            else:
+                # Try to suck in the spreadsheet
+                if obj.endswith('.xls'):
+                    self.create_spreadsheet(parent, obj)
+                    commit()
+                else:
+                    msg = "you specified --create-spreadsheet but '%s' is not a spreadhseet"
+                    _LOG.error(msg % obj)
+                    exit(1)
+                
 
     def create_folder(self, parent, obj, _replace_types_map):
         utils = Utils()
@@ -634,6 +647,9 @@ class Parse2Plone(object):
             self.set_state(page)
             _LOG.info("publishing page '%s'" % obj)
         return page
+
+    def create_spreadsheet(self):
+        pass
 
     def create_parts(self, parent, parts, import_dir, _collapse_map,
         _rename_map, _replace_types_map):
