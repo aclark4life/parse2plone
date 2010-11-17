@@ -794,7 +794,8 @@ class Recipe(object):
                 _SETTINGS['collapse'],
                 _SETTINGS['rename'],
                 _SETTINGS['replacetypes'],
-                _SETTINGS['match'])
+                _SETTINGS['match'],
+                _SETTINGS['create_spreadsheet'])
         else:
             # if the user sets the paths parameter, we use it (and ignore
             # path)
@@ -810,6 +811,7 @@ class Recipe(object):
                 _SETTINGS['rename'],
                 _SETTINGS['replacetypes'],
                 _SETTINGS['match'],
+                _SETTINGS['create_spreadsheet'],
                 _SETTINGS['paths'])
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
@@ -857,6 +859,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     _SETTINGS['replacetypes'] = replacetypes
     _SETTINGS['match'] = match
     _SETTINGS['paths'] = paths
+    _SETTINGS['create_spreadsheet'] = paths
 
     # Process command line args; save results in _SETTINGS
     option_parser = utils._create_option_parser()
@@ -881,6 +884,7 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     _SETTINGS['replacetypes'] = replacetypes
     _SETTINGS['match'] = match
     _SETTINGS['paths'] = paths
+    _SETTINGS['create_spreadsheet'] = paths
 
     # Process import dir or dirs
     paths_map = []
