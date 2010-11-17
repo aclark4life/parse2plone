@@ -27,6 +27,7 @@ setup(
         'BeautifulSoup',
         'Plone',
         'lxml',
+        'xlrd',
         'zc.buildout',
     ],
     py_modules=['parse2plone'],
