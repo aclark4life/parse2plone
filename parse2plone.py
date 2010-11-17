@@ -90,6 +90,21 @@ _LOG = _setup_logger()
 _UNSET_OPTION = ''
 
 
+# Adds "create spreadsheet" feature to ``parse2plone``.
+def create_spreadsheet(parent, obj):
+    """
+    You can optionally tell ``parse2plone`` to try and import the contents of any
+    spreadsheets it finds, by doing this::
+
+        $ bin/plone run bin/import --create-spreadsheet /var/www/html
+
+    If /var/www/html/foo.xls exists and has content, then a 
+    http://localhost:8080/Plone/foo will be created as a page, with the contents
+    of the spreadsheet in an HTML table.
+    """
+    pass
+
+
 # Adds "match" feature to ``parse2plone``.
 def match_files(files, import_dir, match):
     """
@@ -341,6 +356,10 @@ class Utils(object):
             default=_UNSET_OPTION,
             dest='paths',
             help='Specify import_dirs:object_paths (--path will be ignored)')
+        option_parser.add_option('--create-spreadsheet',
+            default=_UNSET_OPTION,
+            dest='create_spreadsheet',
+            help='Import contents of spreadsheets (see create_spreadsheet())')
         return option_parser
 
     # BBB Because the ast module is not included with Python 2.4, we
@@ -598,9 +617,9 @@ class Parse2Plone(object):
                 _COUNT['files'] += 1
                 commit()
             else:
-                # Try to suck in the spreadsheet
+                # Try to import the contents of the spreadsheet
                 if obj.endswith('.xls'):
-                    self.create_spreadsheet(parent, obj)
+                    create_spreadsheet(parent, obj)
                     commit()
                 else:
                     msg = "you specified --create-spreadsheet but '%s' is not a spreadhseet"
@@ -647,9 +666,6 @@ class Parse2Plone(object):
             self.set_state(page)
             _LOG.info("publishing page '%s'" % obj)
         return page
-
-    def create_spreadsheet(self):
-        pass
 
     def create_parts(self, parent, parts, import_dir, _collapse_map,
         _rename_map, _replace_types_map):
