@@ -2,6 +2,11 @@
 History
 -------
 
+1.0a1 ()
+~~~~~~~~
+
+* Moved development to the (experimental) collective on Github.
+
 0.9.9 (11/16/2010)
 ~~~~~~~~~~~~~~~~~~
 
