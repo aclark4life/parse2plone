@@ -708,7 +708,8 @@ class Parse2Plone(object):
     def create_plonesite(self, parent, obj):
         utils = Utils()
         from Products.CMFPlone.factory import addPloneSite
-        addPloneSite(parent, obj)
+        addPloneSite(parent, obj, extension_ids=('plonetheme.classic:default',
+            'plonetheme.sunburst:default'))
         _LOG.info("creating plone site '%s' inside parent folder '%s'" % (
             obj, utils._convert_obj_to_path(parent)))
 
