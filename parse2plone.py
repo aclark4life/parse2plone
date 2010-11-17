@@ -57,7 +57,7 @@ _SETTINGS = {
     'illegal_chars': ['_', '.'],
     'html_extensions': ['html'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
-    'file_extensions': ['mp3'],
+    'file_extensions': ['mp3', 'xls'],
     'target_tags': ['a', 'div', 'font', 'h1', 'h2', 'p'],
     'force': False,
     'publish': False,
