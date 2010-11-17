@@ -58,6 +58,10 @@ here are this recipe's options::
     self-explanatory. Now you can just cut and paste to get started or keep reading if
     you would like to know more.
 
+.. Note::
+    The contract of "command line parameters will trump any buildout.cfg settings" is
+    not 100% enforced yet.
+
 Justification
 -------------
 
