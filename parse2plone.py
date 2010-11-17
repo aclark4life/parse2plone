@@ -91,7 +91,7 @@ _UNSET_OPTION = ''
 
 
 # Adds "create spreadsheet" feature to ``parse2plone``.
-def create_spreadsheet(parent, obj, parent_path, import_dir):
+def create_spreadsheet(page, obj, parent_path, import_dir):
     """
     You can optionally tell ``parse2plone`` to try and import the contents of any
     spreadsheets it finds, by doing this::
@@ -628,7 +628,8 @@ class Parse2Plone(object):
                 if obj.endswith('.xls'):
                     page = self.create_page(parent, obj, _replace_types_map)
                     self.set_title(page, obj)
-                    create_spreadsheet(parent, obj, parent_path, import_dir)
+                    create_spreadsheet(page, obj, parent_path, import_dir)
+                    _COUNT['files'] += 1
                     commit()
                 else:
                     msg = "you specified --create-spreadsheet but '%s' is not a spreadhseet"
