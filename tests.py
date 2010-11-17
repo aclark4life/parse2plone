@@ -248,6 +248,7 @@ class ProcessRecipeArgsTestCase(unittest.TestCase):
         self.force_before = False
         self.publish_before = False
         self.collapse_before = False
+        self.create_spreadsheet_before = False
         self.rename_before = 'foo:bar,baz:qux'
         self.replacetypes_before = 'Document:MyDocument,Folder:MyFolder'
         self.match_before = '2000'
@@ -262,6 +263,7 @@ class ProcessRecipeArgsTestCase(unittest.TestCase):
         self.force_after = False
         self.publish_after = False
         self.collapse_after = False
+        self.create_spreadsheet_after = False
         self.rename_after = ['foo:bar', 'baz:qux']
         self.replacetypes_after = ['Document:MyDocument', 'Folder:MyFolder']
         self.match_after = ['2000']
@@ -279,6 +281,7 @@ class ProcessRecipeArgsTestCase(unittest.TestCase):
         force_before = self.force_before
         publish_before = self.publish_before
         collapse_before = self.collapse_before
+        create_spreadsheet_before = self.create_spreadsheet_before
         rename_before = self.rename_before
         replacetypes_before = self.replacetypes_before
         match_before = self.match_before
@@ -286,12 +289,13 @@ class ProcessRecipeArgsTestCase(unittest.TestCase):
 
         (path, illegal_chars, html_extensions, image_extensions,
         file_extensions, target_tags, force, publish, collapse, rename,
-        replacetypes, match, paths) = (
+        replacetypes, match, paths, create_spreadsheet) = (
             utils.process_recipe_args(path_before, illegal_chars_before,
             html_extensions_before, image_extensions_before,
             file_extensions_before, target_tags_before,
             force_before, publish_before, collapse_before, rename_before,
-            replacetypes_before, match_before, paths_before))
+            replacetypes_before, match_before, paths_before,
+            create_spreadsheet_before))
 
         self.assertEqual(path, self.path_after)
         self.assertEqual(illegal_chars, self.illegal_chars_after)
@@ -337,6 +341,7 @@ class ProcessCommandLineArgsTestCase(unittest.TestCase):
         self.force_before = False
         self.publish_before = False
         self.collapse_before = False
+        self.create_spreadsheet_before = False
         self.rename_before = None
         self.replacetypes_before = None
         self.match_before = None
@@ -351,6 +356,7 @@ class ProcessCommandLineArgsTestCase(unittest.TestCase):
         self.force_after = False
         self.publish_after = False
         self.collapse_after = False
+        self.create_spreadsheet = False
         self.rename_after = None
         self.replacetypes_after = None
         self.match_after = None
@@ -360,14 +366,14 @@ class ProcessCommandLineArgsTestCase(unittest.TestCase):
         utils = self.utils
         (path, illegal_chars, html_extensions, image_extensions,
         file_extensions, target_tags, force, publish, collapse,
-        rename, replacetypes, match, paths) = (
+        rename, replacetypes, match, paths, create_spreadsheet) = (
             utils.process_command_line_args(self, self.path_before,
                 self.illegal_chars_before, self.html_extensions_before,
                 self.image_extensions_before, self.file_extensions_before,
                 self.target_tags_before, self.force_before,
                 self.publish_before, self.collapse_before,
                 self.rename_before, self.replacetypes_before,
-                self.match_before, self.paths_before))
+                self.match_before, self.paths_before, self.create_spreadsheet))
 
         self.assertEqual(path, self.path_after)
         self.assertEqual(illegal_chars, self.illegal_chars_after)
@@ -382,6 +388,7 @@ class ProcessCommandLineArgsTestCase(unittest.TestCase):
         self.assertEqual(replacetypes, self.replacetypes_after)
         self.assertEqual(match, self.match_after)
         self.assertEqual(paths, self.paths_after)
+        self.assertEqual(create_spreadsheet, self.create_spreadsheet)
 
 
 class CreateOptionParserTestCase(unittest.TestCase):

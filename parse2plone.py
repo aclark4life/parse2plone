@@ -277,7 +277,8 @@ class Utils(object):
 
     def process_recipe_args(self, path, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, force,
-        publish, collapse, rename, replacetypes, match, paths):
+        publish, collapse, rename, replacetypes, match, paths,
+        create_spreadsheet):
         """
         Convert recipe parameter values
         """
@@ -292,6 +293,7 @@ class Utils(object):
         force = force
         publish = publish
         collapse = collapse
+        create_spreadsheet = create_spreadsheet
         if rename is not None:
             rename = rename.split(',')
         else:
@@ -307,7 +309,8 @@ class Utils(object):
 
         return (path, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, force,
-        publish, collapse, rename, replacetypes, match, paths)
+        publish, collapse, rename, replacetypes, match, paths,
+        create_spreadsheet)
 
     def _create_option_parser(self):
         option_parser = optparse.OptionParser()
@@ -554,7 +557,7 @@ class Utils(object):
     def process_command_line_args(self, options,
             path, illegal_chars, html_extensions, image_extensions,
             file_extensions, target_tags, force, publish, collapse,
-            rename, replacetypes, match, paths):
+            rename, replacetypes, match, paths, create_spreadsheet):
         """
         Process command line args
         """
@@ -576,6 +579,8 @@ class Utils(object):
             publish = options.publish
         if options.collapse is not _UNSET_OPTION:
             collapse = options.collapse
+        if options.create_spreadsheet is not _UNSET_OPTION:
+            create_spreadsheet = options.create_spreadsheet
         if options.rename is not _UNSET_OPTION:
             rename = (options.rename).split(',')
         else:
@@ -591,7 +596,7 @@ class Utils(object):
 
         return (path, illegal_chars, html_extensions, image_extensions,
             file_extensions, target_tags, force, publish, collapse,
-            rename, replacetypes, match, paths)
+            rename, replacetypes, match, paths, create_spreadsheet)
 
     def _validate_recipe_args(self, options):
         for option in options:
@@ -895,10 +900,10 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # save results in _SETTINGS
     (path, illegal_chars, html_extensions, image_extensions, file_extensions,
         target_tags, force, publish, collapse, rename, replacetypes,
-        match, paths) = (
+        match, paths, create_spreadsheet) = (
         utils.process_recipe_args(path, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, force, publish,
-        collapse, rename, replacetypes, match, paths))
+        collapse, rename, replacetypes, match, paths, create_spreadsheet))
 
     _SETTINGS['path'] = path
     _SETTINGS['illegal_chars'] = illegal_chars
@@ -920,10 +925,10 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     options, args = option_parser.parse_args()
     (path, illegal_chars, html_extensions, image_extensions, file_extensions,
         target_tags, force, publish, collapse, rename, replacetypes,
-        match, paths) = (utils.process_command_line_args(options,
+        match, paths, create_spreadsheet) = (utils.process_command_line_args(options,
             path, illegal_chars, html_extensions, image_extensions,
             file_extensions, target_tags, force, publish, collapse, rename,
-            replacetypes, match, paths))
+            replacetypes, match, paths, create_spreadsheet))
 
     _SETTINGS['path'] = path
     _SETTINGS['illegal_chars'] = illegal_chars
@@ -938,12 +943,12 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     _SETTINGS['replacetypes'] = replacetypes
     _SETTINGS['match'] = match
     _SETTINGS['paths'] = paths
-    _SETTINGS['create_spreadsheet'] = paths
+    _SETTINGS['create_spreadsheet'] = create_spreadsheet
 
     # Process import dir or dirs
     paths_map = []
     if not paths:
-        paths_map.append(':'.join(utils._clean_path(args[0]), path))
+        paths_map.append(':'.join([utils._clean_path(args[0]), path]))
     else:
         paths_map = paths.split(',')
 

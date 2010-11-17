@@ -2,6 +2,13 @@
 History
 -------
 
+1.0a3 (11/17/2010)
+~~~~~~~~~~~~~~~~~~
+
+* Bug fix: TypeError: join() takes exactly one argument (2 given) related to 
+  specifying import dir on on command line (as args[0]) fixed
+* Fix tests
+
 1.0a2 (11/17/2010)
 ~~~~~~~~~~~~~~~~~~
 
@@ -11,7 +18,7 @@ History
 1.0a1 (11/17/2010)
 ~~~~~~~~~~~~~~~~~~
 
-* Moved development to the (experimental) collective on Github.
+* Moved development to the (experimental) collective on Github
 
 0.9.9 (11/16/2010)
 ~~~~~~~~~~~~~~~~~~
