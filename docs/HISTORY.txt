@@ -2,8 +2,14 @@
 History
 -------
 
-1.0a1 ()
-~~~~~~~~
+1.0a2 (11/17/2010)
+~~~~~~~~~~~~~~~~~~
+
+* Add spreadsheet import feature
+* Fix docs
+
+1.0a1 (11/17/2010)
+~~~~~~~~~~~~~~~~~~
 
 * Moved development to the (experimental) collective on Github.
 
