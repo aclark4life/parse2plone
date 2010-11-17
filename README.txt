@@ -367,7 +367,7 @@ You can specify a series of import paths and corresponding object paths::
     $ bin/plone run bin/import --paths=sample:Plone/sample,sample2:Plone/sample2
 
 ``'--create-spreadsheet'``
-*************
+**************************
 
 You can optionally tell ``parse2plone`` to try and import the contents of any
 spreadsheets it finds, by doing this::
