@@ -394,66 +394,20 @@ class CreateOptionParserTestCase(unittest.TestCase):
         self.utils = parse2plone.Utils()
 
         self.option_parser_test = optparse.OptionParser()
-        self.option_parser_test.add_option('-p', '--path',
-            default=_UNSET_OPTION,
-            dest='path',
-            help='Path to Plone site object or sub-folder')
-        self.option_parser_test.add_option('--html-extensions',
-            default=_UNSET_OPTION,
-            dest='html_extensions',
-            help='Specify HTML file extensions')
-        self.option_parser_test.add_option('--illegal-chars',
-            default=_UNSET_OPTION,
-            dest='illegal_chars',
-            help='Specify characters to ignore')
-        self.option_parser_test.add_option('--image-extensions',
-            default=_UNSET_OPTION,
-            dest='image_extensions',
-            help='Specify image file extensions')
-        self.option_parser_test.add_option('--file-extensions',
-            default=_UNSET_OPTION,
-            dest='file_extensions',
-            help='Specify generic file extensions')
-        self.option_parser_test.add_option('--target-tags',
-            default=_UNSET_OPTION,
-            dest='target_tags',
-            help='Specify HTML tags to parse')
-        self.option_parser_test.add_option('--force',
-            action='store_true',
-            default=_UNSET_OPTION,
-            dest='force',
-            help='Force creation of folders')
-        self.option_parser_test.add_option('--publish',
-            action='store_true',
-            default=_UNSET_OPTION,
-            dest='publish',
-            help='Optionally publish newly created content')
-        self.option_parser_test.add_option('--collapse',
-            action='store_true',
-            default=_UNSET_OPTION,
-            dest='collapse',
-            help="""Optionally "collapse" content (see collapse_parts())""")
-        self.option_parser_test.add_option('--rename',
-            default=_UNSET_OPTION,
-            dest='rename',
-            help='Optionally rename content (see rename_parts())')
-        self.option_parser_test.add_option('--replacetypes',
-            default=_UNSET_OPTION,
-            dest='replacetypes',
-            help='Optionally use custom content types (see replace types())')
-        self.option_parser_test.add_option('--match',
-            default=_UNSET_OPTION,
-            dest='match',
-            help='Only import content that matches PATTERN (see match_files())'
-            )
-        self.option_parser_test.add_option('--paths',
-            default=_UNSET_OPTION,
-            dest='paths',
-            help='Specify import_dirs:object_paths (--path will be ignored)')
-        self.option_parser_test.add_option('--create-spreadsheet',
-            default=_UNSET_OPTION,
-            dest='create_spreadsheet',
-            help='Import contents of spreadsheets (see create_spreadsheet())')
+        self.option_parser_test.add_option('-p', '--path')
+        self.option_parser_test.add_option('--html-extensions')
+        self.option_parser_test.add_option('--illegal-chars')
+        self.option_parser_test.add_option('--image-extensions')
+        self.option_parser_test.add_option('--file-extensions')
+        self.option_parser_test.add_option('--target-tags')
+        self.option_parser_test.add_option('--force')
+        self.option_parser_test.add_option('--publish')
+        self.option_parser_test.add_option('--collapse')
+        self.option_parser_test.add_option('--rename')
+        self.option_parser_test.add_option('--replacetypes')
+        self.option_parser_test.add_option('--match')
+        self.option_parser_test.add_option('--paths')
+        self.option_parser_test.add_option('--create-spreadsheet')
 
 
     def testCreateOptionParser(self):
