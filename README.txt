@@ -46,6 +46,7 @@ here are this recipe's options::
     force = false
     publish = false
     collapse = false
+    create_spreadsheet = false
     replacetypes =
     rename =
     match =
