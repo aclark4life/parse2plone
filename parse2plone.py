@@ -105,7 +105,7 @@ def create_spreadsheet(page, obj, parent_path, import_dir):
     import xlrd
     filename = '/'.join([import_dir, '/'.join(parent_path), obj])
     results = '<table>'
-    wb = xlrd.open_workbook(filename) 
+    wb = xlrd.open_workbook(filename)
     for sheet in wb.sheets():
         for row in range(sheet.nrows):
             results += '<tr>'
@@ -476,8 +476,8 @@ class Utils(object):
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SpecialUsers import system
         from Testing.makerequest import makerequest
-#        newSecurityManager(None, system)
-        newSecurityManager(None, app.acl_users.getUser('admin'))
+        newSecurityManager(None, system)
+#        newSecurityManager(None, app.acl_users.getUser('admin'))
         app = makerequest(app)
         return app
 
@@ -635,8 +635,10 @@ class Parse2Plone(object):
             else:
                 # Try to import the contents of the spreadsheet
                 if obj.endswith('.xls'):
-                    if not utils._check_exists_obj(parent, utils._remove_ext(obj)):
-                        page = self.create_page(parent, utils._remove_ext(obj), _replace_types_map)
+                    if not utils._check_exists_obj(parent,
+                            utils._remove_ext(obj)):
+                        page = self.create_page(parent, utils._remove_ext(obj),
+                            _replace_types_map)
                         self.set_title(page, utils._remove_ext(obj))
                         create_spreadsheet(page, obj, parent_path, import_dir)
                         _COUNT['files'] += 1
