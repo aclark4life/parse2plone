@@ -511,7 +511,7 @@ class Utils(object):
             arguments += " match='%s',"
         else:
             arguments += " match=%s,"
-        arguments += " create_spreadsheet=%s,"
+        arguments += " create_spreadsheet=%s"
         if _SETTINGS['paths']:
             arguments += ", paths='%s'"
         return arguments
