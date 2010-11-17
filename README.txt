@@ -62,7 +62,7 @@ Justification
 -------------
 
 Why did you create ``Parse2Plone`` when `collective.transmogrifier`_ already
-exists?
+existed?
 
 Here are some reasons:
 

@@ -102,6 +102,7 @@ def create_spreadsheet(parent, obj, parent_path, import_dir):
     http://localhost:8080/Plone/foo will be created as a page, with the contents
     of the spreadsheet in an HTML table.
     """
+    filename = '/'.join([import_dir, '/'.join(parent_path), obj])
     f = open(filename, 'rb')
     results = ''
     data = f.read()
