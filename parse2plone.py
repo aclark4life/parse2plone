@@ -635,7 +635,7 @@ class Parse2Plone(object):
             else:
                 # Try to import the contents of the spreadsheet
                 if obj.endswith('.xls'):
-                    if not utils._check_exists_obj(utils._remove_ext(obj)):
+                    if not utils._check_exists_obj(parent, utils._remove_ext(obj)):
                         page = self.create_page(parent, utils._remove_ext(obj), _replace_types_map)
                         self.set_title(page, utils._remove_ext(obj))
                         create_spreadsheet(page, obj, parent_path, import_dir)
