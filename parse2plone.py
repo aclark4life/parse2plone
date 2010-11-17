@@ -460,6 +460,9 @@ class Utils(object):
             results[import_dir].append('/'.join(f))
         return results
 
+    def _remove_ext(self, obj):
+        return obj.split('.')[0]
+
     def _setup_app(self, app):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
@@ -625,8 +628,8 @@ class Parse2Plone(object):
             else:
                 # Try to import the contents of the spreadsheet
                 if obj.endswith('.xls'):
-                    page = self.create_page(parent, obj, _replace_types_map)
-                    self.set_title(page, obj)
+                    page = self.create_page(parent, utils._remove_ext(obj), _replace_types_map)
+                    self.set_title(page, utils._remove_ext(obj))
                     create_spreadsheet(page, obj, parent_path, import_dir)
                     _COUNT['files'] += 1
                     commit()
