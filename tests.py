@@ -450,6 +450,11 @@ class CreateOptionParserTestCase(unittest.TestCase):
             default=_UNSET_OPTION,
             dest='paths',
             help='Specify import_dirs:object_paths (--path will be ignored)')
+        self.option_parser_test.add_option('--create-spreadsheet',
+            default=_UNSET_OPTION,
+            dest='create_spreadsheet',
+            help='Import contents of spreadsheets (see create_spreadsheet())')
+
 
     def testCreateOptionParser(self):
         utils = self.utils
