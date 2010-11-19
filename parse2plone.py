@@ -133,24 +133,13 @@ def create_spreadsheets(folder, obj, parent_path, import_dir):
     This option will import content from each row into a separate page.
     """
     import xlrd
-
     filename = '/'.join([import_dir, '/'.join(parent_path), obj])
-
-
     wb = xlrd.open_workbook(filename)
-
-
     for sheet in wb.sheets():
-
         for row in range(sheet.nrows):
-
-            results += '<tr>'
-
             for col in sheet.row(row):
-                results += '<td>%s</td>' % col.value
-            results += '</tr>'
+                pass
 
-    results += '</table>'
 
 
 # Adds "match" feature to ``parse2plone``.
@@ -668,7 +657,7 @@ class Parse2Plone(object):
             _COUNT['images'] += 1
             commit()
         elif utils._is_file(obj, _SETTINGS['file_extensions']):
-            if not _SETTINGS['create_spreadsheet']:
+            if not _SETTINGS['create_spreadsheet'] and not _SETTINGS['create_spreadsheets']:
                 at_file = self.create_file(parent, obj, _replace_types_map)
                 self.set_title(at_file, obj)
                 self.set_file(at_file, obj, parent_path, import_dir)
@@ -679,10 +668,16 @@ class Parse2Plone(object):
                 if obj.endswith('.xls'):
                     if not utils._check_exists_obj(parent,
                             utils._remove_ext(obj)):
-                        page = self.create_page(parent, utils._remove_ext(obj),
-                            _replace_types_map)
-                        self.set_title(page, utils._remove_ext(obj))
-                        create_spreadsheet(page, obj, parent_path, import_dir)
+                        if not _SETTINGS['create_spreadsheets']:
+                            page = self.create_page(parent, utils._remove_ext(obj),
+                                _replace_types_map)
+                            self.set_title(page, utils._remove_ext(obj))
+                            create_spreadsheet(page, obj, parent_path, import_dir)
+                        else:
+                            folder = self.create_folder(parent, utils._remove_ext(obj),
+                                _replace_types_map)
+                            self.set_title(page, utils._remove_ext(obj))
+                            create_spreadsheets(folder, obj, parent_path, import_dir)
                         _COUNT['files'] += 1
                         commit()
                     else:
