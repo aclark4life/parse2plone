@@ -67,6 +67,7 @@ _SETTINGS = {
     'match': None,
     'paths': None,
     'create_spreadsheet': False,
+    'create_spreadsheets': False,
 }
 
 
@@ -304,7 +305,7 @@ class Utils(object):
     def process_recipe_args(self, path, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, force,
         publish, collapse, rename, replacetypes, match, paths,
-        create_spreadsheet):
+        create_spreadsheet, create_spreadsheets):
         """
         Convert recipe parameter values
         """
@@ -320,6 +321,7 @@ class Utils(object):
         publish = publish
         collapse = collapse
         create_spreadsheet = create_spreadsheet
+        create_spreadsheets = create_spreadsheets
         if rename is not None:
             rename = rename.split(',')
         else:
@@ -399,7 +401,11 @@ class Utils(object):
         option_parser.add_option('--create-spreadsheet',
             default=_UNSET_OPTION,
             dest='create_spreadsheet',
-            help='Import contents of spreadsheets (see create_spreadsheet())')
+            help='Import contents of spreadsheet (see create_spreadsheet())')
+        option_parser.add_option('--create-spreadsheets',
+            default=_UNSET_OPTION,
+            dest='create_spreadsheets',
+            help='Import contents of spreadsheet (see create_spreadsheet())')
         return option_parser
 
     # BBB Because the ast module is not included with Python 2.4, we
@@ -684,7 +690,7 @@ class Parse2Plone(object):
                         _LOG.info("object '%s' exists inside '%s'" % (
                             obj, utils._convert_obj_to_path(parent)))
                 else:
-                    msg = "you specified --create-spreadsheet but '%s' is not"
+                    msg = "you specified --create-spreadsheet(s) but '%s' is not"
                     msg += " a spreadhseet"
                     _LOG.error(msg % obj)
                     exit(1)
@@ -886,7 +892,8 @@ class Recipe(object):
                 _SETTINGS['rename'],
                 _SETTINGS['replacetypes'],
                 _SETTINGS['match'],
-                _SETTINGS['create_spreadsheet'])
+                _SETTINGS['create_spreadsheet'],
+                _SETTINGS['create_spreadsheets'])
         else:
             # if the user sets the paths parameter, we use it (and ignore
             # path)
@@ -903,6 +910,7 @@ class Recipe(object):
                 _SETTINGS['replacetypes'],
                 _SETTINGS['match'],
                 _SETTINGS['create_spreadsheet'],
+                _SETTINGS['create_spreadsheets'],
                 _SETTINGS['paths'])
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
@@ -919,7 +927,7 @@ class Recipe(object):
 def main(app, path=None, illegal_chars=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
     force=False, publish=False, collapse=False, rename=None, replacetypes=None,
-    match=None, paths=None, create_spreadsheet=None):
+    match=None, paths=None, create_spreadsheet=None, create_spreadsheets=None):
 
     _rename_map = {'forward': {}, 'reverse': {}}
     _collapse_map = {'forward': {}, 'reverse': {}}
@@ -932,35 +940,11 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     # save results in _SETTINGS
     (path, illegal_chars, html_extensions, image_extensions, file_extensions,
         target_tags, force, publish, collapse, rename, replacetypes,
-        match, paths, create_spreadsheet) = (
+        match, paths, create_spreadsheet, create_spreadsheets) = (
         utils.process_recipe_args(path, illegal_chars, html_extensions,
         image_extensions, file_extensions, target_tags, force, publish,
-        collapse, rename, replacetypes, match, paths, create_spreadsheet))
-
-    _SETTINGS['path'] = path
-    _SETTINGS['illegal_chars'] = illegal_chars
-    _SETTINGS['html_extensions'] = html_extensions
-    _SETTINGS['image_extensions'] = image_extensions
-    _SETTINGS['file_extensions'] = file_extensions
-    _SETTINGS['target_tags'] = target_tags
-    _SETTINGS['force'] = force
-    _SETTINGS['publish'] = publish
-    _SETTINGS['collapse'] = collapse
-    _SETTINGS['rename'] = rename
-    _SETTINGS['replacetypes'] = replacetypes
-    _SETTINGS['match'] = match
-    _SETTINGS['paths'] = paths
-    _SETTINGS['create_spreadsheet'] = paths
-
-    # Process command line args; save results in _SETTINGS
-    option_parser = utils._create_option_parser()
-    options, args = option_parser.parse_args()
-    (path, illegal_chars, html_extensions, image_extensions, file_extensions,
-        target_tags, force, publish, collapse, rename, replacetypes,
-        match, paths, create_spreadsheet) = (utils.process_command_line_args(options,
-            path, illegal_chars, html_extensions, image_extensions,
-            file_extensions, target_tags, force, publish, collapse, rename,
-            replacetypes, match, paths, create_spreadsheet))
+        collapse, rename, replacetypes, match, paths, create_spreadsheet,
+        create_spreadsheets))
 
     _SETTINGS['path'] = path
     _SETTINGS['illegal_chars'] = illegal_chars
@@ -976,6 +960,33 @@ def main(app, path=None, illegal_chars=None, html_extensions=None,
     _SETTINGS['match'] = match
     _SETTINGS['paths'] = paths
     _SETTINGS['create_spreadsheet'] = create_spreadsheet
+    _SETTINGS['create_spreadsheets'] = create_spreadsheets
+
+    # Process command line args; save results in _SETTINGS
+    option_parser = utils._create_option_parser()
+    options, args = option_parser.parse_args()
+    (path, illegal_chars, html_extensions, image_extensions, file_extensions,
+        target_tags, force, publish, collapse, rename, replacetypes,
+        match, paths, create_spreadsheet, create_spreadsheets) = (utils.process_command_line_args(options,
+            path, illegal_chars, html_extensions, image_extensions,
+            file_extensions, target_tags, force, publish, collapse, rename,
+            replacetypes, match, paths, create_spreadsheet, create_spreadsheets))
+
+    _SETTINGS['path'] = path
+    _SETTINGS['illegal_chars'] = illegal_chars
+    _SETTINGS['html_extensions'] = html_extensions
+    _SETTINGS['image_extensions'] = image_extensions
+    _SETTINGS['file_extensions'] = file_extensions
+    _SETTINGS['target_tags'] = target_tags
+    _SETTINGS['force'] = force
+    _SETTINGS['publish'] = publish
+    _SETTINGS['collapse'] = collapse
+    _SETTINGS['rename'] = rename
+    _SETTINGS['replacetypes'] = replacetypes
+    _SETTINGS['match'] = match
+    _SETTINGS['paths'] = paths
+    _SETTINGS['create_spreadsheet'] = create_spreadsheet
+    _SETTINGS['create_spreadsheets'] = create_spreadsheets
 
     # Process import dir or dirs
     paths_map = []
