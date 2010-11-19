@@ -101,6 +101,8 @@ def create_spreadsheet(page, obj, parent_path, import_dir):
     If /var/www/html/foo.xls exists and has content, then a
     http://localhost:8080/Plone/foo will be created as a page, with the
     contents of the spreadsheet in an HTML table.
+
+    This option will import all content to a single page.
     """
     import xlrd
     filename = '/'.join([import_dir, '/'.join(parent_path), obj])
@@ -114,6 +116,41 @@ def create_spreadsheet(page, obj, parent_path, import_dir):
             results += '</tr>'
     results += '</table>'
     page.setText(results)
+
+
+# Adds "create spreadsheet" feature to ``parse2plone``.
+def create_spreadsheets(folder, obj, parent_path, import_dir):
+    """
+    You can optionally tell ``parse2plone`` to try and import the contents of
+    any spreadsheets it finds, by doing this::
+
+        $ bin/plone run bin/import --create-spreadsheet /var/www/html
+
+    If /var/www/html/foo.xls exists and has content, then a
+    http://localhost:8080/Plone/foo will be created as a page, with the
+    contents of the spreadsheet in an HTML table.
+
+    This option will import content from each row into a separate page.
+    """
+    import xlrd
+
+    filename = '/'.join([import_dir, '/'.join(parent_path), obj])
+
+
+    wb = xlrd.open_workbook(filename)
+
+
+    for sheet in wb.sheets():
+
+        for row in range(sheet.nrows):
+
+            results += '<tr>'
+
+            for col in sheet.row(row):
+                results += '<td>%s</td>' % col.value
+            results += '</tr>'
+
+    results += '</table>'
 
 
 # Adds "match" feature to ``parse2plone``.
