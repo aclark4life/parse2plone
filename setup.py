@@ -3,7 +3,7 @@ from setuptools import setup
 
 name = 'parse2plone'
 description = 'Easily import static HTML websites into Plone.'
-version = '1.0a3'
+version = '1.0a4'
 
 
 def read(file):
@@ -25,7 +25,6 @@ setup(
     },
     install_requires=[
         'BeautifulSoup',
-        'Plone',
         'lxml',
         'xlrd',
         'zc.buildout',
