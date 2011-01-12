@@ -3,7 +3,7 @@
 Parse2Plone
 ===========
 
-Easily import static websites into Plone
+Easily import static websites on the file system into Plone
 
 Introduction
 ------------
@@ -13,7 +13,7 @@ creates a script for you) to easily get content from static HTML websites
 (on the file system) into Plone.
 
 It is designed to satisfy only the most trivial of use cases (e.g. a simple static
-site in /var/www/html); for more serious deployments, you might enjoy
+site in /var/www/html); for more serious deployments, you might try
 `funnelweb`_.
 
 .. _`funnelweb`: http://pypi.python.org/pypi/funnelweb
