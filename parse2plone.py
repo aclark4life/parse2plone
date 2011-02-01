@@ -56,6 +56,7 @@ _SETTINGS = {
     'path': '/Plone',
     'illegal_chars': ['_', '.'],
     'illegal_words': ['start',],
+    'illegal_expressions': ['0-9'],
     'html_extensions': ['html'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
     'file_extensions': ['mp3', 'xls'],
@@ -302,7 +303,7 @@ class Utils(object):
             c += 1
         return results
 
-    def process_recipe_args(self, path, illegal_chars, illegal_words, html_extensions,
+    def process_recipe_args(self, path, illegal_chars, illegal_words, illegal_expressions, html_extensions,
         image_extensions, file_extensions, target_tags, force,
         publish, collapse, rename, replacetypes, match, paths,
         create_spreadsheet):
@@ -312,6 +313,7 @@ class Utils(object):
         path = path
         illegal_chars = illegal_chars.split(',')
         illegal_words = illegal_words.split(',')
+        illegal_expressions = illegal_expressions.split(',')
         html_extensions = html_extensions.split(',')
         image_extensions = image_extensions.split(',')
         file_extensions = file_extensions.split(',')
@@ -335,7 +337,7 @@ class Utils(object):
         else:
             match = match
 
-        return (path, illegal_chars, illegal_words, html_extensions,
+        return (path, illegal_chars, illegal_words, illegal_expressions, html_extensions,
         image_extensions, file_extensions, target_tags, force,
         publish, collapse, rename, replacetypes, match, paths,
         create_spreadsheet)
@@ -357,6 +359,10 @@ class Utils(object):
         option_parser.add_option('--illegal-words',
             default=_UNSET_OPTION,
             dest='illegal_words',
+            help='Specify words to ignore')
+        option_parser.add_option('--illegal-expressions',
+            default=_UNSET_OPTION,
+            dest='illegal_expressions',
             help='Specify words to ignore')
         option_parser.add_option('--image-extensions',
             default=_UNSET_OPTION,
@@ -488,6 +494,9 @@ class Utils(object):
             results = False
         if obj in _SETTINGS['illegal_words']:
             results = False
+        patt = re.compile(_SETTINGS['illegal_expressions'])
+        if patt.match(obj):
+            results = False
         return results
 
     def _remove_parts(self, files, num_parts):
@@ -539,7 +548,7 @@ class Utils(object):
                 elif option in ('replacetypes'):
                     _SETTINGS[option] = self._convert_str_to_csv(
                         options[option])
-                elif option in ('illegal_chars', 'illegal_words', 'html_extensions',
+                elif option in ('illegal_chars', 'illegal_words', 'illegal_expressions', 'html_extensions',
                     'image_extensions', 'file_extensions', 'target_tags'):
                     _SETTINGS[option] = ', '.join(re.split('\s+',
                         options[option]))
@@ -557,7 +566,7 @@ class Utils(object):
                         _SETTINGS[option] = options[option]
             else:
                 # the user did not set any recipe parameters
-                if option in ('illegal_chars', 'illegal_words', 'html_extensions',
+                if option in ('illegal_chars', 'illegal_words', 'illegal_expressions', 'html_extensions',
                     'image_extensions', 'file_extensions', 'target_tags'):
                     # but some values must be converted to csv
                     _SETTINGS[option] = ','.join(existing_value)
@@ -568,7 +577,7 @@ class Utils(object):
         arguments = "app,"
         if not _SETTINGS['paths']:
             arguments += " path='%s',"
-        arguments += " illegal_chars='%s', illegal_words='%s', html_extensions='%s',"
+        arguments += " illegal_chars='%s', illegal_words='%s', illegal_expressions='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
         arguments += " target_tags='%s', force=%s, publish=%s,"
         arguments += " collapse=%s,"
@@ -602,6 +611,8 @@ class Utils(object):
             illegal_chars = options.illegal_chars
         if options.illegal_words is not _UNSET_OPTION:
             illegal_words = options.illegal_words
+        if options.illegal_expressions is not _UNSET_OPTION:
+            illegal_expressions = options.illegal_expressions
         if options.html_extensions is not _UNSET_OPTION:
             html_extensions = options.html_extensions
         if options.image_extensions is not _UNSET_OPTION:
@@ -631,7 +642,7 @@ class Utils(object):
         else:
             match = None
 
-        return (path, illegal_chars, illegal_words, html_extensions, image_extensions,
+        return (path, illegal_chars, illegal_words, illegal_expressions, html_extensions, image_extensions,
             file_extensions, target_tags, force, publish, collapse,
             rename, replacetypes, match, paths, create_spreadsheet)
 
@@ -888,6 +899,7 @@ class Recipe(object):
                 _SETTINGS['path'],
                 _SETTINGS['illegal_chars'],
                 _SETTINGS['illegal_words'],
+                _SETTINGS['illegal_expressions'],
                 _SETTINGS['html_extensions'],
                 _SETTINGS['image_extensions'],
                 _SETTINGS['file_extensions'],
@@ -905,6 +917,7 @@ class Recipe(object):
             settings = (
                 _SETTINGS['illegal_chars'],
                 _SETTINGS['illegal_words'],
+                _SETTINGS['illegal_expressions'],
                 _SETTINGS['html_extensions'],
                 _SETTINGS['image_extensions'],
                 _SETTINGS['file_extensions'],
@@ -929,7 +942,7 @@ class Recipe(object):
         pass
 
 
-def main(app, path=None, illegal_chars=None, illegal_words=None, html_extensions=None,
+def main(app, path=None, illegal_chars=None, illegal_words=None, illegal_expressions=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
     force=False, publish=False, collapse=False, rename=None, replacetypes=None,
     match=None, paths=None, create_spreadsheet=None):
@@ -943,16 +956,17 @@ def main(app, path=None, illegal_chars=None, illegal_words=None, html_extensions
 
     # Convert arg values passed in to main from csv to list;
     # save results in _SETTINGS
-    (path, illegal_chars, illegal_words, html_extensions, image_extensions, file_extensions,
+    (path, illegal_chars, illegal_words, illegal_expressions, html_extensions, image_extensions, file_extensions,
         target_tags, force, publish, collapse, rename, replacetypes,
         match, paths, create_spreadsheet) = (
-        utils.process_recipe_args(path, illegal_chars, illegal_words, html_extensions,
+        utils.process_recipe_args(path, illegal_chars, illegal_words, illegal_expressions, html_extensions,
         image_extensions, file_extensions, target_tags, force, publish,
         collapse, rename, replacetypes, match, paths, create_spreadsheet))
 
     _SETTINGS['path'] = path
     _SETTINGS['illegal_chars'] = illegal_chars
     _SETTINGS['illegal_words'] = illegal_words
+    _SETTINGS['illegal_expressions'] = illegal_expressions
     _SETTINGS['html_extensions'] = html_extensions
     _SETTINGS['image_extensions'] = image_extensions
     _SETTINGS['file_extensions'] = file_extensions
@@ -969,16 +983,17 @@ def main(app, path=None, illegal_chars=None, illegal_words=None, html_extensions
     # Process command line args; save results in _SETTINGS
     option_parser = utils._create_option_parser()
     options, args = option_parser.parse_args()
-    (path, illegal_chars, illegal_words, html_extensions, image_extensions, file_extensions,
+    (path, illegal_chars, illegal_words, illegal_expressions, html_extensions, image_extensions, file_extensions,
         target_tags, force, publish, collapse, rename, replacetypes,
         match, paths, create_spreadsheet) = (utils.process_command_line_args(options,
-            path, illegal_chars, illegal_words, html_extensions, image_extensions,
+            path, illegal_chars, illegal_words, illegal_expressions, html_extensions, image_extensions,
             file_extensions, target_tags, force, publish, collapse, rename,
             replacetypes, match, paths, create_spreadsheet))
 
     _SETTINGS['path'] = path
     _SETTINGS['illegal_chars'] = illegal_chars
     _SETTINGS['illegal_words'] = illegal_words
+    _SETTINGS['illegal_expressions'] = illegal_expressions
     _SETTINGS['html_extensions'] = html_extensions
     _SETTINGS['image_extensions'] = image_extensions
     _SETTINGS['file_extensions'] = file_extensions
