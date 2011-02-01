@@ -657,7 +657,7 @@ class Parse2Plone(object):
             _COUNT['images'] += 1
             commit()
         elif utils._is_file(obj, _SETTINGS['file_extensions']):
-            if not _SETTINGS['create_spreadsheet'] and not _SETTINGS['create_spreadsheets']:
+            if not _SETTINGS['create_spreadsheet'] and not _SETTINGS['create_spreadsheet']:
                 at_file = self.create_file(parent, obj, _replace_types_map)
                 self.set_title(at_file, obj)
                 self.set_file(at_file, obj, parent_path, import_dir)
@@ -668,7 +668,7 @@ class Parse2Plone(object):
                 if obj.endswith('.xls'):
                     if not utils._check_exists_obj(parent,
                             utils._remove_ext(obj)):
-                        if not _SETTINGS['create_spreadsheets']:
+                        if not _SETTINGS['create_spreadsheet']:
                             page = self.create_page(parent, utils._remove_ext(obj),
                                 _replace_types_map)
                             self.set_title(page, utils._remove_ext(obj))
