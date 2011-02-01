@@ -676,7 +676,7 @@ class Parse2Plone(object):
                         else:
                             folder = self.create_folder(parent, utils._remove_ext(obj),
                                 _replace_types_map)
-                            self.set_title(page, utils._remove_ext(obj))
+                            self.set_title(folder, utils._remove_ext(obj))
                             create_spreadsheets(folder, obj, parent_path, import_dir)
                         _COUNT['files'] += 1
                         commit()
