@@ -1,7 +1,9 @@
 ###############################################################################
 #                                                                             #
-# mr.import - Easily import static website content into Plone               #
-# Copyright (C) 2010 Alex Clark                                               #
+# mr.import - Easily import static website content from the file system into  #
+#             Plone                                                           #
+#                                                                             #
+# Copyright (C) 2011 Alex Clark                                               #
 #                                                                             #
 # This program is free software; you can redistribute it and/or               #
 # modify it under the terms of the GNU General Public License                 #
@@ -74,10 +76,10 @@ _SETTINGS = {
 
 def _setup_logger():
     # log levels: debug, info, warn, error, critical
-    logger = logging.getLogger("parse2plone")
+    logger = logging.getLogger("mr.import")
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
-    outfile = logging.FileHandler(filename='parse2plone.log')
+    outfile = logging.FileHandler(filename='mr.import.log')
     handler.setLevel(logging.INFO)
     outfile.setLevel(logging.INFO)
     formatter = logging.Formatter(
@@ -932,7 +934,7 @@ class Recipe(object):
                 _SETTINGS['paths'])
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
-        create_scripts([('import', 'parse2plone', 'main')],
+        create_scripts([('import', 'mr.import', 'main')],
             working_set, executable, bindir, arguments=arguments % (settings))
 
         return tuple((bindir + '/' + 'import',))
