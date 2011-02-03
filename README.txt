@@ -1,7 +1,7 @@
 .. contents:: :depth: 2
 
 mr.import
-===========
+=========
 
 Easily import static websites on the file system into Plone
 
@@ -32,7 +32,7 @@ Because it drives the author nuts whenever he has to dig for a recipe's options,
 here are this recipe's options::
 
     [import]
-    recipe = parse2plone
+    recipe = mr.import
 
     # core features
     path = /Plone
@@ -107,7 +107,7 @@ Here are some reasons:
   ``BeautifulSoup`` was thrown in after the author read this:
   http://codespeak.net/lxml/elementsoup.html
 
-* ``parse2plone`` in addition to its primary role as a content importer, is
+* ``mr.import`` in addition to its primary role as a content importer, is
   intended to serve as an educational tool; both for the author and consumer.
   Python coding best practices, and demonstrating how to script tasks in Plone
   with "bin/instance run" are the aim. Forking and pull requests are encouraged.
@@ -131,7 +131,7 @@ You can install ``mr.import`` by editing your ``buildout.cfg`` file like
 so. First add an ``import`` section::
 
     [import]
-    recipe = parse2plone
+    recipe = mr.import
 
 Then add the ``import`` section to the list of parts::
 
@@ -186,7 +186,7 @@ And the following will be created:
 Customization
 -------------
 
-Modifying the default behavior of ``parse2plone`` is easy; just use the command
+Modifying the default behavior of ``mr.import`` is easy; just use the command
 line options or add parameters to your ``buildout.cfg`` file. Both approaches
 allow customization of the exact same set of options, but the command line
 arguments will trump any settings found in your ``buildout.cfg`` file.
@@ -195,7 +195,7 @@ Buildout options
 ~~~~~~~~~~~~~~~~
 
 You can configure the following parameters in your ``buildout.cfg`` file in
-the ``parse2plone`` recipe section.
+the ``mr.import`` recipe section.
 
 Options
 '''''''
@@ -207,24 +207,24 @@ Options
 |                      |            | database for the import to occur.      |
 +----------------------+------------+----------------------------------------+
 | ``illegal_chars``    |_ .         | Specify illegal characters.            |
-|                      |            | ``parse2plone`` will ignore files that |
+|                      |            | ``mr.import`` will ignore files that |
 |                      |            | contain these characters.              |
 +----------------------+------------+----------------------------------------+
 | ``html_extensions``  |html        | Specify HTML file extensions.          |
-|                      |            | ``parse2plone`` will import HTML files |
+|                      |            | ``mr.import`` will import HTML files |
 |                      |            | with these extensions                  |
 +----------------------+------------+----------------------------------------+
 | ``image_extensions`` |png, gif,   | Specify image file extensions.         |
-|                      |jpg, jpeg,  | ``parse2plone`` will import image files|
+|                      |jpg, jpeg,  | ``mr.import`` will import image files|
 |                      |            | with these extensions.                 |
 +----------------------+------------+----------------------------------------+
 | ``file_extensions``  |mp3, xls    | Specify image file extensions.         |
-|                      |            | ``parse2plone`` will import files with |
+|                      |            | ``mr.import`` will import files with |
 |                      |            | with these extensions as files in Plone|
 |                      |            | (unless you configure                  |
 |                      |            | create_spreadsheet=true, see below)    |
 +----------------------+------------+----------------------------------------+
-| ``target_tags``      |a h1 h2 p   | Specify target tags. ``parse2plone``   |
+| ``target_tags``      |a h1 h2 p   | Specify target tags. ``mr.import``   |
 |                      |            | will parse the contents of HTML tags   |
 |                      |            | listed. If any tag is provided as an   |
 |                      |            | XPath expression (any expression       |
@@ -241,16 +241,16 @@ Options
 |                      |            | For example, if you do                 |
 |                      |            | --path=/Plone/foo and foo does not     |
 |                      |            | exist, you will get an error message.  |
-|                      |            | Use --force to tell ``parse2plone`` to |
+|                      |            | Use --force to tell ``mr.import`` to |
 |                      |            | create it.                             |
 +----------------------+------------+----------------------------------------+
 | ``publish``          |false       | Publish newly created content.         |
 +----------------------+------------+----------------------------------------+
 | ``collapse``         |false       | "collapse" content. (see               |
-|                      |            | collapse_parts() in parse2plone.py)    |
+|                      |            | collapse_parts() in mr.import.py)    |
 +----------------------+------------+----------------------------------------+
 | ``rename``           |            | Rename content. (see rename_parts()    |
-|                      |            | in parse2plone.py                      | 
+|                      |            | in mr.import.py                      | 
 +----------------------+------------+----------------------------------------+
 | ``replacetypes``     |            | Use custom types. (see replace_types())|
 +----------------------+------------+----------------------------------------+
@@ -264,23 +264,23 @@ Options
 |                      |            | (--path will be ignored)               |
 +----------------------+------------+----------------------------------------+
 |``create_spreadsheet``| false      | Create "spreadsheets". (see            |
-|                      |            | create_spreadsheet() in parse2plone.py)|
+|                      |            | create_spreadsheet() in mr.import.py)|
 +----------------------+------------+----------------------------------------+
 
 Example
 '''''''
 
-Instead of accepting the default ``parse2plone`` behaviour, in your
+Instead of accepting the default ``mr.import`` behaviour, in your
 ``buildout.cfg`` file you may specify the following::
 
     [import]
-    recipe = parse2plone
+    recipe = mr.import
     path = /Plone/foo
     html_extensions = htm
     image_extensions = png
     target_tags = p
 
-This will configure ``parse2plone`` to (only) import content from:
+This will configure ``mr.import`` to (only) import content from:
 
 * Images ending in ``.png``
 * HTML files ending in ``.htm``
@@ -293,7 +293,7 @@ This will configure ``parse2plone`` to (only) import content from:
 Command line options
 ~~~~~~~~~~~~~~~~~~~~
 
-The following ``parse2plone`` command line options are supported.
+The following ``mr.import`` command line options are supported.
 
 Options
 '''''''
@@ -347,7 +347,7 @@ Publish newly created content.
 ``'--collapse'``
 ****************
 
-"collapse" content (see collapse_parts() in parse2plone.py).
+"collapse" content (see collapse_parts() in mr.import.py).
 
 ``'--rename'``
 ***************
@@ -357,12 +357,12 @@ Rename content (see rename_files()).
 ``'--replacetypes'``
 ********************
 
-Customize types (see replace_types() in parse2plone.py).
+Customize types (see replace_types() in mr.import.py).
 
 ``'--match'``
 ****************
 
-Match files (see match_files() parse2plone.py).
+Match files (see match_files() mr.import.py).
 
 ``'--paths'``
 *************
@@ -374,7 +374,7 @@ You can specify a series of import paths and corresponding object paths::
 ``'--create-spreadsheet'``
 **************************
 
-You can optionally tell ``parse2plone`` to try and import the contents of any
+You can optionally tell ``mr.import`` to try and import the contents of any
 spreadsheets it finds, by doing this::
 
     $ bin/plone run bin/import --create-spreadsheet /var/www/html
@@ -386,7 +386,7 @@ of the spreadsheet in an HTML table.
 ``'--help'``
 ************
 
-And lastly, you can always ask ``parse2plone`` to tell you about its available options with
+And lastly, you can always ask ``mr.import`` to tell you about its available options with
 the ``--help`` or ``-h`` option::
 
     $ bin/plone run bin/import -h
@@ -394,13 +394,13 @@ the ``--help`` or ``-h`` option::
 Example
 '''''''
 
-Instead of accepting the default ``parse2plone`` behaviour, on the command line you
+Instead of accepting the default ``mr.import`` behaviour, on the command line you
 may specify the following::
 
     $ bin/plone run bin/import /path/to/files -p /Plone/foo --html-extensions=html \
         --image-extensions=png --target-tags=p
 
-This will configure ``parse2plone`` to (only) import content from:
+This will configure ``mr.import`` to (only) import content from:
 
 * Images ending in ``.png``
 * HTML files ending in ``.htm``
@@ -428,8 +428,8 @@ already *your mileage may vary* (i.e. Buildout will fail).
 Database access
 ~~~~~~~~~~~~~~~
 
-Before running ``parse2plone``, you must either stop your Plone site or
-use ZEO. Otherwise ``parse2plone`` will not be able to access the
+Before running ``mr.import``, you must either stop your Plone site or
+use ZEO. Otherwise ``mr.import`` will not be able to access the
 database.
 
 Contact
