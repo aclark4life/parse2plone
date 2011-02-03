@@ -574,7 +574,7 @@ class Utils(object):
                     # and others do not have to be converted to csv
                     _SETTINGS[option] = existing_value
 
-        arguments = "app,"
+        arguments = ""
         if not _SETTINGS['paths']:
             arguments += " path='%s',"
         arguments += " illegal_chars='%s', illegal_words='%s', illegal_expressions='%s', html_extensions='%s',"
@@ -942,10 +942,19 @@ class Recipe(object):
         pass
 
 
-def main(app, path=None, illegal_chars=None, illegal_words=None, illegal_expressions=None, html_extensions=None,
+def main(path=None, illegal_chars=None, illegal_words=None, illegal_expressions=None, html_extensions=None,
     image_extensions=None, file_extensions=None, target_tags=None,
     force=False, publish=False, collapse=False, rename=None, replacetypes=None,
     match=None, paths=None, create_spreadsheet=None):
+
+    msg = """Usage:
+
+    $ bin/plone run bin/import /path/to/files"""
+    try:
+        app = locals()['app']
+    except KeyError:
+        print msg
+        exit(1)
 
     _rename_map = {'forward': {}, 'reverse': {}}
     _collapse_map = {'forward': {}, 'reverse': {}}
