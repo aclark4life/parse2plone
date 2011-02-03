@@ -1,7 +1,7 @@
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
-name = 'parse2plone'
+name = 'mr.import'
 description = 'Easily import static HTML websites on the file system into Plone'
 version = '1.0a5'
 
@@ -29,7 +29,8 @@ setup(
         'xlrd',
         'zc.buildout',
     ],
-    py_modules=['parse2plone'],
+#    py_modules=['parse2plone'],
+    packages=find_packages(),
     classifiers=[
         'Framework :: Buildout',
         'Framework :: Plone'
