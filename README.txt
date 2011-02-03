@@ -1,6 +1,6 @@
 .. contents:: :depth: 2
 
-Parse2Plone
+mr.import
 ===========
 
 Easily import static websites on the file system into Plone
@@ -8,7 +8,7 @@ Easily import static websites on the file system into Plone
 Introduction
 ------------
 
-``Parse2Plone`` is a "one off" HTML parser (in the form of a Buildout recipe that
+``mr.import`` is a "one off" HTML parser (in the form of a Buildout recipe that
 creates a script for you) to easily get content from static HTML websites
 (on the file system) into Plone.
 
@@ -65,30 +65,30 @@ here are this recipe's options::
 Justification
 -------------
 
-Why did you create ``Parse2Plone`` when `collective.transmogrifier`_ already
+Why did you create ``mr.import`` when `collective.transmogrifier`_ already
 existed?
 
 Here are some reasons:
 
-* Because ``Parse2Plone`` is aimed at lowering the bar for folks who don't already
+* Because ``mr.import`` is aimed at lowering the bar for folks who don't already
   know (or want to know) what a "transmogrifier blueprint" is but are able to update
   their ``buildout.cfg`` file; run ``Buildout``; then run a single command; all
   without having to think too much.
 
 * collective.transmogrify provides a framework for creating reusable pipes
-  (whose definitions are called blueprints). ``Parse2Plone`` provides 
+  (whose definitions are called blueprints). ``mr.import`` provides 
   a single, non-reusable script.
 
 * Transmogrifier and friends appear to be "developer's tools", while the author wants
-  ``Parse2Plone`` to be an "end user's tool".
+  ``mr.import`` to be an "end user's tool".
 
 If you are a developer looking to create repeatable migrations, you probably want to be
 using ``collective.transmogrifier``. If you are an end user that just wants to see your
-static website in Plone, then you might want to give ``Parse2Plone`` a try.
+static website in Plone, then you might want to give ``mr.import`` a try.
 
 There is also this user/contributor comment, which captures the author's sentiment::
 
-    Parse2Plone's release was very timely as I need either this or something very
+    mr.import's release was very timely as I need either this or something very
     similar - and while I've no doubt I could make transmogrify do the job, it's a
     lot of work for a one-shot loading of legacy pages.
 
@@ -100,7 +100,7 @@ and make it more user friendly?
 
 Here are some reasons:
 
-* The author is a minimalist. One of the design aims of ``Parse2Plone`` was to
+* The author is a minimalist. One of the design aims of ``mr.import`` was to
   have as few dependencies as possible. There are two "big" dependencies,
   ``zc.buildout`` and ``lxml``. Using Buildout was a design compromise, and
   using ``lxml`` is pretty much a must if you want to "parse". Oh, and 
@@ -117,8 +117,8 @@ Here are some reasons:
 
 All of that said, the author understands that reusability and conservation of
 developer resources are important goals, especially for the Plone project.
-But for better or worse, these were not the goals of ``Parse2Plone``. However,
-you can be sure that the lessons learned while developing ``Parse2Plone`` will  
+But for better or worse, these were not the goals of ``mr.import``. However,
+you can be sure that the lessons learned while developing ``mr.import`` will  
 be applied outside of it, particularly with regard to the conservation of developer
 resources within the Plone project.
 
@@ -127,7 +127,7 @@ resources within the Plone project.
 Installation
 ------------
 
-You can install ``Parse2Plone`` by editing your ``buildout.cfg`` file like
+You can install ``mr.import`` by editing your ``buildout.cfg`` file like
 so. First add an ``import`` section::
 
     [import]
@@ -153,7 +153,7 @@ Now run ``bin/buildout`` as usual.
 Execution
 ---------
 
-Now you can run ``Parse2Plone`` like this::
+Now you can run ``mr.import`` like this::
 
     $ bin/plone run bin/import /path/to/files
 
@@ -418,7 +418,7 @@ Here are some trouble-shooting comments/tips.
 Compiling lxml
 ~~~~~~~~~~~~~~
 
-``Parse2Plone`` requires ``lxml`` which in turn requires ``libxml2`` and
+``mr.import`` requires ``lxml`` which in turn requires ``libxml2`` and
 ``libxslt``. If you do not have ``lxml`` installed "globally" (i.e. in your
 system Python's site-packages directory) then Buildout will try to install it
 for you. At this point ``lxml`` will look for the libxml2/libxslt2 development
