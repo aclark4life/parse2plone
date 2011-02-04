@@ -1,7 +1,7 @@
 .. contents:: :depth: 2
 
 mr.importer
-=========
+===========
 
 Easily import static websites on the file system into Plone
 
