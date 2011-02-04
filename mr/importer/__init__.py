@@ -76,10 +76,10 @@ _SETTINGS = {
 
 def _setup_logger():
     # log levels: debug, info, warn, error, critical
-    logger = logging.getLogger("mr.import")
+    logger = logging.getLogger("mr.importer")
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
-    outfile = logging.FileHandler(filename='mr.import.log')
+    outfile = logging.FileHandler(filename='mr.importer.log')
     handler.setLevel(logging.INFO)
     outfile.setLevel(logging.INFO)
     formatter = logging.Formatter(
@@ -934,7 +934,7 @@ class Recipe(object):
                 _SETTINGS['paths'])
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
-        create_scripts([('import', 'mr.import', 'main')],
+        create_scripts([('import', 'mr.importer', 'main')],
             working_set, executable, bindir, arguments=arguments % (settings))
 
         return tuple((bindir + '/' + 'import',))
