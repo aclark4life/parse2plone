@@ -1,45 +1,45 @@
 ###############################################################################
-# #
-# mr.import - Easily import static website content from the file system into #
-# Plone #
-# #
-# Copyright (C) 2011 Alex Clark #
-# #
-# This program is free software; you can redistribute it and/or #
-# modify it under the terms of the GNU General Public License #
-# as published by the Free Software Foundation; either version 2 #
-# of the License, or (at your option) any later version. #
-# #
-# This program is distributed in the hope that it will be useful, #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the #
-# GNU General Public License for more details. #
-# #
-# You should have received a copy of the GNU General Public License #
-# along with this program; if not, write to the Free Software #
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, #
-# USA. #
-# #
-# Usage: #
-# #
-# $ bin/plone run bin/import /path/to/files #
-# #
-# Where: #
-# #
-# * `bin/plone` is an instance script created by #
-# http://pypi.python.org/pypi/plone.recipe.zope2instance #
-# (after you run Buildout) #
-# #
-# * `run` is a command line option of `bin/plone` to execute a script #
-# #
-# * `bin/import` is a script created by parse2plone (after you run #
-# Buildout) #
-# #
-# * `/path/to/files` is the file system path to your website files e.g. #
-# /var/www/html #
-# #
-# See README.txt for more information #
-# #
+#                                                                             #
+# mr.importer - Easily import static website content from the file system     #
+#               into Plone                                                    #
+#                                                                             #
+# Copyright (C) 2011 Alex Clark                                               #
+#                                                                             #
+# This program is free software; you can redistribute it and/or               #
+# modify it under the terms of the GNU General Public License                 #
+# as published by the Free Software Foundation; either version 2              #
+# of the License, or (at your option) any later version.                      #
+#                                                                             #
+# This program is distributed in the hope that it will be useful,             #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of              #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                #
+# GNU General Public License for more details.                                #
+#                                                                             #
+# You should have received a copy of the GNU General Public License           #
+# along with this program; if not, write to the Free Software                 #
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,   #
+# USA.                                                                        #
+#                                                                             #
+# Usage:                                                                      #
+#                                                                             #
+# $ bin/plone run bin/import /path/to/files                                   #
+#                                                                             #
+# Where:                                                                      #
+#                                                                             #
+# * `bin/plone` is an instance script created by                              #
+# http://pypi.python.org/pypi/plone.recipe.zope2instance                      #
+# (after you run Buildout)                                                    #
+#                                                                             #
+# * `run` is a command line option of `bin/plone` to execute a script         #
+#                                                                             #
+# * `bin/import` is a script created by parse2plone (after you run            #
+# Buildout)                                                                   #
+#                                                                             #
+# * `/path/to/files` is the file system path to your website files e.g.       #
+# /var/www/html                                                               #
+#                                                                             #
+# See README.txt for more information                                         #
+#                                                                             #
 ###############################################################################
 
 import logging
