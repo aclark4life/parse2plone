@@ -14,7 +14,7 @@ creates a script for you) to easily get content from static HTML websites
 
 It is designed to satisfy only the most trivial of use cases (e.g. a simple static
 site in /var/www/html). Think of it as a tool for proof concept, only. For more
-serious deployments, with more options for customization and reuse, please
+serious deployments, with more options for customization and reuse please
 see `funnelweb`_.
 
 .. _`funnelweb`: http://pypi.python.org/pypi/funnelweb
