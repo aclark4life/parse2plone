@@ -1,6 +1,6 @@
 .. contents:: :depth: 2
 
-mr.import
+mr.importer
 =========
 
 Easily import static websites on the file system into Plone
@@ -8,15 +8,17 @@ Easily import static websites on the file system into Plone
 Introduction
 ------------
 
-``mr.import`` is a "one off" HTML parser (in the form of a Buildout recipe that
+``mr.importer`` is a "one off" HTML parser (in the form of a Buildout recipe that
 creates a script for you) to easily get content from static HTML websites
 (on the file system) into Plone.
 
 It is designed to satisfy only the most trivial of use cases (e.g. a simple static
-site in /var/www/html); for more serious deployments, you might try
-`funnelweb`_.
+site in /var/www/html). Think of it as a tool for proof concept, only. For more
+serious deployments, with more options for customization and reuse, please
+see `funnelweb`_.
 
 .. _`funnelweb`: http://pypi.python.org/pypi/funnelweb
+
 
 Warning
 -------
@@ -32,7 +34,7 @@ Because it drives the author nuts whenever he has to dig for a recipe's options,
 here are this recipe's options::
 
     [import]
-    recipe = mr.import
+    recipe = mr.importer
 
     # core features
     path = /Plone
@@ -65,30 +67,30 @@ here are this recipe's options::
 Justification
 -------------
 
-Why did you create ``mr.import`` when `collective.transmogrifier`_ already
+Why did you create ``mr.importer`` when `collective.transmogrifier`_ already
 existed?
 
 Here are some reasons:
 
-* Because ``mr.import`` is aimed at lowering the bar for folks who don't already
+* Because ``mr.importer`` is aimed at lowering the bar for folks who don't already
   know (or want to know) what a "transmogrifier blueprint" is but are able to update
   their ``buildout.cfg`` file; run ``Buildout``; then run a single command; all
   without having to think too much.
 
 * collective.transmogrify provides a framework for creating reusable pipes
-  (whose definitions are called blueprints). ``mr.import`` provides 
+  (whose definitions are called blueprints). ``mr.importer`` provides 
   a single, non-reusable script.
 
 * Transmogrifier and friends appear to be "developer's tools", while the author wants
-  ``mr.import`` to be an "end user's tool".
+  ``mr.importer`` to be an "end user's tool".
 
 If you are a developer looking to create repeatable migrations, you probably want to be
 using ``collective.transmogrifier``. If you are an end user that just wants to see your
-static website in Plone, then you might want to give ``mr.import`` a try.
+static website in Plone, then you might want to give ``mr.importer`` a try.
 
 There is also this user/contributor comment, which captures the author's sentiment::
 
-    mr.import's release was very timely as I need either this or something very
+    mr.importer's release was very timely as I need either this or something very
     similar - and while I've no doubt I could make transmogrify do the job, it's a
     lot of work for a one-shot loading of legacy pages.
 
@@ -100,14 +102,14 @@ and make it more user friendly?
 
 Here are some reasons:
 
-* The author is a minimalist. One of the design aims of ``mr.import`` was to
+* The author is a minimalist. One of the design aims of ``mr.importer`` was to
   have as few dependencies as possible. There are two "big" dependencies,
   ``zc.buildout`` and ``lxml``. Using Buildout was a design compromise, and
   using ``lxml`` is pretty much a must if you want to "parse". Oh, and 
   ``BeautifulSoup`` was thrown in after the author read this:
   http://codespeak.net/lxml/elementsoup.html
 
-* ``mr.import`` in addition to its primary role as a content importer, is
+* ``mr.importer`` in addition to its primary role as a content importer, is
   intended to serve as an educational tool; both for the author and consumer.
   Python coding best practices, and demonstrating how to script tasks in Plone
   with "bin/instance run" are the aim. Forking and pull requests are encouraged.
@@ -117,8 +119,8 @@ Here are some reasons:
 
 All of that said, the author understands that reusability and conservation of
 developer resources are important goals, especially for the Plone project.
-But for better or worse, these were not the goals of ``mr.import``. However,
-you can be sure that the lessons learned while developing ``mr.import`` will  
+But for better or worse, these were not the goals of ``mr.importer``. However,
+you can be sure that the lessons learned while developing ``mr.importer`` will  
 be applied outside of it, particularly with regard to the conservation of developer
 resources within the Plone project.
 
@@ -127,11 +129,11 @@ resources within the Plone project.
 Installation
 ------------
 
-You can install ``mr.import`` by editing your ``buildout.cfg`` file like
+You can install ``mr.importer`` by editing your ``buildout.cfg`` file like
 so. First add an ``import`` section::
 
     [import]
-    recipe = mr.import
+    recipe = mr.importer
 
 Then add the ``import`` section to the list of parts::
 
@@ -153,7 +155,7 @@ Now run ``bin/buildout`` as usual.
 Execution
 ---------
 
-Now you can run ``mr.import`` like this::
+Now you can run ``mr.importer`` like this::
 
     $ bin/plone run bin/import /path/to/files
 
@@ -186,7 +188,7 @@ And the following will be created:
 Customization
 -------------
 
-Modifying the default behavior of ``mr.import`` is easy; just use the command
+Modifying the default behavior of ``mr.importer`` is easy; just use the command
 line options or add parameters to your ``buildout.cfg`` file. Both approaches
 allow customization of the exact same set of options, but the command line
 arguments will trump any settings found in your ``buildout.cfg`` file.
@@ -195,7 +197,7 @@ Buildout options
 ~~~~~~~~~~~~~~~~
 
 You can configure the following parameters in your ``buildout.cfg`` file in
-the ``mr.import`` recipe section.
+the ``mr.importer`` recipe section.
 
 Options
 '''''''
@@ -207,24 +209,24 @@ Options
 |                      |            | database for the import to occur.      |
 +----------------------+------------+----------------------------------------+
 | ``illegal_chars``    |_ .         | Specify illegal characters.            |
-|                      |            | ``mr.import`` will ignore files that |
+|                      |            | ``mr.importer`` will ignore files that |
 |                      |            | contain these characters.              |
 +----------------------+------------+----------------------------------------+
 | ``html_extensions``  |html        | Specify HTML file extensions.          |
-|                      |            | ``mr.import`` will import HTML files |
+|                      |            | ``mr.importer`` will import HTML files |
 |                      |            | with these extensions                  |
 +----------------------+------------+----------------------------------------+
 | ``image_extensions`` |png, gif,   | Specify image file extensions.         |
-|                      |jpg, jpeg,  | ``mr.import`` will import image files|
+|                      |jpg, jpeg,  | ``mr.importer`` will import image files|
 |                      |            | with these extensions.                 |
 +----------------------+------------+----------------------------------------+
 | ``file_extensions``  |mp3, xls    | Specify image file extensions.         |
-|                      |            | ``mr.import`` will import files with |
+|                      |            | ``mr.importer`` will import files with |
 |                      |            | with these extensions as files in Plone|
 |                      |            | (unless you configure                  |
 |                      |            | create_spreadsheet=true, see below)    |
 +----------------------+------------+----------------------------------------+
-| ``target_tags``      |a h1 h2 p   | Specify target tags. ``mr.import``   |
+| ``target_tags``      |a h1 h2 p   | Specify target tags. ``mr.importer``   |
 |                      |            | will parse the contents of HTML tags   |
 |                      |            | listed. If any tag is provided as an   |
 |                      |            | XPath expression (any expression       |
@@ -241,16 +243,16 @@ Options
 |                      |            | For example, if you do                 |
 |                      |            | --path=/Plone/foo and foo does not     |
 |                      |            | exist, you will get an error message.  |
-|                      |            | Use --force to tell ``mr.import`` to |
+|                      |            | Use --force to tell ``mr.importer`` to |
 |                      |            | create it.                             |
 +----------------------+------------+----------------------------------------+
 | ``publish``          |false       | Publish newly created content.         |
 +----------------------+------------+----------------------------------------+
 | ``collapse``         |false       | "collapse" content. (see               |
-|                      |            | collapse_parts() in mr.import.py)    |
+|                      |            | collapse_parts() in mr.importer.py)    |
 +----------------------+------------+----------------------------------------+
 | ``rename``           |            | Rename content. (see rename_parts()    |
-|                      |            | in mr.import.py                      | 
+|                      |            | in mr.importer.py                      | 
 +----------------------+------------+----------------------------------------+
 | ``replacetypes``     |            | Use custom types. (see replace_types())|
 +----------------------+------------+----------------------------------------+
@@ -264,23 +266,23 @@ Options
 |                      |            | (--path will be ignored)               |
 +----------------------+------------+----------------------------------------+
 |``create_spreadsheet``| false      | Create "spreadsheets". (see            |
-|                      |            | create_spreadsheet() in mr.import.py)|
+|                      |            | create_spreadsheet() in mr.importer.py)|
 +----------------------+------------+----------------------------------------+
 
 Example
 '''''''
 
-Instead of accepting the default ``mr.import`` behaviour, in your
+Instead of accepting the default ``mr.importer`` behaviour, in your
 ``buildout.cfg`` file you may specify the following::
 
     [import]
-    recipe = mr.import
+    recipe = mr.importer
     path = /Plone/foo
     html_extensions = htm
     image_extensions = png
     target_tags = p
 
-This will configure ``mr.import`` to (only) import content from:
+This will configure ``mr.importer`` to (only) import content from:
 
 * Images ending in ``.png``
 * HTML files ending in ``.htm``
@@ -293,7 +295,7 @@ This will configure ``mr.import`` to (only) import content from:
 Command line options
 ~~~~~~~~~~~~~~~~~~~~
 
-The following ``mr.import`` command line options are supported.
+The following ``mr.importer`` command line options are supported.
 
 Options
 '''''''
@@ -347,7 +349,7 @@ Publish newly created content.
 ``'--collapse'``
 ****************
 
-"collapse" content (see collapse_parts() in mr.import.py).
+"collapse" content (see collapse_parts() in mr.importer.py).
 
 ``'--rename'``
 ***************
@@ -357,12 +359,12 @@ Rename content (see rename_files()).
 ``'--replacetypes'``
 ********************
 
-Customize types (see replace_types() in mr.import.py).
+Customize types (see replace_types() in mr.importer.py).
 
 ``'--match'``
 ****************
 
-Match files (see match_files() mr.import.py).
+Match files (see match_files() mr.importer.py).
 
 ``'--paths'``
 *************
@@ -374,7 +376,7 @@ You can specify a series of import paths and corresponding object paths::
 ``'--create-spreadsheet'``
 **************************
 
-You can optionally tell ``mr.import`` to try and import the contents of any
+You can optionally tell ``mr.importer`` to try and import the contents of any
 spreadsheets it finds, by doing this::
 
     $ bin/plone run bin/import --create-spreadsheet /var/www/html
@@ -386,7 +388,7 @@ of the spreadsheet in an HTML table.
 ``'--help'``
 ************
 
-And lastly, you can always ask ``mr.import`` to tell you about its available options with
+And lastly, you can always ask ``mr.importer`` to tell you about its available options with
 the ``--help`` or ``-h`` option::
 
     $ bin/plone run bin/import -h
@@ -394,13 +396,13 @@ the ``--help`` or ``-h`` option::
 Example
 '''''''
 
-Instead of accepting the default ``mr.import`` behaviour, on the command line you
+Instead of accepting the default ``mr.importer`` behaviour, on the command line you
 may specify the following::
 
     $ bin/plone run bin/import /path/to/files -p /Plone/foo --html-extensions=html \
         --image-extensions=png --target-tags=p
 
-This will configure ``mr.import`` to (only) import content from:
+This will configure ``mr.importer`` to (only) import content from:
 
 * Images ending in ``.png``
 * HTML files ending in ``.htm``
@@ -418,7 +420,7 @@ Here are some trouble-shooting comments/tips.
 Compiling lxml
 ~~~~~~~~~~~~~~
 
-``mr.import`` requires ``lxml`` which in turn requires ``libxml2`` and
+``mr.importer`` requires ``lxml`` which in turn requires ``libxml2`` and
 ``libxslt``. If you do not have ``lxml`` installed "globally" (i.e. in your
 system Python's site-packages directory) then Buildout will try to install it
 for you. At this point ``lxml`` will look for the libxml2/libxslt2 development
@@ -428,8 +430,8 @@ already *your mileage may vary* (i.e. Buildout will fail).
 Database access
 ~~~~~~~~~~~~~~~
 
-Before running ``mr.import``, you must either stop your Plone site or
-use ZEO. Otherwise ``mr.import`` will not be able to access the
+Before running ``mr.importer``, you must either stop your Plone site or
+use ZEO. Otherwise ``mr.importer`` will not be able to access the
 database.
 
 Contact
