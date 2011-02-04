@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 name = 'mr.importer'
-description = 'Easily import static HTML websites on the file system into Plone'
+description = 'Easily import static HTML websites on the file system into Plone.'
 version = '1.0a5'
 
 
