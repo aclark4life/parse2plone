@@ -3,7 +3,7 @@
 mr.importer
 ===========
 
-Easily import static websites on the file system into Plone
+Easily import static websites on the file system into Plone.
 
 Introduction
 ------------
