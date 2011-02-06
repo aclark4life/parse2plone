@@ -48,6 +48,7 @@ import lxml.html
 import optparse
 import os
 import re
+import sys
 
 from os import path as os_path
 from pkg_resources import working_set
@@ -72,6 +73,7 @@ _SETTINGS = {
     'match': None,
     'paths': None,
     'create_spreadsheet': False,
+    'ignore_errors': True,
 }
 
 
@@ -791,8 +793,17 @@ class Parse2Plone(object):
                 parts = _rename_map['forward'][f].split('/')
             if _SETTINGS['collapse'] and f in _collapse_map['forward']:
                 parts = _collapse_map['forward'][f].split('/')
-            self.create_parts(parent, parts, import_dir, _collapse_map,
-                _rename_map, _replace_types_map)
+            if _SETTINGS['ignore_errors']:
+                try:
+                    self.create_parts(parent, parts, import_dir, _collapse_map,
+                        _rename_map, _replace_types_map)
+                except:
+                    # Keep going!
+                    _LOG.info("Keep going! Ignoring error '%s'" % sys.exc_info()[1])
+                    pass
+            else:
+                self.create_parts(parent, parts, import_dir, _collapse_map,
+                    _rename_map, _replace_types_map)
         results = _COUNT.values()
         return results
 
