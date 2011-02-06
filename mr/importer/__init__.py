@@ -526,8 +526,6 @@ Returns False when 'False' is passed in, and so on.
         # makes parse2plone work with Plone 2.5 (non-egg release).
         from AccessControl.SecurityManagement import newSecurityManager
         from Testing.makerequest import makerequest
-#        from AccessControl.SpecialUsers import system
-#        newSecurityManager(None, system)
         newSecurityManager(None, app.acl_users.getUser(user))
         app = makerequest(app)
         return app
@@ -783,14 +781,6 @@ class Parse2Plone(object):
             else:
                 _LOG.info("object '%s' has illegal chars" % obj)
                 break
-
-#    def create_plonesite(self, parent, obj):
-#        utils = Utils()
-#        from Products.CMFPlone.factory import addPloneSite
-#        addPloneSite(parent, obj, extension_ids=('plonetheme.classic:default',
-#            'plonetheme.sunburst:default'))
-#        _LOG.info("creating plone site '%s' inside parent folder '%s'" % (
-#            obj, utils._convert_obj_to_path(parent)))
 
     def import_files(self, parent, object_paths, import_dir, _collapse_map,
         _rename_map, _replace_types_map):
