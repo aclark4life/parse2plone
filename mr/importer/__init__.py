@@ -700,19 +700,14 @@ class Parse2Plone(object):
 
     def create_folder(self, parent, obj, _replace_types_map):
         utils = Utils()
-        # XXX Need a better check
-        if not obj == 'Plone':
-            _LOG.info("creating folder '%s' inside parent folder '%s'" % (
-                obj, utils._convert_obj_to_path(parent)))
-            folder_type = _replace_types_map['Folder']
-            parent.invokeFactory(folder_type, obj)
-            folder = parent[obj]
-            if _SETTINGS['publish']:
-                self.set_state(folder)
-                _LOG.info("publishing folder '%s'" % obj)
-        else:
-            self.create_plonesite(parent, obj)
-            folder = parent[obj]
+        _LOG.info("creating folder '%s' inside parent folder '%s'" % (
+            obj, utils._convert_obj_to_path(parent)))
+        folder_type = _replace_types_map['Folder']
+        parent.invokeFactory(folder_type, obj)
+        folder = parent[obj]
+        if _SETTINGS['publish']:
+            self.set_state(folder)
+            _LOG.info("publishing folder '%s'" % obj)
         return folder
 
     def create_file(self, parent, obj, _replace_types_map):
@@ -768,13 +763,13 @@ class Parse2Plone(object):
                 _LOG.info("object '%s' has illegal chars" % obj)
                 break
 
-    def create_plonesite(self, parent, obj):
-        utils = Utils()
-        from Products.CMFPlone.factory import addPloneSite
-        addPloneSite(parent, obj, extension_ids=('plonetheme.classic:default',
-            'plonetheme.sunburst:default'))
-        _LOG.info("creating plone site '%s' inside parent folder '%s'" % (
-            obj, utils._convert_obj_to_path(parent)))
+#    def create_plonesite(self, parent, obj):
+#        utils = Utils()
+#        from Products.CMFPlone.factory import addPloneSite
+#        addPloneSite(parent, obj, extension_ids=('plonetheme.classic:default',
+#            'plonetheme.sunburst:default'))
+#        _LOG.info("creating plone site '%s' inside parent folder '%s'" % (
+#            obj, utils._convert_obj_to_path(parent)))
 
     def import_files(self, parent, object_paths, import_dir, _collapse_map,
         _rename_map, _replace_types_map):
@@ -962,7 +957,7 @@ def main(**kwargs):
         if utils._check_exists_path(app, path):
             parent = utils._update_parent(app, path)
         else:
-            if force:
+            if _SETTINGS['force']:
                 parse2plone.create_parts(app, utils._get_parts(path),
                     import_dir, _collapse_map, _rename_map, _replace_types_map)
                 parent = utils._update_parent(app, path)
