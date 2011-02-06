@@ -9,6 +9,8 @@ History
 * Switch to **kwargs in main()
     - Better _SETTINGS handling
 * Add support for illegal_expressions check
+* Add "Keep going!" feature (to ignore errors)
+* Add all HTML4 tags to target_tags
 
 1.0a4 (01/12/2011)
 ~~~~~~~~~~~~~~~~~~
