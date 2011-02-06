@@ -57,7 +57,7 @@ from zc.buildout.easy_install import scripts as create_scripts
 _SETTINGS = {
     'user': 'admin',
     'path': '/Plone',
-    'illegal_chars': ['_', '.'],
+    'illegal_chars': ['_', '.', '+'],
     'illegal_words': ['id', 'start'],
     'illegal_expressions': ['[0-9]'],
     'html_extensions': ['html'],
