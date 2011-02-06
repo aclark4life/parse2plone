@@ -292,8 +292,8 @@ Turns '/foo/bar/baz/' into 'foo/bar/baz'
 
     def _convert_str_to_csv(self, value):
         """
-Converts '\nfoo bar\nbaz qux' to 'foo:bar,baz:qux'
-"""
+        Converts '\nfoo bar\nbaz qux' to 'foo:bar,baz:qux'
+        """
         expr = re.compile('\n(\S+)\s+(\S+)')
         results = ''
         c = 0
@@ -305,44 +305,36 @@ Converts '\nfoo bar\nbaz qux' to 'foo:bar,baz:qux'
             c += 1
         return results
 
-    def process_recipe_args(self, path, illegal_chars, illegal_words, illegal_expressions, html_extensions,
-        image_extensions, file_extensions, target_tags, force,
-        publish, collapse, rename, replacetypes, match, paths,
-        create_spreadsheet):
+    def process_recipe_args(self, recipe_args):
         """
-Convert recipe parameter values
-"""
-        path = path
-        illegal_chars = illegal_chars.split(',')
-        illegal_words = illegal_words.split(',')
-        illegal_expressions = illegal_expressions.split(',')
-        html_extensions = html_extensions.split(',')
-        image_extensions = image_extensions.split(',')
-        file_extensions = file_extensions.split(',')
-        target_tags = target_tags.split(',')
-        if not paths:
-            path = self._clean_path(path)
-        force = force
-        publish = publish
-        collapse = collapse
-        create_spreadsheet = create_spreadsheet
-        if rename is not None:
-            rename = rename.split(',')
+        Convert recipe parameter values
+        """
+        _SETTINGS['path'] = recipe_args['path']
+        _SETTINGS['illegal_chars'] = recipe_args['illegal_chars'].split(',')
+        _SETTINGS['illegal_words'] = recipe_args['illegal_words'].split(',')
+        _SETTINGS['illegal_expressions'] = recipe_args['illegal_expressions'].split(',')
+        _SETTINGS['html_extensions'] = recipe_args['html_extensions'].split(',')
+        _SETTINGS['image_extensions'] = recipe_args['image_extensions'].split(',')
+        _SETTINGS['file_extensions'] = recipe_args['file_extensions'].split(',')
+        _SETTINGS['target_tags'] = recipe_args['target_tags'].split(',')
+        if not 'paths' in recipe_args:
+            _SETTINGS['path'] = self._clean_path(recipe_args['path'])
+        _SETTINGS['force'] = recipe_args['force']
+        _SETTINGS['publish'] = recipe_args['publish']
+        _SETTINGS['collapse'] = recipe_args['collapse']
+        _SETTINGS['create_spreadsheet'] = recipe_args['create_spreadsheet']
+        if recipe_args['rename'] is not None:
+            _SETTINGS['rename'] = recipe_args['rename'].split(',')
         else:
-            rename = rename
-        if replacetypes is not None:
-            replacetypes = replacetypes.split(',')
+            _SETTINGS['rename'] = recipe_args['rename']
+        if recipe_args['replacetypes'] is not None:
+            _SETTINGS['replacetypes'] = recipe_args['replacetypes'].split(',')
         else:
-            replacetypes = replacetypes
-        if match is not None:
-            match = match.split(',')
+            _SETTINGS['replacetypes'] = recipe_args['replacetypes']
+        if recipe_args['match'] is not None:
+            _SETTINGS['match'] = recipe_args['match'].split(',')
         else:
-            match = match
-
-        return (path, illegal_chars, illegal_words, illegal_expressions, html_extensions,
-        image_extensions, file_extensions, target_tags, force,
-        publish, collapse, rename, replacetypes, match, paths,
-        create_spreadsheet)
+            _SETTINGS['match'] = recipe_args['match']
 
     def _create_option_parser(self):
         option_parser = optparse.OptionParser()
@@ -600,53 +592,46 @@ Convert most recipe parameter values to csv; save in _SETTINGS dict
             arguments += ", paths='%s'"
         return arguments
 
-    def process_command_line_args(self, options,
-            path, illegal_chars, illegal_words, illegal_expressions, html_extensions, image_extensions,
-            file_extensions, target_tags, force, publish, collapse,
-            rename, replacetypes, match, paths, create_spreadsheet):
+    def process_command_line_args(self, options, command_line_args):
         """
-Process command line args
-"""
+        Process command line args
+        """
         if options.path is not _UNSET_OPTION:
-            path = self._clean_path(options.path)
+            _SETTINGS['path'] = self._clean_path(options.path)
         if options.illegal_chars is not _UNSET_OPTION:
-            illegal_chars = options.illegal_chars
+            _SETTINGS['illegal_chars'] = options.illegal_chars
         if options.illegal_words is not _UNSET_OPTION:
-            illegal_words = options.illegal_words
+            _SETTINGS['illegal_words'] = options.illegal_words
         if options.illegal_expressions is not _UNSET_OPTION:
-            illegal_expressions = options.illegal_expressions
+            _SETTINGS['illegal_expressions'] = options.illegal_expressions
         if options.html_extensions is not _UNSET_OPTION:
-            html_extensions = options.html_extensions
+            _SETTINGS['html_extensions'] = options.html_extensions
         if options.image_extensions is not _UNSET_OPTION:
-            image_extensions = options.image_extensions
+            _SETTINGS['image_extensions'] = options.image_extensions
         if options.file_extensions is not _UNSET_OPTION:
-            file_extensions = options.file_extensions
+            _SETTINGS['file_extensions'] = options.file_extensions
         if options.target_tags is not _UNSET_OPTION:
-            target_tags = options.target_tags
+            _SETTINGS['target_tags'] = options.target_tags
         if options.force is not _UNSET_OPTION:
-            force = options.force
+            _SETTINGS['force'] = options.force
         if options.publish is not _UNSET_OPTION:
-            publish = options.publish
+            _SETTINGS['publish'] = options.publish
         if options.collapse is not _UNSET_OPTION:
-            collapse = options.collapse
+            _SETTINGS['collapse'] = options.collapse
         if options.create_spreadsheet is not _UNSET_OPTION:
-            create_spreadsheet = options.create_spreadsheet
+            _SETTINGS['create_spreadsheet'] = options.create_spreadsheet
         if options.rename is not _UNSET_OPTION:
-            rename = (options.rename).split(',')
+            _SETTINGS['rename'] = (options.rename).split(',')
         else:
-            rename = None
+            _SETTINGS['rename'] = None
         if options.replacetypes is not _UNSET_OPTION:
-            replacetypes = (options.replacetypes).split(',')
+            _SETTINGS['replacetypes'] = (options.replacetypes).split(',')
         else:
-            replacetypes = None
+            _SETTINGS['replacetypes'] = None
         if options.match is not _UNSET_OPTION:
-            match = (options.match).split(',')
+            _SETTINGS['match'] = (options.match).split(',')
         else:
-            match = None
-
-        return (path, illegal_chars, illegal_words, illegal_expressions, html_extensions, image_extensions,
-            file_extensions, target_tags, force, publish, collapse,
-            rename, replacetypes, match, paths, create_spreadsheet)
+            _SETTINGS['match'] = None
 
     def _validate_recipe_args(self, options):
         for option in options:
@@ -954,56 +939,12 @@ def main(**kwargs):
 
     # Convert arg values passed in to main from csv to list;
     # save results in _SETTINGS
-    (path, illegal_chars, illegal_words, illegal_expressions, html_extensions, image_extensions, file_extensions,
-        target_tags, force, publish, collapse, rename, replacetypes,
-        match, paths, create_spreadsheet) = (
-        utils.process_recipe_args(path, illegal_chars, illegal_words, illegal_expressions, html_extensions,
-        image_extensions, file_extensions, target_tags, force, publish,
-        collapse, rename, replacetypes, match, paths, create_spreadsheet))
-
-    _SETTINGS['path'] = path
-    _SETTINGS['illegal_chars'] = illegal_chars
-    _SETTINGS['illegal_words'] = illegal_words
-    _SETTINGS['illegal_expressions'] = illegal_expressions
-    _SETTINGS['html_extensions'] = html_extensions
-    _SETTINGS['image_extensions'] = image_extensions
-    _SETTINGS['file_extensions'] = file_extensions
-    _SETTINGS['target_tags'] = target_tags
-    _SETTINGS['force'] = force
-    _SETTINGS['publish'] = publish
-    _SETTINGS['collapse'] = collapse
-    _SETTINGS['rename'] = rename
-    _SETTINGS['replacetypes'] = replacetypes
-    _SETTINGS['match'] = match
-    _SETTINGS['paths'] = paths
-    _SETTINGS['create_spreadsheet'] = create_spreadsheet
+    utils.process_recipe_args(kwargs)
 
     # Process command line args; save results in _SETTINGS
     option_parser = utils._create_option_parser()
     options, args = option_parser.parse_args()
-    (path, illegal_chars, illegal_words, illegal_expressions, html_extensions, image_extensions, file_extensions,
-        target_tags, force, publish, collapse, rename, replacetypes,
-        match, paths, create_spreadsheet) = (utils.process_command_line_args(options,
-            path, illegal_chars, illegal_words, illegal_expressions, html_extensions, image_extensions,
-            file_extensions, target_tags, force, publish, collapse, rename,
-            replacetypes, match, paths, create_spreadsheet))
-
-    _SETTINGS['path'] = path
-    _SETTINGS['illegal_chars'] = illegal_chars
-    _SETTINGS['illegal_words'] = illegal_words
-    _SETTINGS['illegal_expressions'] = illegal_expressions
-    _SETTINGS['html_extensions'] = html_extensions
-    _SETTINGS['image_extensions'] = image_extensions
-    _SETTINGS['file_extensions'] = file_extensions
-    _SETTINGS['target_tags'] = target_tags
-    _SETTINGS['force'] = force
-    _SETTINGS['publish'] = publish
-    _SETTINGS['collapse'] = collapse
-    _SETTINGS['rename'] = rename
-    _SETTINGS['replacetypes'] = replacetypes
-    _SETTINGS['match'] = match
-    _SETTINGS['paths'] = paths
-    _SETTINGS['create_spreadsheet'] = create_spreadsheet
+    utils.process_command_line_args(options)
 
     # Process import dir or dirs
     paths_map = []
