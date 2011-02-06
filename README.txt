@@ -145,7 +145,7 @@ Here are some reasons:
   with "bin/instance run" are the aim. Forking and pull requests are encouraged.
 
 * The author had an itch to scratch; it will be nice for him to be able to say
-  "just go write a script" and then point to an example.
+  "just go write a script" and then point to this as an example.
 
 All of that said, the author understands that reusability and conservation of
 developer resources are important goals, especially for the Plone project.
