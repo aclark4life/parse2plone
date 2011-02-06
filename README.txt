@@ -3,7 +3,10 @@
 mr.importer
 ===========
 
-Easily import static websites on the file system into Plone.
+Easily import static websites on the file system into Plone via a command
+like::
+
+    $ bin/plone run bin/import /path/to/files
 
 Introduction
 ------------
