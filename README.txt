@@ -106,13 +106,6 @@ Then add the ``import`` section to the list of parts::
 
 Now run ``bin/buildout`` as usual.
 
-.. Note::
-    The section name ``import`` is arbitrary, you can call it whatever you
-    want. Just keep in mind that the section name corresponds directly to the
-    script name. In other words, whatever you name the section - that's what
-    the script will be called.
-
-
 Execution
 ---------
 
