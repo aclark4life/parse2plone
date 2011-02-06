@@ -11,20 +11,8 @@ like::
 Introduction
 ------------
 
-``mr.importer`` is a "one off" HTML parser (in the form of a Buildout recipe that
-creates a script for you) to easily get content from static HTML websites
-(on the file system) into Plone.
-
-By "one off", the author intends to convey the moribundity of this project. It is
-designed to satisfy only the most trivial of use cases (e.g. a simple static
-site in /var/www/html). Think of it as a tool for proof concept, only. For more
-serious deployments, with more options for customization and reuse please
-see `funnelweb`_.
-
-.. _`funnelweb`: http://pypi.python.org/pypi/funnelweb
-
-(Then again, a hammer could be described as moribund once it leaves the hammer
-factory. End users only care that it drives the nail.)
+``mr.importer`` is a Buildout recipe that creates a script for you to easily
+get content from static HTML websites on the file system into Plone.
 
 Warning
 -------
@@ -96,68 +84,6 @@ here are this recipe's options with sample values::
         $ bin/plone run bin/import /path/to/files
 
     See the `execution`_ section below for more information.
-
-Justification
--------------
-
-Why did you create ``mr.importer`` when `collective.transmogrifier`_ already
-existed?
-
-Here are some reasons:
-
-* Because ``mr.importer`` is aimed at lowering the bar for folks who don't already
-  know (or want to know) what a "transmogrifier blueprint" is but are able to update
-  their ``buildout.cfg`` file; run ``Buildout``; then run a single command; all
-  without having to think too much.
-
-* collective.transmogrify provides a framework for creating reusable pipes
-  (whose definitions are called blueprints). ``mr.importer`` provides 
-  a single, non-reusable script.
-
-* Transmogrifier and friends appear to be "developer's tools", while the author wants
-  ``mr.importer`` to be an "end user's tool".
-
-If you are a developer looking to create repeatable migrations, you probably want to be
-using ``collective.transmogrifier``. If you are an end user that just wants to see your
-static website in Plone, then you might want to give ``mr.importer`` a try.
-
-There is also this user/contributor comment, which captures the author's sentiment::
-
-    mr.importer's release was very timely as I need either this or something very
-    similar - and while I've no doubt I could make transmogrify do the job, it's a
-    lot of work for a one-shot loading of legacy pages.
-
-                                                    -Derek Broughton, Pointer
-                                                     Stop Consulting, Inc.
-
-That's great, but why didn't you try to improve `collective.transmogrifier`_
-and make it more user friendly?
-
-Here are some reasons:
-
-* The author is a minimalist. One of the design aims of ``mr.importer`` was to
-  have as few dependencies as possible. There are two "big" dependencies,
-  ``zc.buildout`` and ``lxml``. Using Buildout was a design compromise, and
-  using ``lxml`` is pretty much a must if you want to "parse". Oh, and 
-  ``BeautifulSoup`` was thrown in after the author read this:
-  http://codespeak.net/lxml/elementsoup.html
-
-* ``mr.importer`` in addition to its primary role as a content importer, is
-  intended to serve as an educational tool; both for the author and consumer.
-  Python coding best practices, and demonstrating how to script tasks in Plone
-  with "bin/instance run" are the aim. Forking and pull requests are encouraged.
-
-* The author had an itch to scratch; it will be nice for him to be able to say
-  "just go write a script" and then point to this as an example.
-
-All of that said, the author understands that reusability and conservation of
-developer resources are important goals, especially for the Plone project.
-But for better or worse, these were not the goals of ``mr.importer``. However,
-you can be sure that the lessons learned while developing ``mr.importer`` will  
-be applied outside of it, particularly with regard to the conservation of developer
-resources within the Plone project.
-
-.. _`collective.transmogrifier`: http://pypi.python.org/pypi/collective.transmogrifier
 
 Installation
 ------------
