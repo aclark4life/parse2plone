@@ -12,13 +12,16 @@ Introduction
 creates a script for you) to easily get content from static HTML websites
 (on the file system) into Plone.
 
-It is designed to satisfy only the most trivial of use cases (e.g. a simple static
+By "one off", the author intends to convey the moribundity of this project. It is
+designed to satisfy only the most trivial of use cases (e.g. a simple static
 site in /var/www/html). Think of it as a tool for proof concept, only. For more
 serious deployments, with more options for customization and reuse please
 see `funnelweb`_.
 
 .. _`funnelweb`: http://pypi.python.org/pypi/funnelweb
 
+(Then again, a hammer can be said to be moribund once it leaves the hammer
+factory. End users only care that it drive in the nail.)
 
 Warning
 -------
@@ -61,8 +64,26 @@ here are this recipe's options::
     you would like to know more.
 
 .. Note::
-    The contract of "command line parameters will trump any buildout.cfg settings" is
-    not 100% enforced yet.
+    This recipe creates a script that is **not** intended to be run directly.
+    Due to technical limitations, the author was not able to implement a user
+    friendly error message. So if you run ``bin/import`` directly you will see
+    this::
+
+        $ bin/import
+        Traceback (most recent call last):
+          File "bin/import", line 116, in <module>
+            mr.importer.main(app=app, path='/Plone', illegal_chars='_,.',
+        illegal_words='id,start', illegal_expressions='[0-9]', html_extensions='html',
+        image_extensions='gif,jpg,jpeg,png', file_extensions='mp3,xls',
+        target_tags='a,div,font,h1,h2,p', force=True, publish=False, collapse=False,
+        rename=None, replacetypes=None, match=None, create_spreadsheet=True)
+        NameError: name 'app' is not defined
+
+    To avoid this, run the script as intended like so::
+
+        $ bin/plone run bin/import /path/to/files
+
+    See the `execution`_ section below for more information.
 
 Justification
 -------------

@@ -57,8 +57,8 @@ from zc.buildout.easy_install import scripts as create_scripts
 _SETTINGS = {
     'path': '/Plone',
     'illegal_chars': ['_', '.'],
-    'illegal_words': ['start',],
-    'illegal_expressions': ['0-9'],
+    'illegal_words': ['id', 'start',],
+    'illegal_expressions': ['[0-9]'],
     'html_extensions': ['html'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
     'file_extensions': ['mp3', 'xls'],
@@ -592,7 +592,7 @@ Convert most recipe parameter values to csv; save in _SETTINGS dict
             arguments += ", paths='%s'"
         return arguments
 
-    def process_command_line_args(self, options, command_line_args):
+    def process_command_line_args(self, options):
         """
         Process command line args
         """
@@ -948,17 +948,17 @@ def main(**kwargs):
 
     # Process import dir or dirs
     paths_map = []
-    if not paths:
-        paths_map.append(':'.join([utils._clean_path(args[0]), path]))
+    if not _SETTINGS['paths']:
+        paths_map.append(':'.join([utils._clean_path(args[0]), _SETTINGS['path']]))
     else:
-        paths_map = paths.split(',')
+        paths_map = _SETTINGS['paths'].split(',')
 
     # Run parse2plone
     for entry in paths_map:
         import_dir, path = entry.split(':')
         files = utils._get_files(import_dir)
         num_parts = len(import_dir.split('/'))
-        app = utils._setup_app(app)
+        app = utils._setup_app(kwargs['app'])
         if utils._check_exists_path(app, path):
             parent = utils._update_parent(app, path)
         else:
@@ -972,15 +972,15 @@ def main(**kwargs):
                 _LOG.error(msg % path)
                 exit(1)
         object_paths = utils._remove_base(files, num_parts, import_dir)
-        if match:
+        if _SETTINGS['match']:
             object_paths = match_files(object_paths, import_dir, match)
-        if collapse:
+        if _SETTINGS['collapse']:
             _collapse_map = collapse_parts(object_paths, _collapse_map,
             import_dir)
-        if rename:
+        if _SETTINGS['rename']:
             _rename_map = rename_parts(object_paths, _rename_map, import_dir,
             rename)
-        if replacetypes:
+        if _SETTINGS['replacetypes']:
             try:
                 replace_types(replacetypes, _replace_types_map)
             except ValueError:
