@@ -340,6 +340,10 @@ Turns '/foo/bar/baz/' into 'foo/bar/baz'
 
     def _create_option_parser(self):
         option_parser = optparse.OptionParser()
+        option_parser.add_option('-u', '--user',
+            default=_UNSET_OPTION,
+            dest='user',
+            help='Zope2 instance or Plone site user.')
         option_parser.add_option('-p', '--path',
             default=_UNSET_OPTION,
             dest='path',
@@ -571,6 +575,7 @@ Convert most recipe parameter values to csv; save in _SETTINGS dict
                     _SETTINGS[option] = existing_value
 
         arguments = "app=app,"
+        arguments += " user='%s',"
         if not _SETTINGS['paths']:
             arguments += " path='%s',"
         arguments += " illegal_chars='%s', illegal_words='%s', illegal_expressions='%s', html_extensions='%s',"
