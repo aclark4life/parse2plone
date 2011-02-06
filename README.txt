@@ -42,7 +42,7 @@ First, a couple caveats:
   default in mr.importer that user is assumed to be named "admin".
 
 And because it drives the author nuts whenever he has to dig for a recipe's options,
-here are this recipe's options::
+here are this recipe's options with sample values::
 
     [import]
     recipe = mr.importer
@@ -50,13 +50,13 @@ here are this recipe's options::
     # core features
     path = /Plone
     user = admin
-    illegal_chars = _ .
+    illegal_chars = _ . +
     html_extensions = html
-    image_extensions = gif jpg jpeg png
-    file_extensions = mp3 xls
-    target_tags = a div h1 h2 p
+    image_extensions = png
+    file_extensions = mp3
+    target_tags = p
    
-    # additional bells & whistles
+    # additional features
     force = false
     publish = false
     collapse = false
