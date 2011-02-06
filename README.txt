@@ -42,6 +42,8 @@ here are this recipe's options with sample values::
     path = /Plone
     user = admin
     illegal_chars = _ . +
+    illegal_words =
+    illegal_expressions =
     html_extensions = html
     image_extensions = png
     file_extensions = mp3
