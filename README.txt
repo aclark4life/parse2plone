@@ -12,52 +12,50 @@ Introduction
 ------------
 
 ``mr.importer`` is a Buildout recipe that creates a script for you to easily
-get content from static HTML websites on the file system into Plone.
+get content from static websites on the file system into Plone.
 
-Warning
--------
+.. Note::
 
-This is a **Buildout** recipe for use with **Plone**; by itself it does nothing. If you
-don't know what Plone is, please see: http://plone.org. If you don't know
-what Buildout is, please see: http://www.buildout.org/.
+    This is a **Buildout** recipe for use with **Plone**; by itself it does nothing. If you
+    don't know what Plone is, please see: http://plone.org. If you don't know
+    what Buildout is, please see: http://www.buildout.org/.
+
+``mr.importer`` relies on the "run" argument of scripts created by
+`plone.recipe.zope2instance`_ to mount and modify the Plone database.
 
 Getting started
 ---------------
 
 First, a couple caveats:
 
-* A Plone site object must exist in the Zope2 instance database. By default in mr.importer,
-  that site object is assumed to be named "Plone".
+* A ``Plone`` site object must exist in the ``Zope2`` instance database. By
+  default, mr.importer assumes the site object is named "Plone".
 
-* An admin user must exist in the Zope2 instance database (or Plone site). By
-  default in mr.importer that user is assumed to be named "admin".
+* A user must exist in the ``Zope2`` instance database (or Plone site). By
+  default, mr.importer assumes the user is named "admin".
 
-And because it drives the author nuts whenever he has to dig for a recipe's options,
-here are this recipe's options with sample values::
+Next, here are the recipe's options with their default values::
 
     [import]
-    recipe = mr.importer
-
-    # core features
-    path = /Plone
-    user = admin
-    illegal_chars = _ . +
-    illegal_words =
-    illegal_expressions =
-    html_extensions = html
-    image_extensions = png
-    file_extensions = mp3
-    target_tags = p
-   
-    # additional features
-    force = false
-    publish = false
     collapse = false
     create_spreadsheet = false
-    replacetypes =
-    rename =
+    recipe = mr.importer
+    file_extensions = mp3 xls
+    force = false
+    html_extensions = html
+    illegal_expressions = [0-9]
+    illegal_chars = _ . +
+    illegal_words = id start
+    ignore_errors = true 
+    image_extensions = gif jpg jpeg png
     match =
+    path = /Plone
     paths =
+    publish = false
+    rename =
+    replacetypes =
+    target_tags = a abbr acronym address applet area b base basefont bdo big blockquote body br button caption center cite code col colgroup dd del dfn dir div dl dt em fieldset font form frame frameset h1 h2 h3 h4 h5 h6 head hr html i iframe img input ins isindex kbd label legend li link map menu meta noframes noscript object ol optgroup option p param pre q s samp script select small span strike strong style sub sup table tbody td textarea tfoot th thead title tr tt u ul var
+    user = admin
 
 .. Note::
     The parameters listed above are configured with their default values. Edit these
@@ -155,76 +153,76 @@ the ``mr.importer`` recipe section.
 
 Options
 '''''''
-+----------------------+------------+----------------------------------------+
-| **Parameter**        |**Default** | **Description**                        |
-|                      |**value**   |                                        |
-+----------------------+------------+----------------------------------------+
-| ``path``             |/Plone      | Specify an alternate location in the   |
-|                      |            | database for the import to occur.      |
-+----------------------+------------+----------------------------------------+
-| ``user``             |admin       | Specify an alternate user to import    |
-|                      |            | content with.                          |
-+----------------------+------------+----------------------------------------+
-| ``illegal_chars``    |_ .         | Specify illegal characters.            |
-|                      |            | ``mr.importer`` will ignore files that |
-|                      |            | contain these characters.              |
-+----------------------+------------+----------------------------------------+
-| ``html_extensions``  |html        | Specify HTML file extensions.          |
-|                      |            | ``mr.importer`` will import HTML files |
-|                      |            | with these extensions                  |
-+----------------------+------------+----------------------------------------+
-| ``image_extensions`` |png, gif,   | Specify image file extensions.         |
-|                      |jpg, jpeg,  | ``mr.importer`` will import image files|
-|                      |            | with these extensions.                 |
-+----------------------+------------+----------------------------------------+
-| ``file_extensions``  |mp3, xls    | Specify image file extensions.         |
-|                      |            | ``mr.importer`` will import files with |
-|                      |            | with these extensions as files in Plone|
-|                      |            | (unless you configure                  |
-|                      |            | create_spreadsheet=true, see below)    |
-+----------------------+------------+----------------------------------------+
-| ``target_tags``      |a h1 h2 p   | Specify target tags. ``mr.importer``   |
-|                      |            | will parse the contents of HTML tags   |
-|                      |            | listed. If any tag is provided as an   |
-|                      |            | XPath expression (any expression       |
-|                      |            | begining with /) the matching elements |
-|                      |            | will first be extracted from the root  |
-|                      |            | document.  Selections for the contents |
-|                      |            | of other tags will then be performed   |
-|                      |            | only on the document subset.           |
-|                      |            | If only XPath expressions are given,   |
-|                      |            | then the entire subtree of the matched |
-|                      |            | elements are returned (including HTML) |
-+----------------------+------------+----------------------------------------+
-| ``force``            |false       | Force create folders that do not exist.|
-|                      |            | For example, if you do                 |
-|                      |            | --path=/Plone/foo and foo does not     |
-|                      |            | exist, you will get an error message.  |
-|                      |            | Use --force to tell ``mr.importer`` to |
-|                      |            | create it.                             |
-+----------------------+------------+----------------------------------------+
-| ``publish``          |false       | Publish newly created content.         |
-+----------------------+------------+----------------------------------------+
-| ``collapse``         |false       | "collapse" content. (see               |
-|                      |            | collapse_parts() in mr.importer.py)    |
-+----------------------+------------+----------------------------------------+
-| ``rename``           |            | Rename content. (see rename_parts()    |
-|                      |            | in mr.importer.py                      | 
-+----------------------+------------+----------------------------------------+
-| ``replacetypes``     |            | Use custom types. (see replace_types())|
-+----------------------+------------+----------------------------------------+
-| ``match``            |            | Match files. (see match_files())       |
-+----------------------+------------+----------------------------------------+
-| ``paths``            |            | Specify a series of locations on the   |
-|                      |            | filesystem, with corresponding         |
-|                      |            | locations in the database for imports, |
-|                      |            | with syntax:                           |
-|                      |            | --paths=import_dirs:object_paths       |
-|                      |            | (--path will be ignored)               |
-+----------------------+------------+----------------------------------------+
-|``create_spreadsheet``| false      | Create "spreadsheets". (see            |
-|                      |            | create_spreadsheet() in mr.importer.py)|
-+----------------------+------------+----------------------------------------+
++----------------------+----------------------------------------+
+| **Parameter**        | **Description**                        |
+|                      |                                        |
++----------------------+----------------------------------------+
+| ``path``             | Specify an alternate location in the   |
+|                      | database for the import to occur.      |
++----------------------+----------------------------------------+
+| ``user``             | Specify an alternate user to import    |
+|                      | content with.                          |
++----------------------+----------------------------------------+
+| ``illegal_chars``    | Specify illegal characters.            |
+|                      | ``mr.importer`` will ignore files that |
+|                      | contain these characters.              |
++----------------------+----------------------------------------+
+| ``html_extensions``  | Specify HTML file extensions.          |
+|                      | ``mr.importer`` will import HTML files |
+|                      | with these extensions                  |
++----------------------+----------------------------------------+
+| ``image_extensions`` | Specify image file extensions.         |
+|                      | ``mr.importer`` will import image files|
+|                      | with these extensions.                 |
++----------------------+----------------------------------------+
+| ``file_extensions``  | Specify image file extensions.         |
+|                      | ``mr.importer`` will import files with |
+|                      | with these extensions as files in Plone|
+|                      | (unless you configure                  |
+|                      | create_spreadsheet=true, see below)    |
++----------------------+----------------------------------------+
+| ``target_tags``      | Specify target tags. ``mr.importer``   |
+|                      | will parse the contents of HTML tags   |
+|                      | listed. If any tag is provided as an   |
+|                      | XPath expression (any expression       |
+|                      | begining with /) the matching elements |
+|                      | will first be extracted from the root  |
+|                      | document.  Selections for the contents |
+|                      | of other tags will then be performed   |
+|                      | only on the document subset.           |
+|                      | If only XPath expressions are given,   |
+|                      | then the entire subtree of the matched |
+|                      | elements are returned (including HTML) |
++----------------------+----------------------------------------+
+| ``force``            | Force create folders that do not exist.|
+|                      | For example, if you do                 |
+|                      | --path=/Plone/foo and foo does not     |
+|                      | exist, you will get an error message.  |
+|                      | Use --force to tell ``mr.importer`` to |
+|                      | create it.                             |
++----------------------+----------------------------------------+
+| ``publish``          | Publish newly created content.         |
++----------------------+----------------------------------------+
+| ``collapse``         | "collapse" content. (see               |
+|                      | collapse_parts() in mr.importer.py)    |
++----------------------+----------------------------------------+
+| ``rename``           | Rename content. (see rename_parts()    |
+|                      | in mr.importer.py                      | 
++----------------------+----------------------------------------+
+| ``replacetypes``     | Use custom types. (see replace_types())|
++----------------------+----------------------------------------+
+| ``match``            | Match files. (see match_files())       |
++----------------------+----------------------------------------+
+| ``paths``            | Specify a series of locations on the   |
+|                      | filesystem, with corresponding         |
+|                      | locations in the database for imports, |
+|                      | with syntax:                           |
+|                      | --paths=import_dirs:object_paths       |
+|                      | (--path will be ignored)               |
++----------------------+----------------------------------------+
+|``create_spreadsheet``| Create "spreadsheets". (see            |
+|                      | create_spreadsheet() in mr.importer.py)|
++----------------------+----------------------------------------+
 
 Example
 '''''''
