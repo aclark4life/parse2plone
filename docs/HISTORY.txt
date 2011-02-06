@@ -5,9 +5,11 @@ History
 1.0a5 (02/05/2011)
 ~~~~~~~~~~~~~~~~~~
 
-* Rename to ``mr.importer``
-* Switch to **kwargs in main()
-    - Better _SETTINGS handling
+* Rename ``parse2plone`` to ``mr.importer``
+* Switch to kwargs in main()
+
+  * Better _SETTINGS handling
+
 * Add support for illegal_expressions check
 * Add "Keep going!" feature (to ignore errors)
 * Add all HTML4 tags to target_tags
