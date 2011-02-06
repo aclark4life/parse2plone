@@ -6,6 +6,9 @@ History
 ~~~~~~~~~~~~~~~~~~
 
 * Rename ``parse2plone`` to ``mr.importer``
+
+  * Repackage as needed
+
 * Switch to kwargs in main()
 
   * Better _SETTINGS handling
