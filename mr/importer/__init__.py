@@ -473,9 +473,9 @@ class Utils(object):
                     if self._is_legal(self._get_obj(path)):
                         results.append(os_path.join(path, f))
                     else:
-                        _LOG.info("path '%s' has illegal chars" % path)
+                        _LOG.info("path '%s' has illegal chars, skipping" % path)
                 else:
-                    _LOG.info("file '%s' has illegal chars" % f)
+                    _LOG.info("file '%s' has illegal chars, skipping" % f)
 
         return results
 
