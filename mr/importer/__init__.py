@@ -55,6 +55,7 @@ from sys import executable
 from zc.buildout.easy_install import scripts as create_scripts
 
 _SETTINGS = {
+    'user': 'admin',
     'path': '/Plone',
     'illegal_chars': ['_', '.'],
     'illegal_words': ['id', 'start',],
@@ -309,6 +310,7 @@ Turns '/foo/bar/baz/' into 'foo/bar/baz'
         """
         Convert recipe parameter values
         """
+        _SETTINGS['user'] = recipe_args['user']
         _SETTINGS['path'] = recipe_args['path']
         _SETTINGS['illegal_chars'] = recipe_args['illegal_chars'].split(',')
         _SETTINGS['illegal_words'] = recipe_args['illegal_words'].split(',')
@@ -511,14 +513,14 @@ Returns False when 'False' is passed in, and so on.
     def _remove_ext(self, obj):
         return obj.split('.')[0]
 
-    def _setup_app(self, app):
+    def _setup_app(self, app, user):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SpecialUsers import system
         from Testing.makerequest import makerequest
 #        newSecurityManager(None, system)
-        newSecurityManager(None, app.acl_users.getUser('admin'))
+        newSecurityManager(None, app.acl_users.getUser(user))
         app = makerequest(app)
         return app
 
@@ -596,6 +598,8 @@ Convert most recipe parameter values to csv; save in _SETTINGS dict
         """
         Process command line args
         """
+        if options.user is not _UNSET_OPTION:
+            _SETTINGS['user'] = options.user
         if options.path is not _UNSET_OPTION:
             _SETTINGS['path'] = self._clean_path(options.path)
         if options.illegal_chars is not _UNSET_OPTION:
@@ -878,6 +882,7 @@ class Recipe(object):
             # if the user does not set the paths parameter (which by default
             # they won't) we use path (aka /path/to/files)
             settings = (
+                _SETTINGS['user'],
                 _SETTINGS['path'],
                 _SETTINGS['illegal_chars'],
                 _SETTINGS['illegal_words'],
@@ -897,6 +902,7 @@ class Recipe(object):
             # if the user sets the paths parameter, we use it (and ignore
             # path)
             settings = (
+                _SETTINGS['user'],
                 _SETTINGS['illegal_chars'],
                 _SETTINGS['illegal_words'],
                 _SETTINGS['illegal_expressions'],
@@ -953,7 +959,7 @@ def main(**kwargs):
         import_dir, path = entry.split(':')
         files = utils._get_files(import_dir)
         num_parts = len(import_dir.split('/'))
-        app = utils._setup_app(kwargs['app'])
+        app = utils._setup_app(kwargs['app'], _SETTINGS['user'])
         if utils._check_exists_path(app, path):
             parent = utils._update_parent(app, path)
         else:

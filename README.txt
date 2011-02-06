@@ -33,7 +33,12 @@ what Buildout is, please see: http://www.buildout.org/.
 Getting started
 ---------------
 
-Because it drives the author nuts whenever he has to dig for a recipe's options,
+First, a few caveats:
+
+* A Plone site object must exist in the Zope2 instance database. By default in mr.importer,
+  the site object is assumed to be called "Plone".
+
+And because it drives the author nuts whenever he has to dig for a recipe's options,
 here are this recipe's options::
 
     [import]
