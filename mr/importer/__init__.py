@@ -113,17 +113,17 @@ _UNSET_OPTION = ''
 # Adds "create spreadsheet" feature to ``parse2plone``.
 def create_spreadsheet(page, obj, parent_path, import_dir):
     """
-You can optionally tell ``parse2plone`` to try and import the contents of
-any spreadsheets it finds, by doing this::
+    You can optionally tell ``parse2plone`` to try and import the contents of
+    any spreadsheets it finds, by doing this::
 
-$ bin/plone run bin/import --create-spreadsheet /var/www/html
+    $ bin/plone run bin/import --create-spreadsheet /var/www/html
 
-If /var/www/html/foo.xls exists and has content, then a
-http://localhost:8080/Plone/foo will be created as a page, with the
-contents of the spreadsheet in an HTML table.
+    If /var/www/html/foo.xls exists and has content, then a
+    http://localhost:8080/Plone/foo will be created as a page, with the
+    contents of the spreadsheet in an HTML table.
 
-This option will import all content to a single page.
-"""
+    This option will import all content to a single page.
+    """
     import xlrd
     filename = '/'.join([import_dir, '/'.join(parent_path), obj])
     results = '<table>'
@@ -141,17 +141,17 @@ This option will import all content to a single page.
 # Adds "create spreadsheet" feature to ``parse2plone``.
 def create_spreadsheets(folder, obj, parent_path, import_dir):
     """
-You can optionally tell ``parse2plone`` to try and import the contents of
-any spreadsheets it finds, by doing this::
+    You can optionally tell ``parse2plone`` to try and import the contents of
+    any spreadsheets it finds, by doing this::
 
-$ bin/plone run bin/import --create-spreadsheet /var/www/html
+    $ bin/plone run bin/import --create-spreadsheet /var/www/html
 
-If /var/www/html/foo.xls exists and has content, then a
-http://localhost:8080/Plone/foo will be created as a page, with the
-contents of the spreadsheet in an HTML table.
+    If /var/www/html/foo.xls exists and has content, then a
+    http://localhost:8080/Plone/foo will be created as a page, with the
+    contents of the spreadsheet in an HTML table.
 
-This option will import content from each row into a separate page.
-"""
+    This option will import content from each row into a separate page.
+    """
     import xlrd
     filename = '/'.join([import_dir, '/'.join(parent_path), obj])
     wb = xlrd.open_workbook(filename)
@@ -164,19 +164,19 @@ This option will import content from each row into a separate page.
 # Adds "match" feature to ``parse2plone``.
 def match_files(files, import_dir, match):
     """
-The user may specify a string to match file names against; only content
-from files that match the string will be imported. E.g.
+    The user may specify a string to match file names against; only content
+    from files that match the string will be imported. E.g.
 
-$ bin/plone run bin/import /var/www/html --match=2000
+    $ bin/plone run bin/import /var/www/html --match=2000
 
-Will import:
+    Will import:
 
-/var/www/html/2000/01/01/foo/index.html
+    /var/www/html/2000/01/01/foo/index.html
 
-But not:
+    But not:
 
-/var/www/html/2001/01/01/foo/index.html
-"""
+    /var/www/html/2001/01/01/foo/index.html
+    """
     results = {import_dir: []}
     for f in files[import_dir]:
         for m in match:
@@ -188,26 +188,26 @@ But not:
 # Adds "rename" feature to ``parse2plone``.
 def rename_parts(files, _rename_map, import_dir, rename):
     """
-This allows the user to specify two paths: old and new (e.g.
---rename=old:new ).
+    This allows the user to specify two paths: old and new (e.g.
+    --rename=old:new ).
 
-Then if a path like this is found:
-/old/2000/01/01/foo/index.html
+    Then if a path like this is found:
+    /old/2000/01/01/foo/index.html
 
-Instead of creating /old/2000/01/01/foo/index.html (in Plone),
-``parse2plone`` will create:
+    Instead of creating /old/2000/01/01/foo/index.html (in Plone),
+    ``parse2plone`` will create:
 
-/new/2000/01/01/foo/index.html
+    /new/2000/01/01/foo/index.html
 
-This function returns a _rename_map which is forward/reverse mapping of
-old paths to new paths and vice versa. E.g.:
+    This function returns a _rename_map which is forward/reverse mapping of
+    old paths to new paths and vice versa. E.g.:
 
-_rename_map{'forward': {'/var/www/html/old/2000/01/01/foo/index.html':
-'/var/www/html/new/2000/01/01/foo/index.html'}}
+    _rename_map{'forward': {'/var/www/html/old/2000/01/01/foo/index.html':
+    '/var/www/html/new/2000/01/01/foo/index.html'}}
 
-_rename_map{'reverse': {'/var/www/html/new/2000/01/01/foo/index.html':
-'/var/www/html/old/2000/01/01/foo/index.html'}}
-"""
+    _rename_map{'reverse': {'/var/www/html/new/2000/01/01/foo/index.html':
+    '/var/www/html/old/2000/01/01/foo/index.html'}}
+    """
     for f in files[import_dir]:
         for path in rename:
             parts = path.split(':')
@@ -222,26 +222,26 @@ _rename_map{'reverse': {'/var/www/html/new/2000/01/01/foo/index.html':
 # Adds "collapse" feature to ``parse2plone``.
 def collapse_parts(object_paths, _collapse_map, import_dir):
     """
-If a path like this is discovered:
+    If a path like this is discovered:
 
-/2000/01/01/foo/index.html
+    /2000/01/01/foo/index.html
 
-And --collapse is called, then instead of creating
-/2000/01/01/foo/index.html (in Plone), parse2plone will create:
+    And --collapse is called, then instead of creating
+    /2000/01/01/foo/index.html (in Plone), parse2plone will create:
 
-/foo-20000101.html
+    /foo-20000101.html
 
-thereby "collapsing" the content, if you will.
+    thereby "collapsing" the content, if you will.
 
-This function returns a _collapse_map which is forward/reverse mapping of
-paths to collapsed paths and vice versa. E.g.:
+    This function returns a _collapse_map which is forward/reverse mapping of
+    paths to collapsed paths and vice versa. E.g.:
 
-_collapse_map{'forward': {'/var/www/html/2000/01/01/foo/index.html':
-'/var/www/html/foo-20000101.html'}}
+    _collapse_map{'forward': {'/var/www/html/2000/01/01/foo/index.html':
+    '/var/www/html/foo-20000101.html'}}
 
-_collapse_map{'reverse': {'/var/www/html/foo-20000101.html':
-'/var/www/html/2000/01/01/foo/index.html'}}
-"""
+    _collapse_map{'reverse': {'/var/www/html/foo-20000101.html':
+    '/var/www/html/2000/01/01/foo/index.html'}}
+    """
     expr = re.compile('(\d\d\d\d)/(\d\d)/(\d\d)/(.+)/index.html')
     for f in object_paths[import_dir]:
         result = expr.search(f)
@@ -257,19 +257,19 @@ _collapse_map{'reverse': {'/var/www/html/foo-20000101.html':
 # Adds "replacetypes" feature to ``parse2plone``.
 def replace_types(replacetypes, _replace_types_map):
     """
-This allows the user to specify customize content types for use
-when importing content, by specifying a "default" content type followed by
-its replacement "custom" content type (e.g.
---replacetypes=Document:MyCustomPageType).
+    This allows the user to specify customize content types for use
+    when importing content, by specifying a "default" content type followed by
+    its replacement "custom" content type (e.g.
+    --replacetypes=Document:MyCustomPageType).
 
-That means that instead of calling:
-parent.invokeFactory('Document','foo')
+    That means that instead of calling:
+    parent.invokeFactory('Document','foo')
 
-``parse2plone`` will call:
-parent.invokeFactory('MyCustomPageType','foo')
+    ``parse2plone`` will call:
+    parent.invokeFactory('MyCustomPageType','foo')
 
-Update _replace_types_map with new types.
-"""
+    Update _replace_types_map with new types.
+    """
     for replace in replacetypes:
         types = replace.split(':')
         old = types[0]
@@ -284,8 +284,8 @@ Update _replace_types_map with new types.
 class Utils(object):
     def _clean_path(self, path):
         """
-Turns '/foo/bar/baz/' into 'foo/bar/baz'
-"""
+        Turns '/foo/bar/baz/' into 'foo/bar/baz'
+        """
         if path.startswith('/'):
             path = path[1:]
         if path.endswith('/'):
@@ -437,8 +437,8 @@ Turns '/foo/bar/baz/' into 'foo/bar/baz'
     # limited input set).
     def _fake_literal_eval(self, input):
         """
-Returns False when 'False' is passed in, and so on.
-"""
+        Returns False when 'False' is passed in, and so on.
+        """
         if input == 'False':
             return False
         elif input == 'True':
@@ -554,8 +554,8 @@ Returns False when 'False' is passed in, and so on.
 
     def process_config_params(self, options):
         """
-Convert most recipe parameter values to csv; save in _SETTINGS dict
-"""
+        Convert most recipe parameter values to csv; save in _SETTINGS dict
+        """
         for option, existing_value in _SETTINGS.items():
             if option in options:
                 # the user set a recipe parameter we need to process
