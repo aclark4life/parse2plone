@@ -58,7 +58,7 @@ _SETTINGS = {
     'user': 'admin',
     'path': '/Plone',
     'illegal_chars': ['_', '.'],
-    'illegal_words': ['id', 'start',],
+    'illegal_words': ['id', 'start'],
     'illegal_expressions': ['[0-9]'],
     'html_extensions': ['html'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
@@ -144,7 +144,6 @@ This option will import content from each row into a separate page.
         for row in range(sheet.nrows):
             for col in sheet.row(row):
                 pass
-
 
 
 # Adds "match" feature to ``parse2plone``.
@@ -314,10 +313,14 @@ Turns '/foo/bar/baz/' into 'foo/bar/baz'
         _SETTINGS['path'] = recipe_args['path']
         _SETTINGS['illegal_chars'] = recipe_args['illegal_chars'].split(',')
         _SETTINGS['illegal_words'] = recipe_args['illegal_words'].split(',')
-        _SETTINGS['illegal_expressions'] = recipe_args['illegal_expressions'].split(',')
-        _SETTINGS['html_extensions'] = recipe_args['html_extensions'].split(',')
-        _SETTINGS['image_extensions'] = recipe_args['image_extensions'].split(',')
-        _SETTINGS['file_extensions'] = recipe_args['file_extensions'].split(',')
+        _SETTINGS['illegal_expressions'] = (
+            recipe_args['illegal_expressions'].split(','))
+        _SETTINGS['html_extensions'] = (
+            recipe_args['html_extensions'].split(','))
+        _SETTINGS['image_extensions'] = (
+            recipe_args['image_extensions'].split(','))
+        _SETTINGS['file_extensions'] = (
+            recipe_args['file_extensions'].split(','))
         _SETTINGS['target_tags'] = recipe_args['target_tags'].split(',')
         if not 'paths' in recipe_args:
             _SETTINGS['path'] = self._clean_path(recipe_args['path'])
@@ -522,8 +525,8 @@ Returns False when 'False' is passed in, and so on.
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
         from AccessControl.SecurityManagement import newSecurityManager
-        from AccessControl.SpecialUsers import system
         from Testing.makerequest import makerequest
+#        from AccessControl.SpecialUsers import system
 #        newSecurityManager(None, system)
         newSecurityManager(None, app.acl_users.getUser(user))
         app = makerequest(app)
@@ -549,7 +552,8 @@ Convert most recipe parameter values to csv; save in _SETTINGS dict
                 elif option in ('replacetypes'):
                     _SETTINGS[option] = self._convert_str_to_csv(
                         options[option])
-                elif option in ('illegal_chars', 'illegal_words', 'illegal_expressions', 'html_extensions',
+                elif option in ('illegal_chars', 'illegal_words',
+                    'illegal_expressions', 'html_extensions',
                     'image_extensions', 'file_extensions', 'target_tags'):
                     _SETTINGS[option] = ', '.join(re.split('\s+',
                         options[option]))
@@ -567,7 +571,8 @@ Convert most recipe parameter values to csv; save in _SETTINGS dict
                         _SETTINGS[option] = options[option]
             else:
                 # the user did not set any recipe parameters
-                if option in ('illegal_chars', 'illegal_words', 'illegal_expressions', 'html_extensions',
+                if option in ('illegal_chars', 'illegal_words',
+                    'illegal_expressions', 'html_extensions',
                     'image_extensions', 'file_extensions', 'target_tags'):
                     # but some values must be converted to csv
                     _SETTINGS[option] = ','.join(existing_value)
@@ -579,7 +584,8 @@ Convert most recipe parameter values to csv; save in _SETTINGS dict
         arguments += " user='%s',"
         if not _SETTINGS['paths']:
             arguments += " path='%s',"
-        arguments += " illegal_chars='%s', illegal_words='%s', illegal_expressions='%s', html_extensions='%s',"
+        arguments += " illegal_chars='%s', illegal_words='%s',"
+        arguments += " illegal_expressions='%s', html_extensions='%s',"
         arguments += " image_extensions='%s', file_extensions='%s',"
         arguments += " target_tags='%s', force=%s, publish=%s,"
         arguments += " collapse=%s,"
@@ -676,7 +682,8 @@ class Parse2Plone(object):
             _COUNT['images'] += 1
             commit()
         elif utils._is_file(obj, _SETTINGS['file_extensions']):
-            if not _SETTINGS['create_spreadsheet'] and not _SETTINGS['create_spreadsheet']:
+            if not _SETTINGS['create_spreadsheet'] and not _SETTINGS[
+                'create_spreadsheet']:
                 at_file = self.create_file(parent, obj, _replace_types_map)
                 self.set_title(at_file, obj)
                 self.set_file(at_file, obj, parent_path, import_dir)
@@ -688,22 +695,26 @@ class Parse2Plone(object):
                     if not utils._check_exists_obj(parent,
                             utils._remove_ext(obj)):
                         if not _SETTINGS['create_spreadsheet']:
-                            page = self.create_page(parent, utils._remove_ext(obj),
+                            page = self.create_page(parent,
+                                utils._remove_ext(obj),
                                 _replace_types_map)
                             self.set_title(page, utils._remove_ext(obj))
-                            create_spreadsheet(page, obj, parent_path, import_dir)
+                            create_spreadsheet(page, obj, parent_path,
+                                import_dir)
                         else:
-                            folder = self.create_folder(parent, utils._remove_ext(obj),
-                                _replace_types_map)
+                            folder = self.create_folder(parent,
+                                utils._remove_ext(obj), _replace_types_map)
                             self.set_title(folder, utils._remove_ext(obj))
-                            create_spreadsheets(folder, obj, parent_path, import_dir)
+                            create_spreadsheets(folder, obj, parent_path,
+                                import_dir)
                         _COUNT['files'] += 1
                         commit()
                     else:
                         _LOG.info("object '%s' exists inside '%s'" % (
                             obj, utils._convert_obj_to_path(parent)))
                 else:
-                    msg = "you specified --create-spreadsheet(s) but '%s' is not"
+                    msg = "you specified --create-spreadsheet(s)"
+                    msg += " but '%s' is not"
                     msg += " a spreadhseet"
                     _LOG.error(msg % obj)
                     exit(1)
@@ -956,7 +967,8 @@ def main(**kwargs):
     # Process import dir or dirs
     paths_map = []
     if not _SETTINGS['paths']:
-        paths_map.append(':'.join([utils._clean_path(args[0]), _SETTINGS['path']]))
+        paths_map.append(':'.join([utils._clean_path(args[0]),
+            _SETTINGS['path']]))
     else:
         paths_map = _SETTINGS['paths'].split(',')
 
@@ -980,16 +992,17 @@ def main(**kwargs):
                 exit(1)
         object_paths = utils._remove_base(files, num_parts, import_dir)
         if _SETTINGS['match']:
-            object_paths = match_files(object_paths, import_dir, match)
+            object_paths = match_files(object_paths, import_dir,
+                _SETTINGS['match'])
         if _SETTINGS['collapse']:
             _collapse_map = collapse_parts(object_paths, _collapse_map,
             import_dir)
         if _SETTINGS['rename']:
             _rename_map = rename_parts(object_paths, _rename_map, import_dir,
-            rename)
+            _SETTINGS['rename'])
         if _SETTINGS['replacetypes']:
             try:
-                replace_types(replacetypes, _replace_types_map)
+                replace_types(_SETTINGS['replacetypes'], _replace_types_map)
             except ValueError:
                 _LOG.error("Can't replace unknown type")
                 exit(1)
