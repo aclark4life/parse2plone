@@ -21,7 +21,7 @@ see `funnelweb`_.
 .. _`funnelweb`: http://pypi.python.org/pypi/funnelweb
 
 (Then again, a hammer can be said to be moribund once it leaves the hammer
-factory. End users only care that it drive in the nail.)
+factory. End users only care that it drives the nail.)
 
 Warning
 -------
@@ -33,10 +33,13 @@ what Buildout is, please see: http://www.buildout.org/.
 Getting started
 ---------------
 
-First, a few caveats:
+First, a couple caveats:
 
 * A Plone site object must exist in the Zope2 instance database. By default in mr.importer,
-  the site object is assumed to be called "Plone".
+  that site object is assumed to be named "Plone".
+
+* An admin user must exist in the Zope2 instance database (or Plone site). By
+  default in mr.importer that user is assumed to be named "admin".
 
 And because it drives the author nuts whenever he has to dig for a recipe's options,
 here are this recipe's options::
@@ -46,6 +49,7 @@ here are this recipe's options::
 
     # core features
     path = /Plone
+    user = admin
     illegal_chars = _ .
     html_extensions = html
     image_extensions = gif jpg jpeg png
@@ -84,7 +88,7 @@ here are this recipe's options::
         rename=None, replacetypes=None, match=None, create_spreadsheet=True)
         NameError: name 'app' is not defined
 
-    To avoid this, run the script as intended like so::
+    To avoid this, run the script as intended::
 
         $ bin/plone run bin/import /path/to/files
 
@@ -233,6 +237,9 @@ Options
 +----------------------+------------+----------------------------------------+
 | ``path``             |/Plone      | Specify an alternate location in the   |
 |                      |            | database for the import to occur.      |
++----------------------+------------+----------------------------------------+
+| ``user``             |admin       | Specify an alternate user to import    |
+|                      |            | content with.                          |
 +----------------------+------------+----------------------------------------+
 | ``illegal_chars``    |_ .         | Specify illegal characters.            |
 |                      |            | ``mr.importer`` will ignore files that |

@@ -8,6 +8,7 @@ History
 * Rename to ``mr.importer``
 * Switch to **kwargs in main()
     - Better _SETTINGS handling
+* Add support for illegal_expressions check
 
 1.0a4 (01/12/2011)
 ~~~~~~~~~~~~~~~~~~
