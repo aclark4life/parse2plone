@@ -494,9 +494,10 @@ Returns False when 'False' is passed in, and so on.
             results = False
         if obj in _SETTINGS['illegal_words']:
             results = False
-#        patt = re.compile(_SETTINGS['illegal_expressions'])
-#        if patt.match(obj):
-#            results = False
+        for expression in _SETTINGS['illegal_expressions']:
+            pattern = re.compile(expression)
+            if pattern.match(obj):
+                results = False
         return results
 
     def _remove_parts(self, files, num_parts):
