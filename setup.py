@@ -2,8 +2,8 @@
 from setuptools import setup, find_packages
 
 name = 'mr.importer'
-description = 'Easily import static HTML websites on the file system into Plone'
-version = '1.0a5'
+description = 'Easily import static websites on the file system into Plone'
+version = '1.0b1'
 
 
 def read(file):
@@ -17,7 +17,7 @@ setup(
     version=version,
     description=description,
     long_description=read('README.txt') + read('docs/HISTORY.txt'),
-    url='https://github.com/collective/parse2plone',
+    url='https://github.com/collective/mr.importer',
     author='Alex Clark',
     author_email='aclark@aclark.net',
     entry_points={
@@ -29,13 +29,12 @@ setup(
         'xlrd',
         'zc.buildout',
     ],
-#    py_modules=['parse2plone'],
     packages=find_packages(),
     classifiers=[
         'Framework :: Buildout',
         'Framework :: Plone'
     ],
     extras_require={
-        'tests': ['zope.testing','Plone'],
+        'tests': ['zope.testing', 'Plone'],
     },
 )
