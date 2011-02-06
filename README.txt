@@ -20,7 +20,7 @@ see `funnelweb`_.
 
 .. _`funnelweb`: http://pypi.python.org/pypi/funnelweb
 
-(Then again, a hammer can be said to be moribund once it leaves the hammer
+(Then again, a hammer could be described as moribund once it leaves the hammer
 factory. End users only care that it drives the nail.)
 
 Warning

@@ -36,6 +36,6 @@ setup(
         'Framework :: Plone'
     ],
     extras_require={
-        'tests': ['zope.testing'],
+        'tests': ['zope.testing','Plone'],
     },
 )
