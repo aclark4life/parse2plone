@@ -305,12 +305,15 @@ class Utils(object):
         except:
             return False
 
+    def _convert_obj_to_path(self, obj):
+        return '/'.join(obj.getPhysicalPath())
+
     def _convert_str_to_csv(self, value):
         """
         Converts '\nfoo bar\nbaz qux' to 'foo:bar,baz:qux'
         """
         expr = re.compile('\n(\S+)\s+(\S+)')
-        results = ''
+        results = ""
         c = 0
         groups = expr.findall(value)
         for group in groups:
@@ -318,6 +321,15 @@ class Utils(object):
             if c < len(groups) - 1:
                 results += ','
             c += 1
+        return results
+
+    def _convert_tuple_to_params(self, params):
+        """
+        Converts [('foo','bar')] to foo="bar"
+        """
+        results = ""
+        for param in params():
+            results += (" %s=%s" % param[0], param[1])
         return results
 
     def process_recipe_args(self, recipe_args):
@@ -449,7 +461,7 @@ class Utils(object):
             return ValueError, 'malformed string'
 
     def _get_results(self, paths_map, index):
-        results = ''
+        results = ""
         max = len(paths_map)
         c = 0
         for i in paths_map:
@@ -458,9 +470,6 @@ class Utils(object):
             if c != max:
                 results += ','
         return "'%s'" % results
-
-    def _convert_obj_to_path(self, obj):
-        return '/'.join(obj.getPhysicalPath())
 
     def _get_files(self, import_dir):
         results = []
@@ -839,8 +848,13 @@ class Parse2Plone(object):
             for element in root.iter():
                 tag = element.tag
                 text = element.text
+                params = element.items()
                 if tag in _SETTINGS['target_tags'] and text is not None:
-                    results += '<%s>%s</%s>' % (tag, text, tag)
+                    if params is []:
+                        results += '<%s>%s</%s>' % (tag, text, tag)
+                    else:
+                        params = utils._convert_tuple_to_params(params)
+                        results += '<%s %s>%s</%s>' % (tag, params, text, tag)
         else:
             # if we have XPath selectors, but no other tags, return the
             # entire contents of the selected elements
