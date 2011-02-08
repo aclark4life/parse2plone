@@ -556,6 +556,9 @@ class Utils(object):
     def _remove_ext(self, obj):
         return obj.split('.')[0]
 
+    def _set_encoding(self, data):
+        return data.decode(_SETTINGS['encoding'])
+
     def _setup_app(self, app, user):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
@@ -894,6 +897,7 @@ class Parse2Plone(object):
 
     def set_page(self, page, obj, parent_path, import_dir, _collapse_map,
         _rename_map):
+        utils = Utils()
         filename = '/'.join([import_dir, '/'.join(parent_path), obj])
         key = '/'.join(parent_path) + '/' + obj
         if _SETTINGS['rename'] and key in _rename_map['reverse']:
@@ -906,6 +910,7 @@ class Parse2Plone(object):
         results = ''
         data = f.read()
         f.close()
+        data = utils._set_encoding(data)
         try:
             root = lxml.html.fromstring(data)
         except lxml.etree.XMLSyntaxError:
