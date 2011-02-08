@@ -86,7 +86,7 @@ _SETTINGS = {
     'match': None,
     'paths': None,
     'create_spreadsheet': False,
-    'ignore_errors': True,
+    'ignore_errors': False,
 }
 
 
@@ -328,8 +328,8 @@ class Utils(object):
         Converts [('foo','bar')] to foo="bar"
         """
         results = ""
-        for param in params():
-            results += (" %s=%s" % param[0], param[1])
+        for param in params:
+            results += (' %s="%s"' % (param[0], param[1]))
         return results
 
     def process_recipe_args(self, recipe_args):
@@ -838,6 +838,7 @@ class Parse2Plone(object):
         return results
 
     def parse_root(self, results, root):
+        utils = Utils()
         # separate out the XPath selectors and ordinary tags
         selectors = [x for x in _SETTINGS['target_tags'] if '/' in x]
         tags = [x for x in _SETTINGS['target_tags'] if '/' not in x]
