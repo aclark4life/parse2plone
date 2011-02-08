@@ -87,6 +87,7 @@ _SETTINGS = {
     'paths': None,
     'create_spreadsheet': False,
     'ignore_errors': False,
+    'encoding': 'utf-8',
 }
 
 
@@ -368,6 +369,7 @@ class Utils(object):
         else:
             _SETTINGS['match'] = recipe_args['match']
         _SETTINGS['ignore_errors'] = recipe_args['ignore_errors']
+        _SETTINGS['encoding'] = recipe_args['encoding']
 
     def _create_option_parser(self):
         option_parser = optparse.OptionParser()
@@ -447,6 +449,10 @@ class Utils(object):
             default=_UNSET_OPTION,
             dest='ignore_errors',
             help='Ignore errors and keep going!')
+        option_parser.add_option('--encoding',
+            default=_UNSET_OPTION,
+            dest='encoding',
+            help='The charset to decode')
         return option_parser
 
     # BBB Because the ast module is not included with Python 2.4, we
@@ -617,6 +623,7 @@ class Utils(object):
         arguments += " target_tags='%s', force=%s, publish=%s,"
         arguments += " collapse=%s,"
         arguments += " ignore_errors=%s,"
+        arguments += " encoding=%s,"
         if _SETTINGS['rename']:
             arguments += " rename='%s',"
         else:
@@ -662,6 +669,8 @@ class Utils(object):
             _SETTINGS['publish'] = options.publish
         if options.ignore_errors is not _UNSET_OPTION:
             _SETTINGS['ignore_errors'] = options.ignore_errors
+        if options.encoding is not _UNSET_OPTION:
+            _SETTINGS['encoding'] = options.encoding
         if options.collapse is not _UNSET_OPTION:
             _SETTINGS['collapse'] = options.collapse
         if options.create_spreadsheet is not _UNSET_OPTION:
@@ -948,6 +957,7 @@ class Recipe(object):
                 _SETTINGS['force'],
                 _SETTINGS['publish'],
                 _SETTINGS['ignore_errors'],
+                _SETTINGS['encoding'],
                 _SETTINGS['collapse'],
                 _SETTINGS['rename'],
                 _SETTINGS['replacetypes'],
@@ -968,6 +978,7 @@ class Recipe(object):
                 _SETTINGS['force'],
                 _SETTINGS['publish'],
                 _SETTINGS['ignore_errors'],
+                _SETTINGS['encoding'],
                 _SETTINGS['collapse'],
                 _SETTINGS['rename'],
                 _SETTINGS['replacetypes'],
