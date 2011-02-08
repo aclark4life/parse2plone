@@ -367,6 +367,7 @@ class Utils(object):
             _SETTINGS['match'] = recipe_args['match'].split(',')
         else:
             _SETTINGS['match'] = recipe_args['match']
+        _SETTINGS['ignore_errors'] = recipe_args['ignore_errors']
 
     def _create_option_parser(self):
         option_parser = optparse.OptionParser()
@@ -442,6 +443,10 @@ class Utils(object):
             default=_UNSET_OPTION,
             dest='create_spreadsheet',
             help='Import contents of spreadsheet (see create_spreadsheet())')
+        option_parser.add_option('--ignore-errors',
+            default=_UNSET_OPTION,
+            dest='ignore_errors',
+            help='Ignore errors and keep going!')
         return option_parser
 
     # BBB Because the ast module is not included with Python 2.4, we
@@ -611,6 +616,7 @@ class Utils(object):
         arguments += " image_extensions='%s', file_extensions='%s',"
         arguments += " target_tags='%s', force=%s, publish=%s,"
         arguments += " collapse=%s,"
+        arguments += " ignore_errors=%s,"
         if _SETTINGS['rename']:
             arguments += " rename='%s',"
         else:
@@ -654,6 +660,8 @@ class Utils(object):
             _SETTINGS['force'] = options.force
         if options.publish is not _UNSET_OPTION:
             _SETTINGS['publish'] = options.publish
+        if options.ignore_errors is not _UNSET_OPTION:
+            _SETTINGS['ignore_errors'] = options.ignore_errors
         if options.collapse is not _UNSET_OPTION:
             _SETTINGS['collapse'] = options.collapse
         if options.create_spreadsheet is not _UNSET_OPTION:
@@ -938,6 +946,7 @@ class Recipe(object):
                 _SETTINGS['target_tags'],
                 _SETTINGS['force'],
                 _SETTINGS['publish'],
+                _SETTINGS['ignore_errors'],
                 _SETTINGS['collapse'],
                 _SETTINGS['rename'],
                 _SETTINGS['replacetypes'],
@@ -957,6 +966,7 @@ class Recipe(object):
                 _SETTINGS['target_tags'],
                 _SETTINGS['force'],
                 _SETTINGS['publish'],
+                _SETTINGS['ignore_errors'],
                 _SETTINGS['collapse'],
                 _SETTINGS['rename'],
                 _SETTINGS['replacetypes'],
