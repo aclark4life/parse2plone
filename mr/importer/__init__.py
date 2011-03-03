@@ -625,8 +625,8 @@ class Utils(object):
         arguments += " image_extensions='%s', file_extensions='%s',"
         arguments += " target_tags='%s', force=%s, publish=%s,"
         arguments += " collapse=%s,"
-        arguments += " ignore_errors=%s,"
         arguments += " encoding='%s',"
+        arguments += " ignore_errors=%s,"
         if _SETTINGS['rename']:
             arguments += " rename='%s',"
         else:
