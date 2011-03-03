@@ -184,7 +184,6 @@ def match_files(files, import_dir, match):
             if f.find(m) >= 0:
                 results[import_dir].append(f)
 
-    
     return results
 
 
@@ -423,6 +422,7 @@ class Utils(object):
             _SETTINGS['ignore_errors'] = recipe_args['ignore_errors']
             _SETTINGS['encoding'] = recipe_args['encoding']
             _SETTINGS['paths'] = recipe_args['paths']
+            
             
 
     def _create_option_parser(self):
@@ -750,8 +750,8 @@ class Utils(object):
             _SETTINGS['replacetypes'] = None
         if options.match is not _UNSET_OPTION:
             _SETTINGS['match'] = (options.match).split(',')
-        else:
-            _SETTINGS['match'] = None
+#        else:
+#            _SETTINGS['match'] = None
 
     def _validate_recipe_args(self, options):
         for option in options:
