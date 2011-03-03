@@ -626,7 +626,7 @@ class Utils(object):
         arguments += " target_tags='%s', force=%s, publish=%s,"
         arguments += " collapse=%s,"
         arguments += " ignore_errors=%s,"
-        arguments += " encoding=%s,"
+        arguments += " encoding='%s',"
         if _SETTINGS['rename']:
             arguments += " rename='%s',"
         else:
