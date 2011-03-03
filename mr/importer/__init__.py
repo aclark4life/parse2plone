@@ -90,6 +90,41 @@ _SETTINGS = {
     'encoding': 'utf-8',
 }
 
+_SETTINGS_INIT = {
+    'user': 'admin',
+    'path': '/Plone',
+    'illegal_chars': ['_', '.', '+'],
+    'illegal_words': ['id', 'start'],
+    'illegal_expressions': ['[0-9]'],
+    'html_extensions': ['html'],
+    'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
+    'file_extensions': ['mp3', 'xls'],
+    'target_tags': ['a', 'abbr', 'acronym', 'address',
+        'applet', 'area', 'b', 'base', 'basefont', 'bdo',
+        'big', 'blockquote', 'body', 'br', 'button', 'caption',
+        'center', 'cite', 'code', 'col', 'colgroup', 'dd', 'del',
+        'dfn', 'dir', 'div', 'dl', 'dt', 'em', 'fieldset', 'font',
+        'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5',
+        'h6', 'head', 'hr', 'html', 'i', 'iframe', 'img', 'input',
+        'ins', 'isindex', 'kbd', 'label', 'legend', 'li', 'link',
+        'map', 'menu', 'meta', 'noframes', 'noscript', 'object',
+        'ol', 'optgroup', 'option', 'p', 'param', 'pre', 'q', 's',
+        'samp', 'script', 'select', 'small', 'span', 'strike',
+        'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td',
+        'textarea', 'tfoot', 'th', 'thead', 'title', 'tr', 'tt',
+        'u', 'ul', 'var'],
+    'force': False,
+    'publish': False,
+    'collapse': False,
+    'rename': None,
+    'replacetypes': None,
+    'match': None,
+    'paths': None,
+    'create_spreadsheet': False,
+    'ignore_errors': False,
+    'encoding': 'utf-8',
+}
+
 
 def _setup_logger():
     # log levels: debug, info, warn, error, critical
@@ -423,6 +458,7 @@ class Utils(object):
             _SETTINGS['encoding'] = recipe_args['encoding']
             _SETTINGS['paths'] = recipe_args['paths']
             
+         
             
 
     def _create_option_parser(self):
@@ -1006,6 +1042,7 @@ class Recipe(object):
             raise ValueError("Unknown recipe parameter in '%s'." %
                 self.options)
 
+        _SETTINGS = _SETTINGS_INIT
         arguments = utils.process_config_params(self.options)
 
         if not _SETTINGS['paths']:
