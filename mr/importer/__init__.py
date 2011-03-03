@@ -410,6 +410,7 @@ class Utils(object):
             _SETTINGS['ignore_errors'] = recipe_args['ignore_errors']
             _SETTINGS['encoding'] = recipe_args['encoding']
             _SETTINGS['paths'] = recipe_args['paths']
+            
 
     def _create_option_parser(self):
         option_parser = optparse.OptionParser()
@@ -622,7 +623,7 @@ class Utils(object):
         for option, existing_value in _SETTINGS.items():
             if option in options:
                 # the user set a recipe parameter we need to process
-                if option in ('rename', 'paths', 'match'):
+                if option in ('match', 'paths', 'rename'):
                     _SETTINGS[option] = self._convert_str_to_csv(
                         options[option])
                 elif option in ('replacetypes'):
@@ -633,7 +634,7 @@ class Utils(object):
                     'image_extensions', 'file_extensions', 'target_tags'):
                     _SETTINGS[option] = ', '.join(re.split('\s+',
                         options[option]))
-                elif option in ('force', 'publish', 'collapse',
+                elif option in ('collapse', 'force', 'publish',
                     'create_spreadsheet'):
                     _SETTINGS[option] = self._fake_literal_eval(
                         options[option].capitalize())
@@ -656,6 +657,7 @@ class Utils(object):
                     # and others do not have to be converted to csv
                     _SETTINGS[option] = existing_value
 
+        # Build arguments string to pass to main
         arguments = "app=app,"
         arguments += " user='%s',"
         if not _SETTINGS['paths']:
@@ -1022,14 +1024,16 @@ class Recipe(object):
                 _SETTINGS['target_tags'],
                 _SETTINGS['force'],
                 _SETTINGS['publish'],
-                _SETTINGS['ignore_errors'],
-                _SETTINGS['encoding'],
                 _SETTINGS['collapse'],
+                _SETTINGS['encoding'],
+                _SETTINGS['ignore_errors'],
                 _SETTINGS['rename'],
                 _SETTINGS['replacetypes'],
                 _SETTINGS['match'],
                 _SETTINGS['create_spreadsheet'],
                 _SETTINGS['paths'])
+
+            
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([('import', 'mr.importer', 'main')],
