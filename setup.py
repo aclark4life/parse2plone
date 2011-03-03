@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 name = 'mr.importer'
 description = 'Easily import static websites on the file system into Plone'
-version = '1.0b1'
+version = '1.0a6'
 
 
 def read(file):

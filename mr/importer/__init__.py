@@ -183,6 +183,8 @@ def match_files(files, import_dir, match):
         for m in match:
             if f.find(m) >= 0:
                 results[import_dir].append(f)
+
+    
     return results
 
 
@@ -376,11 +378,10 @@ class Utils(object):
             else:
                 _SETTINGS['replacetypes'] = recipe_args['replacetypes']
 
-            _SETTINGS['match'] = recipe_args['match']
-#            if recipe_args['match'] is not None:
-#                _SETTINGS['match'] = recipe_args['match'].split(',')
-#            else:
-#                _SETTINGS['match'] = recipe_args['match']
+            if recipe_args['match'] is not None:
+                _SETTINGS['match'] = recipe_args['match'].split(',')
+            else:
+                _SETTINGS['match'] = recipe_args['match']
             _SETTINGS['ignore_errors'] = recipe_args['ignore_errors']
             _SETTINGS['encoding'] = recipe_args['encoding']
         else:
@@ -414,12 +415,11 @@ class Utils(object):
             else:
                 _SETTINGS['replacetypes'] = recipe_args['replacetypes']
 
-            _SETTINGS['match'] = recipe_args['match']
 
-#            if recipe_args['match'] is not None:
-#                _SETTINGS['match'] = recipe_args['match'].split(',')
-#            else:
-#                _SETTINGS['match'] = recipe_args['match']
+            if recipe_args['match'] is not None:
+                _SETTINGS['match'] = recipe_args['match'].split(',')
+            else:
+                _SETTINGS['match'] = recipe_args['match']
             _SETTINGS['ignore_errors'] = recipe_args['ignore_errors']
             _SETTINGS['encoding'] = recipe_args['encoding']
             _SETTINGS['paths'] = recipe_args['paths']
