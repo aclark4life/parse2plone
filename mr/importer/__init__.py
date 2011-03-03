@@ -309,7 +309,7 @@ class Utils(object):
     def _convert_obj_to_path(self, obj):
         return '/'.join(obj.getPhysicalPath())
 
-    def _convert_str_to_csv(self, value):
+    def _convert_lines_to_csv(self, value):
         """
         Converts '\nfoo bar\nbaz qux' to 'foo:bar,baz:qux'
         """
@@ -322,6 +322,14 @@ class Utils(object):
             if c < len(groups) - 1:
                 results += ','
             c += 1
+        return results
+
+    def _convert_str_to_csv(self, value):
+        """
+        Converts "foo bar baz" to "foo,bar,baz"
+        """
+        values = value.split(' ')
+        results = ','.join(values)
         return results
 
     def _convert_tuple_to_params(self, params):
@@ -367,10 +375,12 @@ class Utils(object):
                 _SETTINGS['replacetypes'] = recipe_args['replacetypes'].split(',')
             else:
                 _SETTINGS['replacetypes'] = recipe_args['replacetypes']
-            if recipe_args['match'] is not None:
-                _SETTINGS['match'] = recipe_args['match'].split(',')
-            else:
-                _SETTINGS['match'] = recipe_args['match']
+
+            _SETTINGS['match'] = recipe_args['match']
+#            if recipe_args['match'] is not None:
+#                _SETTINGS['match'] = recipe_args['match'].split(',')
+#            else:
+#                _SETTINGS['match'] = recipe_args['match']
             _SETTINGS['ignore_errors'] = recipe_args['ignore_errors']
             _SETTINGS['encoding'] = recipe_args['encoding']
         else:
@@ -403,10 +413,13 @@ class Utils(object):
                 _SETTINGS['replacetypes'] = recipe_args['replacetypes'].split(',')
             else:
                 _SETTINGS['replacetypes'] = recipe_args['replacetypes']
-            if recipe_args['match'] is not None:
-                _SETTINGS['match'] = recipe_args['match'].split(',')
-            else:
-                _SETTINGS['match'] = recipe_args['match']
+
+            _SETTINGS['match'] = recipe_args['match']
+
+#            if recipe_args['match'] is not None:
+#                _SETTINGS['match'] = recipe_args['match'].split(',')
+#            else:
+#                _SETTINGS['match'] = recipe_args['match']
             _SETTINGS['ignore_errors'] = recipe_args['ignore_errors']
             _SETTINGS['encoding'] = recipe_args['encoding']
             _SETTINGS['paths'] = recipe_args['paths']
@@ -623,11 +636,14 @@ class Utils(object):
         for option, existing_value in _SETTINGS.items():
             if option in options:
                 # the user set a recipe parameter we need to process
-                if option in ('match', 'paths', 'rename'):
+                if option in ('match'):
                     _SETTINGS[option] = self._convert_str_to_csv(
                         options[option])
+                elif option in ('paths', 'rename'):
+                    _SETTINGS[option] = self._convert_lines_to_csv(
+                        options[option])
                 elif option in ('replacetypes'):
-                    _SETTINGS[option] = self._convert_str_to_csv(
+                    _SETTINGS[option] = self._convert_lines_to_csv(
                         options[option])
                 elif option in ('illegal_chars', 'illegal_words',
                     'illegal_expressions', 'html_extensions',
@@ -677,13 +693,17 @@ class Utils(object):
             arguments += " replacetypes='%s',"
         else:
             arguments += " replacetypes=%s,"
-        if _SETTINGS['match']:
-            arguments += " match='%s',"
-        else:
-            arguments += " match=%s,"
+#        if _SETTINGS['match']:
+#            arguments += " match='%s',"
+#        else:
+#            arguments += " match=%s,"
+        arguments += " match='%s',"
         arguments += " create_spreadsheet=%s"
         if _SETTINGS['paths']:
             arguments += ", paths='%s'"
+
+        
+
         return arguments
 
     def process_command_line_args(self, options):
@@ -1033,13 +1053,12 @@ class Recipe(object):
                 _SETTINGS['create_spreadsheet'],
                 _SETTINGS['paths'])
 
-            
-
+        
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
-        create_scripts([('import', 'mr.importer', 'main')],
+        create_scripts([(self.name, 'mr.importer', 'main')],
             working_set, executable, bindir, arguments=arguments % (settings))
 
-        return tuple((bindir + '/' + 'import',))
+        return tuple((bindir + '/' + self.name,))
 
     def update(self):
         """Updater"""
