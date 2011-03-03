@@ -337,39 +337,79 @@ class Utils(object):
         """
         Convert recipe parameter values
         """
-        _SETTINGS['user'] = recipe_args['user']
-        _SETTINGS['path'] = recipe_args['path']
-        _SETTINGS['illegal_chars'] = recipe_args['illegal_chars'].split(',')
-        _SETTINGS['illegal_words'] = recipe_args['illegal_words'].split(',')
-        _SETTINGS['illegal_expressions'] = (
-            recipe_args['illegal_expressions'].split(','))
-        _SETTINGS['html_extensions'] = (
-            recipe_args['html_extensions'].split(','))
-        _SETTINGS['image_extensions'] = (
-            recipe_args['image_extensions'].split(','))
-        _SETTINGS['file_extensions'] = (
-            recipe_args['file_extensions'].split(','))
-        _SETTINGS['target_tags'] = recipe_args['target_tags'].split(',')
-        if not 'paths' in recipe_args:
-            _SETTINGS['path'] = self._clean_path(recipe_args['path'])
-        _SETTINGS['force'] = recipe_args['force']
-        _SETTINGS['publish'] = recipe_args['publish']
-        _SETTINGS['collapse'] = recipe_args['collapse']
-        _SETTINGS['create_spreadsheet'] = recipe_args['create_spreadsheet']
-        if recipe_args['rename'] is not None:
-            _SETTINGS['rename'] = recipe_args['rename'].split(',')
+        if not recipe_args['paths']:
+            # if the user does not set the paths parameter (which by default
+            # they won't) we use path (aka /path/to/files)
+            _SETTINGS['user'] = recipe_args['user']
+            _SETTINGS['path'] = recipe_args['path']
+            _SETTINGS['illegal_chars'] = recipe_args['illegal_chars'].split(',')
+            _SETTINGS['illegal_words'] = recipe_args['illegal_words'].split(',')
+            _SETTINGS['illegal_expressions'] = (
+                recipe_args['illegal_expressions'].split(','))
+            _SETTINGS['html_extensions'] = (
+                recipe_args['html_extensions'].split(','))
+            _SETTINGS['image_extensions'] = (
+                recipe_args['image_extensions'].split(','))
+            _SETTINGS['file_extensions'] = (
+                recipe_args['file_extensions'].split(','))
+            _SETTINGS['target_tags'] = recipe_args['target_tags'].split(',')
+            if not 'paths' in recipe_args:
+                _SETTINGS['path'] = self._clean_path(recipe_args['path'])
+            _SETTINGS['force'] = recipe_args['force']
+            _SETTINGS['publish'] = recipe_args['publish']
+            _SETTINGS['collapse'] = recipe_args['collapse']
+            _SETTINGS['create_spreadsheet'] = recipe_args['create_spreadsheet']
+            if recipe_args['rename'] is not None:
+                _SETTINGS['rename'] = recipe_args['rename'].split(',')
+            else:
+                _SETTINGS['rename'] = recipe_args['rename']
+            if recipe_args['replacetypes'] is not None:
+                _SETTINGS['replacetypes'] = recipe_args['replacetypes'].split(',')
+            else:
+                _SETTINGS['replacetypes'] = recipe_args['replacetypes']
+            if recipe_args['match'] is not None:
+                _SETTINGS['match'] = recipe_args['match'].split(',')
+            else:
+                _SETTINGS['match'] = recipe_args['match']
+            _SETTINGS['ignore_errors'] = recipe_args['ignore_errors']
+            _SETTINGS['encoding'] = recipe_args['encoding']
         else:
-            _SETTINGS['rename'] = recipe_args['rename']
-        if recipe_args['replacetypes'] is not None:
-            _SETTINGS['replacetypes'] = recipe_args['replacetypes'].split(',')
-        else:
-            _SETTINGS['replacetypes'] = recipe_args['replacetypes']
-        if recipe_args['match'] is not None:
-            _SETTINGS['match'] = recipe_args['match'].split(',')
-        else:
-            _SETTINGS['match'] = recipe_args['match']
-        _SETTINGS['ignore_errors'] = recipe_args['ignore_errors']
-        _SETTINGS['encoding'] = recipe_args['encoding']
+            # if the user sets the paths parameter, we use it (and ignore
+            # path)
+            _SETTINGS['user'] = recipe_args['user']
+#            _SETTINGS['path'] = recipe_args['path']
+            _SETTINGS['illegal_chars'] = recipe_args['illegal_chars'].split(',')
+            _SETTINGS['illegal_words'] = recipe_args['illegal_words'].split(',')
+            _SETTINGS['illegal_expressions'] = (
+                recipe_args['illegal_expressions'].split(','))
+            _SETTINGS['html_extensions'] = (
+                recipe_args['html_extensions'].split(','))
+            _SETTINGS['image_extensions'] = (
+                recipe_args['image_extensions'].split(','))
+            _SETTINGS['file_extensions'] = (
+                recipe_args['file_extensions'].split(','))
+            _SETTINGS['target_tags'] = recipe_args['target_tags'].split(',')
+#            if not 'paths' in recipe_args:
+#                _SETTINGS['path'] = self._clean_path(recipe_args['path'])
+            _SETTINGS['force'] = recipe_args['force']
+            _SETTINGS['publish'] = recipe_args['publish']
+            _SETTINGS['collapse'] = recipe_args['collapse']
+            _SETTINGS['create_spreadsheet'] = recipe_args['create_spreadsheet']
+            if recipe_args['rename'] is not None:
+                _SETTINGS['rename'] = recipe_args['rename'].split(',')
+            else:
+                _SETTINGS['rename'] = recipe_args['rename']
+            if recipe_args['replacetypes'] is not None:
+                _SETTINGS['replacetypes'] = recipe_args['replacetypes'].split(',')
+            else:
+                _SETTINGS['replacetypes'] = recipe_args['replacetypes']
+            if recipe_args['match'] is not None:
+                _SETTINGS['match'] = recipe_args['match'].split(',')
+            else:
+                _SETTINGS['match'] = recipe_args['match']
+            _SETTINGS['ignore_errors'] = recipe_args['ignore_errors']
+            _SETTINGS['encoding'] = recipe_args['encoding']
+            _SETTINGS['paths'] = recipe_args['paths']
 
     def _create_option_parser(self):
         option_parser = optparse.OptionParser()
