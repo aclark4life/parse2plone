@@ -3,8 +3,7 @@
 charm
 =====
 
-Easily import static websites on the file system into Plone via a command
-like::
+Import static websites on the file system into Plone via::
 
     $ bin/plone run bin/charm /path/to/files
 
@@ -23,9 +22,6 @@ get content from static websites on the file system into Plone.
 ``charm`` relies on the "run" argument of scripts created by
 `plone.recipe.zope2instance`_ to mount and modify the Plone database.
 
-``charm`` development will cease upon release of charm 1.0, when the author will
-pursue a ``collective.transmogrifier``-based approach.
-
 Getting started
 ---------------
 
@@ -36,18 +32,6 @@ Caveats:
 
 * A user must exist in the ``Zope2`` instance database (or Plone site). By
   default, charm assumes the user is named "admin".
-
-Because it drives the author nuts when he has to dig for a recipe's options,
-here are this recipe's options along with their default values::
-
-    [charm]
-    recipe = charm
-
-.. Note::
-    The parameters listed above are configured with their default values. Edit these
-    values if you would like to change the default behavior; they are (mostly)
-    self-explanatory. Now you can just cut and paste to get started or keep reading if
-    you would like to know more.
 
 .. Note::
     This recipe creates a script that is **not** intended to be run directly.
