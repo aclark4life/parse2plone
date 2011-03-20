@@ -341,6 +341,89 @@ class Utils(object):
             results += (' %s="%s"' % (param[0], param[1]))
         return results
 
+    def _create_option_parser(self):
+        option_parser = optparse.OptionParser()
+        option_parser.add_option('-u', '--user',
+            default=_UNSET_OPTION,
+            dest='user',
+            help='Zope2 instance or Plone site user.')
+        option_parser.add_option('-p', '--path',
+            default=_UNSET_OPTION,
+            dest='path',
+            help='Path to Plone site object or sub-folder')
+        option_parser.add_option('--html-extensions',
+            default=_UNSET_OPTION,
+            dest='html_extensions',
+            help='Specify HTML file extensions')
+        option_parser.add_option('--illegal-chars',
+            default=_UNSET_OPTION,
+            dest='illegal_chars',
+            help='Specify characters to ignore')
+        option_parser.add_option('--illegal-words',
+            default=_UNSET_OPTION,
+            dest='illegal_words',
+            help='Specify words to ignore')
+        option_parser.add_option('--illegal-expressions',
+            default=_UNSET_OPTION,
+            dest='illegal_expressions',
+            help='Specify words to ignore')
+        option_parser.add_option('--image-extensions',
+            default=_UNSET_OPTION,
+            dest='image_extensions',
+            help='Specify image file extensions')
+        option_parser.add_option('--file-extensions',
+            default=_UNSET_OPTION,
+            dest='file_extensions',
+            help='Specify generic file extensions')
+        option_parser.add_option('--target-tags',
+            default=_UNSET_OPTION,
+            dest='target_tags',
+            help='Specify HTML tags to parse')
+        option_parser.add_option('--force',
+            action='store_true',
+            default=_UNSET_OPTION,
+            dest='force',
+            help='Force creation of folders')
+        option_parser.add_option('--publish',
+            action='store_true',
+            default=_UNSET_OPTION,
+            dest='publish',
+            help='Optionally publish newly created content')
+        option_parser.add_option('--collapse',
+            action='store_true',
+            default=_UNSET_OPTION,
+            dest='collapse',
+            help="""Optionally "collapse" content (see collapse_parts())""")
+        option_parser.add_option('--rename',
+            default=_UNSET_OPTION,
+            dest='rename',
+            help='Optionally rename content (see rename_parts())')
+        option_parser.add_option('--replacetypes',
+            default=_UNSET_OPTION,
+            dest='replacetypes',
+            help='Optionally use custom content types (see replace types())')
+        option_parser.add_option('--match',
+            default=_UNSET_OPTION,
+            dest='match',
+            help='Only import content that matches PATTERN (see match_files())'
+            )
+        option_parser.add_option('--paths',
+            default=_UNSET_OPTION,
+            dest='paths',
+            help='Specify import_dirs:object_paths (--path will be ignored)')
+        option_parser.add_option('--create-spreadsheet',
+            default=_UNSET_OPTION,
+            dest='create_spreadsheet',
+            help='Import contents of spreadsheet (see create_spreadsheet())')
+        option_parser.add_option('--ignore-errors',
+            default=_UNSET_OPTION,
+            dest='ignore_errors',
+            help='Ignore errors and keep going!')
+        option_parser.add_option('--encoding',
+            default=_UNSET_OPTION,
+            dest='encoding',
+            help='The charset to decode')
+        return option_parser
 
     # BBB Because the ast module is not included with Python 2.4, we
     # include this function to produce similar results (with our
@@ -425,9 +508,53 @@ class Utils(object):
                 results = False
         return results
 
+    def process_command_line_args(self, options):
+        """
+        Process command line args
+        """
+        if options.user is not _UNSET_OPTION:
+            _SETTINGS['user'] = options.user
+        if options.path is not _UNSET_OPTION:
+            _SETTINGS['path'] = self._clean_path(options.path)
+        if options.illegal_chars is not _UNSET_OPTION:
+            _SETTINGS['illegal_chars'] = options.illegal_chars
+        if options.illegal_words is not _UNSET_OPTION:
+            _SETTINGS['illegal_words'] = options.illegal_words
+        if options.illegal_expressions is not _UNSET_OPTION:
+            _SETTINGS['illegal_expressions'] = options.illegal_expressions
+        if options.html_extensions is not _UNSET_OPTION:
+            _SETTINGS['html_extensions'] = options.html_extensions
+        if options.image_extensions is not _UNSET_OPTION:
+            _SETTINGS['image_extensions'] = options.image_extensions
+        if options.file_extensions is not _UNSET_OPTION:
+            _SETTINGS['file_extensions'] = options.file_extensions
+        if options.target_tags is not _UNSET_OPTION:
+            _SETTINGS['target_tags'] = options.target_tags
+        if options.force is not _UNSET_OPTION:
+            _SETTINGS['force'] = options.force
+        if options.publish is not _UNSET_OPTION:
+            _SETTINGS['publish'] = options.publish
+        if options.ignore_errors is not _UNSET_OPTION:
+            _SETTINGS['ignore_errors'] = options.ignore_errors
+        if options.encoding is not _UNSET_OPTION:
+            _SETTINGS['encoding'] = options.encoding
+        if options.collapse is not _UNSET_OPTION:
+            _SETTINGS['collapse'] = options.collapse
+        if options.create_spreadsheet is not _UNSET_OPTION:
+            _SETTINGS['create_spreadsheet'] = options.create_spreadsheet
+        if options.rename is not _UNSET_OPTION:
+            _SETTINGS['rename'] = (options.rename).split(',')
+        else:
+            _SETTINGS['rename'] = None
+        if options.replacetypes is not _UNSET_OPTION:
+            _SETTINGS['replacetypes'] = (options.replacetypes).split(',')
+        else:
+            _SETTINGS['replacetypes'] = None
+        if options.match is not _UNSET_OPTION:
+            _SETTINGS['match'] = (options.match).split(',')
+
     def process_config_params(self, options):
         return "app=app"
-        
 
     def _remove_parts(self, files, num_parts):
         results = []
@@ -739,6 +866,11 @@ def main(**kwargs):
 
     parse2plone = Parse2Plone()
     utils = Utils()
+
+    # Process command line args; save results in _SETTINGS
+    option_parser = utils._create_option_parser()
+    options, args = option_parser.parse_args()
+    utils.process_command_line_args(options)
 
     # Run parse2plone
     import_dir = _SETTINGS['import_dir']
