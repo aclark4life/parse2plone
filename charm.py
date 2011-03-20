@@ -1,7 +1,6 @@
 ###############################################################################
 #                                                                             #
-# mr.importer - Easily import static website content from the file system     #
-#               into Plone                                                    #
+# charm - Import static website content from the file system into Plone.      #
 #                                                                             #
 # Copyright (C) 2011 Alex Clark                                               #
 #                                                                             #
@@ -22,7 +21,7 @@
 #                                                                             #
 # Usage:                                                                      #
 #                                                                             #
-# $ bin/plone run bin/import /path/to/files                                   #
+# $ bin/plone run bin/charm /path/to/files                                    #
 #                                                                             #
 # Where:                                                                      #
 #                                                                             #
@@ -32,7 +31,7 @@
 #                                                                             #
 # * `run` is a command line option of `bin/plone` to execute a script         #
 #                                                                             #
-# * `bin/import` is a script created by parse2plone (after you run            #
+# * `bin/charm` is a script created by parse2plone (after you run             #
 # Buildout)                                                                   #
 #                                                                             #
 # * `/path/to/files` is the file system path to your website files e.g.       #
@@ -128,10 +127,10 @@ _SETTINGS_INIT = {
 
 def _setup_logger():
     # log levels: debug, info, warn, error, critical
-    logger = logging.getLogger("mr.importer")
+    logger = logging.getLogger("charm")
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
-    outfile = logging.FileHandler(filename='mr.importer.log')
+    outfile = logging.FileHandler(filename='charm.log')
     handler.setLevel(logging.INFO)
     outfile.setLevel(logging.INFO)
     formatter = logging.Formatter(
@@ -1092,7 +1091,7 @@ class Recipe(object):
 
         
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
-        create_scripts([(self.name, 'mr.importer', 'main')],
+        create_scripts([(self.name, 'charm', 'main')],
             working_set, executable, bindir, arguments=arguments % (settings))
 
         return tuple((bindir + '/' + self.name,))

@@ -1,9 +1,9 @@
 
 from setuptools import setup, find_packages
 
-name = 'mr.importer'
+name = 'charm'
 description = 'Easily import static websites on the file system into Plone'
-version = '1.0a6'
+version = '1.0'
 
 
 def read(file):
@@ -17,7 +17,7 @@ setup(
     version=version,
     description=description,
     long_description=read('README.txt') + read('docs/HISTORY.txt'),
-    url='https://github.com/collective/mr.importer',
+    url='https://github.com/collective/charm',
     author='Alex Clark',
     author_email='aclark@aclark.net',
     entry_points={
