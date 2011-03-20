@@ -10,7 +10,7 @@ Import static websites on the file system into Plone via::
 Introduction
 ------------
 
-``charm`` is a Buildout recipe that creates a script for you to easily
+``charm`` is a Buildout recipe that creates a script for you to
 get content from static websites on the file system into Plone.
 
 .. Note::
