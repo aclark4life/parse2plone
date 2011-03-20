@@ -138,29 +138,6 @@ def create_spreadsheet(page, obj, parent_path, import_dir):
     page.setText(results)
 
 
-# Adds "create spreadsheet" feature to ``parse2plone``.
-def create_spreadsheets(folder, obj, parent_path, import_dir):
-    """
-    You can optionally tell ``parse2plone`` to try and import the contents of
-    any spreadsheets it finds, by doing this::
-
-    $ bin/plone run bin/import --create-spreadsheet /var/www/html
-
-    If /var/www/html/foo.xls exists and has content, then a
-    http://localhost:8080/Plone/foo will be created as a page, with the
-    contents of the spreadsheet in an HTML table.
-
-    This option will import content from each row into a separate page.
-    """
-    import xlrd
-    filename = '/'.join([import_dir, '/'.join(parent_path), obj])
-    wb = xlrd.open_workbook(filename)
-    for sheet in wb.sheets():
-        for row in range(sheet.nrows):
-            for col in sheet.row(row):
-                pass
-
-
 # Adds "match" feature to ``parse2plone``.
 def match_files(files, import_dir, match):
     """
@@ -407,11 +384,8 @@ class Utils(object):
             dest='match',
             help='Only import content that matches PATTERN (see match_files())'
             )
-        option_parser.add_option('--paths',
-            default=_UNSET_OPTION,
-            dest='paths',
-            help='Specify import_dirs:object_paths (--path will be ignored)')
         option_parser.add_option('--create-spreadsheet',
+            action='store_true',
             default=_UNSET_OPTION,
             dest='create_spreadsheet',
             help='Import contents of spreadsheet (see create_spreadsheet())')
@@ -626,8 +600,7 @@ class Parse2Plone(object):
             _COUNT['images'] += 1
             commit()
         elif utils._is_file(obj, _SETTINGS['file_extensions']):
-            if not _SETTINGS['create_spreadsheet'] and not _SETTINGS[
-                'create_spreadsheet']:
+            if not _SETTINGS['create_spreadsheet']:
                 at_file = self.create_file(parent, obj, _replace_types_map)
                 self.set_title(at_file, obj)
                 self.set_file(at_file, obj, parent_path, import_dir)
@@ -638,30 +611,17 @@ class Parse2Plone(object):
                 if obj.endswith('.xls'):
                     if not utils._check_exists_obj(parent,
                             utils._remove_ext(obj)):
-                        if not _SETTINGS['create_spreadsheet']:
-                            page = self.create_page(parent,
-                                utils._remove_ext(obj),
-                                _replace_types_map)
-                            self.set_title(page, utils._remove_ext(obj))
-                            create_spreadsheet(page, obj, parent_path,
-                                import_dir)
-                        else:
-                            folder = self.create_folder(parent,
-                                utils._remove_ext(obj), _replace_types_map)
-                            self.set_title(folder, utils._remove_ext(obj))
-                            create_spreadsheets(folder, obj, parent_path,
-                                import_dir)
+                        page = self.create_page(parent,
+                            utils._remove_ext(obj),
+                            _replace_types_map)
+                        self.set_title(page, utils._remove_ext(obj))
+                        create_spreadsheet(page, obj, parent_path,
+                            import_dir)
                         _COUNT['files'] += 1
                         commit()
                     else:
                         _LOG.info("object '%s' exists inside '%s'" % (
                             obj, utils._convert_obj_to_path(parent)))
-                else:
-                    msg = "you specified --create-spreadsheet(s)"
-                    msg += " but '%s' is not"
-                    msg += " a spreadhseet"
-                    _LOG.error(msg % obj)
-                    exit(1)
 
     def create_folder(self, parent, obj, _replace_types_map):
         utils = Utils()
