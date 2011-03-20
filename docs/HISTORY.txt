@@ -2,9 +2,14 @@
 History
 -------
 
-1.0b1 ()
-~~~~~~~~
+1.0 (03/20/2011)
+~~~~~~~~~~~~~~~~
 
+* Rename ``mr.importer`` to ``charm``
+
+  * ``mr.importer`` was not that clever, and author likes flat namespace
+
+* Get rid of all buildout options, support command line args only
 * Doc fixes
 
 1.0a5 (02/05/2011)

@@ -775,6 +775,7 @@ def main(**kwargs):
         _collapse_map, _rename_map, _replace_types_map)
 
     # Print results
-    msg = "Imported %s folders, %s images, %s pages, and %s files." 
-    _LOG.info(msg) 
+    msg = "Imported %s folders, %s images, %s pages, and %s files."
+    _LOG.info(msg % (_COUNT['folders'], _COUNT['images'], _COUNT['pages'],
+        _COUNT['files']))
     exit(0)
