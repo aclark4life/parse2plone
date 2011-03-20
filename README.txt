@@ -41,12 +41,8 @@ Caveats:
 
         $ bin/charm
         Traceback (most recent call last):
-          File "bin/charm", line 116, in <module>
-            charm.main(app=app, path='/Plone', illegal_chars='_,.',
-        illegal_words='id,start', illegal_expressions='[0-9]', html_extensions='html',
-        image_extensions='gif,jpg,jpeg,png', file_extensions='mp3,xls',
-        target_tags='a,div,font,h1,h2,p', force=True, publish=False, collapse=False,
-        rename=None, replacetypes=None, match=None, create_spreadsheet=True)
+          File "bin/charm", line 117, in <module>
+            charm.main(app=app)
         NameError: name 'app' is not defined
 
     To avoid this, run the script as intended::
