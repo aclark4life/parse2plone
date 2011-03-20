@@ -64,8 +64,10 @@ _SETTINGS = {
     'illegal_chars': ['_', '.', '+'],
     'illegal_words': ['id', 'start'],
     'illegal_expressions': ['[0-9]'],
+    'import_dir': './html',
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
     'match': None,
+    'path': '/Plone',
     'publish': True,
     'rename': None,
     'replacetypes': None,
@@ -738,8 +740,8 @@ def main(**kwargs):
     utils = Utils()
 
     # Run parse2plone
-    import_dir = sys.argv[1]
-    path = '/Plone'
+    import_dir = _SETTINGS['import_dir']
+    path = _SETTINGS['path']
     files = utils._get_files(import_dir)
     num_parts = len(import_dir.split('/'))
     app = utils._setup_app(kwargs['app'], _SETTINGS['user'])
