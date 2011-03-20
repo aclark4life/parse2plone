@@ -40,7 +40,7 @@ Caveats:
 Because it drives the author nuts when he has to dig for a recipe's options,
 here are this recipe's options along with their default values::
 
-    [import]
+    [charm]
     recipe = charm
 
 .. Note::
@@ -52,7 +52,7 @@ here are this recipe's options along with their default values::
 .. Note::
     This recipe creates a script that is **not** intended to be run directly.
     Due to technical limitations, the author was not able to implement a user
-    friendly error message. So if you run ``bin/import`` directly you will see
+    friendly error message. So if you run ``bin/charm`` directly you will see
     this::
 
         $ bin/charm

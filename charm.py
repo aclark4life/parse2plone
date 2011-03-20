@@ -59,6 +59,7 @@ _SETTINGS = {
     'create_spreadsheet': False,
     'encoding': 'utf8',
     'file_extensions': ['mp3', 'xls'],
+    'force': False,
     'html_extensions': ['html'],
     'ignore_errors': False,
     'illegal_chars': ['_', '.', '+'],
@@ -753,8 +754,7 @@ def main(**kwargs):
                 import_dir, _collapse_map, _rename_map, _replace_types_map)
             parent = utils._update_parent(app, path)
         else:
-            msg = "object in path '%s' does not exist, use --force"
-            msg += " to create"
+            msg = "object in path '%s' does not exist."
             _LOG.error(msg % path)
             exit(1)
     object_paths = utils._remove_base(files, num_parts, import_dir)
