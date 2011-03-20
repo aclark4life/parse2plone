@@ -55,14 +55,20 @@ from sys import executable
 from zc.buildout.easy_install import scripts as create_scripts
 
 _SETTINGS = {
-    'user': 'admin',
-    'path': '/Plone',
+    'collapse': False,
+    'create_spreadsheet': False,
+    'encoding': 'utf8',
+    'file_extensions': ['mp3', 'xls'],
+    'html_extensions': ['html'],
+    'ignore_errors': False,
     'illegal_chars': ['_', '.', '+'],
     'illegal_words': ['id', 'start'],
     'illegal_expressions': ['[0-9]'],
-    'html_extensions': ['html'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
-    'file_extensions': ['mp3', 'xls'],
+    'match': None,
+    'publish': True,
+    'rename': None,
+    'replacetypes': None,
     'target_tags': ['a', 'abbr', 'acronym', 'address',
         'applet', 'area', 'b', 'base', 'basefont', 'bdo',
         'big', 'blockquote', 'body', 'br', 'button', 'caption',
@@ -77,51 +83,7 @@ _SETTINGS = {
         'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td',
         'textarea', 'tfoot', 'th', 'thead', 'title', 'tr', 'tt',
         'u', 'ul', 'var'],
-    'force': False,
-    'publish': False,
-    'collapse': False,
-    'rename': None,
-    'replacetypes': None,
-    'match': None,
-    'paths': None,
-    'create_spreadsheet': False,
-    'ignore_errors': False,
-    'encoding': 'utf-8',
-}
-
-_SETTINGS_INIT = {
     'user': 'admin',
-    'path': '/Plone',
-    'illegal_chars': ['_', '.', '+'],
-    'illegal_words': ['id', 'start'],
-    'illegal_expressions': ['[0-9]'],
-    'html_extensions': ['html'],
-    'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
-    'file_extensions': ['mp3', 'xls'],
-    'target_tags': ['a', 'abbr', 'acronym', 'address',
-        'applet', 'area', 'b', 'base', 'basefont', 'bdo',
-        'big', 'blockquote', 'body', 'br', 'button', 'caption',
-        'center', 'cite', 'code', 'col', 'colgroup', 'dd', 'del',
-        'dfn', 'dir', 'div', 'dl', 'dt', 'em', 'fieldset', 'font',
-        'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5',
-        'h6', 'head', 'hr', 'html', 'i', 'iframe', 'img', 'input',
-        'ins', 'isindex', 'kbd', 'label', 'legend', 'li', 'link',
-        'map', 'menu', 'meta', 'noframes', 'noscript', 'object',
-        'ol', 'optgroup', 'option', 'p', 'param', 'pre', 'q', 's',
-        'samp', 'script', 'select', 'small', 'span', 'strike',
-        'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td',
-        'textarea', 'tfoot', 'th', 'thead', 'title', 'tr', 'tt',
-        'u', 'ul', 'var'],
-    'force': False,
-    'publish': False,
-    'collapse': False,
-    'rename': None,
-    'replacetypes': None,
-    'match': None,
-    'paths': None,
-    'create_spreadsheet': False,
-    'ignore_errors': False,
-    'encoding': 'utf-8',
 }
 
 
@@ -376,173 +338,6 @@ class Utils(object):
             results += (' %s="%s"' % (param[0], param[1]))
         return results
 
-    def process_recipe_args(self, recipe_args):
-        """
-        Convert recipe parameter values
-        """
-        if not recipe_args['paths']:
-            # if the user does not set the paths parameter (which by default
-            # they won't) we use path (aka /path/to/files)
-            _SETTINGS['user'] = recipe_args['user']
-            _SETTINGS['path'] = recipe_args['path']
-            _SETTINGS['illegal_chars'] = recipe_args['illegal_chars'].split(',')
-            _SETTINGS['illegal_words'] = recipe_args['illegal_words'].split(',')
-            _SETTINGS['illegal_expressions'] = (
-                recipe_args['illegal_expressions'].split(','))
-            _SETTINGS['html_extensions'] = (
-                recipe_args['html_extensions'].split(','))
-            _SETTINGS['image_extensions'] = (
-                recipe_args['image_extensions'].split(','))
-            _SETTINGS['file_extensions'] = (
-                recipe_args['file_extensions'].split(','))
-            _SETTINGS['target_tags'] = recipe_args['target_tags'].split(',')
-            if not 'paths' in recipe_args:
-                _SETTINGS['path'] = self._clean_path(recipe_args['path'])
-            _SETTINGS['force'] = recipe_args['force']
-            _SETTINGS['publish'] = recipe_args['publish']
-            _SETTINGS['collapse'] = recipe_args['collapse']
-            _SETTINGS['create_spreadsheet'] = recipe_args['create_spreadsheet']
-            if recipe_args['rename'] is not None:
-                _SETTINGS['rename'] = recipe_args['rename'].split(',')
-            else:
-                _SETTINGS['rename'] = recipe_args['rename']
-            if recipe_args['replacetypes'] is not None:
-                _SETTINGS['replacetypes'] = recipe_args['replacetypes'].split(',')
-            else:
-                _SETTINGS['replacetypes'] = recipe_args['replacetypes']
-
-            if recipe_args['match'] is not None:
-                _SETTINGS['match'] = recipe_args['match'].split(',')
-            else:
-                _SETTINGS['match'] = recipe_args['match']
-            _SETTINGS['ignore_errors'] = recipe_args['ignore_errors']
-            _SETTINGS['encoding'] = recipe_args['encoding']
-        else:
-            # if the user sets the paths parameter, we use it (and ignore
-            # path)
-            _SETTINGS['user'] = recipe_args['user']
-#            _SETTINGS['path'] = recipe_args['path']
-            _SETTINGS['illegal_chars'] = recipe_args['illegal_chars'].split(',')
-            _SETTINGS['illegal_words'] = recipe_args['illegal_words'].split(',')
-            _SETTINGS['illegal_expressions'] = (
-                recipe_args['illegal_expressions'].split(','))
-            _SETTINGS['html_extensions'] = (
-                recipe_args['html_extensions'].split(','))
-            _SETTINGS['image_extensions'] = (
-                recipe_args['image_extensions'].split(','))
-            _SETTINGS['file_extensions'] = (
-                recipe_args['file_extensions'].split(','))
-            _SETTINGS['target_tags'] = recipe_args['target_tags'].split(',')
-#            if not 'paths' in recipe_args:
-#                _SETTINGS['path'] = self._clean_path(recipe_args['path'])
-            _SETTINGS['force'] = recipe_args['force']
-            _SETTINGS['publish'] = recipe_args['publish']
-            _SETTINGS['collapse'] = recipe_args['collapse']
-            _SETTINGS['create_spreadsheet'] = recipe_args['create_spreadsheet']
-            if recipe_args['rename'] is not None:
-                _SETTINGS['rename'] = recipe_args['rename'].split(',')
-            else:
-                _SETTINGS['rename'] = recipe_args['rename']
-            if recipe_args['replacetypes'] is not None:
-                _SETTINGS['replacetypes'] = recipe_args['replacetypes'].split(',')
-            else:
-                _SETTINGS['replacetypes'] = recipe_args['replacetypes']
-
-
-            if recipe_args['match'] is not None:
-                _SETTINGS['match'] = recipe_args['match'].split(',')
-            else:
-                _SETTINGS['match'] = recipe_args['match']
-            _SETTINGS['ignore_errors'] = recipe_args['ignore_errors']
-            _SETTINGS['encoding'] = recipe_args['encoding']
-            _SETTINGS['paths'] = recipe_args['paths']
-            
-         
-            
-
-    def _create_option_parser(self):
-        option_parser = optparse.OptionParser()
-        option_parser.add_option('-u', '--user',
-            default=_UNSET_OPTION,
-            dest='user',
-            help='Zope2 instance or Plone site user.')
-        option_parser.add_option('-p', '--path',
-            default=_UNSET_OPTION,
-            dest='path',
-            help='Path to Plone site object or sub-folder')
-        option_parser.add_option('--html-extensions',
-            default=_UNSET_OPTION,
-            dest='html_extensions',
-            help='Specify HTML file extensions')
-        option_parser.add_option('--illegal-chars',
-            default=_UNSET_OPTION,
-            dest='illegal_chars',
-            help='Specify characters to ignore')
-        option_parser.add_option('--illegal-words',
-            default=_UNSET_OPTION,
-            dest='illegal_words',
-            help='Specify words to ignore')
-        option_parser.add_option('--illegal-expressions',
-            default=_UNSET_OPTION,
-            dest='illegal_expressions',
-            help='Specify words to ignore')
-        option_parser.add_option('--image-extensions',
-            default=_UNSET_OPTION,
-            dest='image_extensions',
-            help='Specify image file extensions')
-        option_parser.add_option('--file-extensions',
-            default=_UNSET_OPTION,
-            dest='file_extensions',
-            help='Specify generic file extensions')
-        option_parser.add_option('--target-tags',
-            default=_UNSET_OPTION,
-            dest='target_tags',
-            help='Specify HTML tags to parse')
-        option_parser.add_option('--force',
-            action='store_true',
-            default=_UNSET_OPTION,
-            dest='force',
-            help='Force creation of folders')
-        option_parser.add_option('--publish',
-            action='store_true',
-            default=_UNSET_OPTION,
-            dest='publish',
-            help='Optionally publish newly created content')
-        option_parser.add_option('--collapse',
-            action='store_true',
-            default=_UNSET_OPTION,
-            dest='collapse',
-            help="""Optionally "collapse" content (see collapse_parts())""")
-        option_parser.add_option('--rename',
-            default=_UNSET_OPTION,
-            dest='rename',
-            help='Optionally rename content (see rename_parts())')
-        option_parser.add_option('--replacetypes',
-            default=_UNSET_OPTION,
-            dest='replacetypes',
-            help='Optionally use custom content types (see replace types())')
-        option_parser.add_option('--match',
-            default=_UNSET_OPTION,
-            dest='match',
-            help='Only import content that matches PATTERN (see match_files())'
-            )
-        option_parser.add_option('--paths',
-            default=_UNSET_OPTION,
-            dest='paths',
-            help='Specify import_dirs:object_paths (--path will be ignored)')
-        option_parser.add_option('--create-spreadsheet',
-            default=_UNSET_OPTION,
-            dest='create_spreadsheet',
-            help='Import contents of spreadsheet (see create_spreadsheet())')
-        option_parser.add_option('--ignore-errors',
-            default=_UNSET_OPTION,
-            dest='ignore_errors',
-            help='Ignore errors and keep going!')
-        option_parser.add_option('--encoding',
-            default=_UNSET_OPTION,
-            dest='encoding',
-            help='The charset to decode')
-        return option_parser
 
     # BBB Because the ast module is not included with Python 2.4, we
     # include this function to produce similar results (with our
@@ -627,6 +422,10 @@ class Utils(object):
                 results = False
         return results
 
+    def process_config_params(self, options):
+        return "app=app"
+        
+
     def _remove_parts(self, files, num_parts):
         results = []
         for f in files:
@@ -663,130 +462,6 @@ class Utils(object):
              self._convert_obj_to_path(current_parent),
              self._convert_obj_to_path(updated_parent)))
         return updated_parent
-
-    def process_config_params(self, options):
-        """
-        Convert most recipe parameter values to csv; save in _SETTINGS dict
-        """
-        for option, existing_value in _SETTINGS.items():
-            if option in options:
-                # the user set a recipe parameter we need to process
-                if option in ('match'):
-                    _SETTINGS[option] = self._convert_str_to_csv(
-                        options[option])
-                elif option in ('paths', 'rename'):
-                    _SETTINGS[option] = self._convert_lines_to_csv(
-                        options[option])
-                elif option in ('replacetypes'):
-                    _SETTINGS[option] = self._convert_lines_to_csv(
-                        options[option])
-                elif option in ('illegal_chars', 'illegal_words',
-                    'illegal_expressions', 'html_extensions',
-                    'image_extensions', 'file_extensions', 'target_tags'):
-                    _SETTINGS[option] = ', '.join(re.split('\s+',
-                        options[option]))
-                elif option in ('collapse', 'force', 'publish',
-                    'create_spreadsheet'):
-                    _SETTINGS[option] = self._fake_literal_eval(
-                        options[option].capitalize())
-                else:
-                    # the user set an empty recipe parameter
-                    if option in ('rename', 'paths', 'match'):
-                        _SETTINGS[option] = None
-                    else:
-                        # the user set a recipe parameter we do not
-                        # need to process
-                        _SETTINGS[option] = options[option]
-            else:
-                # the user did not set any recipe parameters
-                if option in ('illegal_chars', 'illegal_words',
-                    'illegal_expressions', 'html_extensions',
-                    'image_extensions', 'file_extensions', 'target_tags'):
-                    # but some values must be converted to csv
-                    _SETTINGS[option] = ','.join(existing_value)
-                else:
-                    # and others do not have to be converted to csv
-                    _SETTINGS[option] = existing_value
-
-        # Build arguments string to pass to main
-        arguments = "app=app,"
-        arguments += " user='%s',"
-        if not _SETTINGS['paths']:
-            arguments += " path='%s',"
-        arguments += " illegal_chars='%s', illegal_words='%s',"
-        arguments += " illegal_expressions='%s', html_extensions='%s',"
-        arguments += " image_extensions='%s', file_extensions='%s',"
-        arguments += " target_tags='%s', force=%s, publish=%s,"
-        arguments += " collapse=%s,"
-        arguments += " encoding='%s',"
-        arguments += " ignore_errors=%s,"
-        if _SETTINGS['rename']:
-            arguments += " rename='%s',"
-        else:
-            arguments += " rename=%s,"
-        if _SETTINGS['replacetypes']:
-            arguments += " replacetypes='%s',"
-        else:
-            arguments += " replacetypes=%s,"
-#        if _SETTINGS['match']:
-#            arguments += " match='%s',"
-#        else:
-#            arguments += " match=%s,"
-        arguments += " match='%s',"
-        arguments += " create_spreadsheet=%s"
-        if _SETTINGS['paths']:
-            arguments += ", paths='%s'"
-
-        
-
-        return arguments
-
-    def process_command_line_args(self, options):
-        """
-        Process command line args
-        """
-        if options.user is not _UNSET_OPTION:
-            _SETTINGS['user'] = options.user
-        if options.path is not _UNSET_OPTION:
-            _SETTINGS['path'] = self._clean_path(options.path)
-        if options.illegal_chars is not _UNSET_OPTION:
-            _SETTINGS['illegal_chars'] = options.illegal_chars
-        if options.illegal_words is not _UNSET_OPTION:
-            _SETTINGS['illegal_words'] = options.illegal_words
-        if options.illegal_expressions is not _UNSET_OPTION:
-            _SETTINGS['illegal_expressions'] = options.illegal_expressions
-        if options.html_extensions is not _UNSET_OPTION:
-            _SETTINGS['html_extensions'] = options.html_extensions
-        if options.image_extensions is not _UNSET_OPTION:
-            _SETTINGS['image_extensions'] = options.image_extensions
-        if options.file_extensions is not _UNSET_OPTION:
-            _SETTINGS['file_extensions'] = options.file_extensions
-        if options.target_tags is not _UNSET_OPTION:
-            _SETTINGS['target_tags'] = options.target_tags
-        if options.force is not _UNSET_OPTION:
-            _SETTINGS['force'] = options.force
-        if options.publish is not _UNSET_OPTION:
-            _SETTINGS['publish'] = options.publish
-        if options.ignore_errors is not _UNSET_OPTION:
-            _SETTINGS['ignore_errors'] = options.ignore_errors
-        if options.encoding is not _UNSET_OPTION:
-            _SETTINGS['encoding'] = options.encoding
-        if options.collapse is not _UNSET_OPTION:
-            _SETTINGS['collapse'] = options.collapse
-        if options.create_spreadsheet is not _UNSET_OPTION:
-            _SETTINGS['create_spreadsheet'] = options.create_spreadsheet
-        if options.rename is not _UNSET_OPTION:
-            _SETTINGS['rename'] = (options.rename).split(',')
-        else:
-            _SETTINGS['rename'] = None
-        if options.replacetypes is not _UNSET_OPTION:
-            _SETTINGS['replacetypes'] = (options.replacetypes).split(',')
-        else:
-            _SETTINGS['replacetypes'] = None
-        if options.match is not _UNSET_OPTION:
-            _SETTINGS['match'] = (options.match).split(',')
-#        else:
-#            _SETTINGS['match'] = None
 
     def _validate_recipe_args(self, options):
         for option in options:
@@ -1041,58 +716,11 @@ class Recipe(object):
             raise ValueError("Unknown recipe parameter in '%s'." %
                 self.options)
 
-        _SETTINGS = _SETTINGS_INIT
         arguments = utils.process_config_params(self.options)
 
-        if not _SETTINGS['paths']:
-            # if the user does not set the paths parameter (which by default
-            # they won't) we use path (aka /path/to/files)
-            settings = (
-                _SETTINGS['user'],
-                _SETTINGS['path'],
-                _SETTINGS['illegal_chars'],
-                _SETTINGS['illegal_words'],
-                _SETTINGS['illegal_expressions'],
-                _SETTINGS['html_extensions'],
-                _SETTINGS['image_extensions'],
-                _SETTINGS['file_extensions'],
-                _SETTINGS['target_tags'],
-                _SETTINGS['force'],
-                _SETTINGS['publish'],
-                _SETTINGS['ignore_errors'],
-                _SETTINGS['encoding'],
-                _SETTINGS['collapse'],
-                _SETTINGS['rename'],
-                _SETTINGS['replacetypes'],
-                _SETTINGS['match'],
-                _SETTINGS['create_spreadsheet'])
-        else:
-            # if the user sets the paths parameter, we use it (and ignore
-            # path)
-            settings = (
-                _SETTINGS['user'],
-                _SETTINGS['illegal_chars'],
-                _SETTINGS['illegal_words'],
-                _SETTINGS['illegal_expressions'],
-                _SETTINGS['html_extensions'],
-                _SETTINGS['image_extensions'],
-                _SETTINGS['file_extensions'],
-                _SETTINGS['target_tags'],
-                _SETTINGS['force'],
-                _SETTINGS['publish'],
-                _SETTINGS['collapse'],
-                _SETTINGS['encoding'],
-                _SETTINGS['ignore_errors'],
-                _SETTINGS['rename'],
-                _SETTINGS['replacetypes'],
-                _SETTINGS['match'],
-                _SETTINGS['create_spreadsheet'],
-                _SETTINGS['paths'])
-
-        
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([(self.name, 'charm', 'main')],
-            working_set, executable, bindir, arguments=arguments % (settings))
+            working_set, executable, bindir, arguments=arguments)
 
         return tuple((bindir + '/' + self.name,))
 
@@ -1109,64 +737,44 @@ def main(**kwargs):
     parse2plone = Parse2Plone()
     utils = Utils()
 
-    # Convert arg values passed in to main from csv to list;
-    # save results in _SETTINGS
-    utils.process_recipe_args(kwargs)
-
-    # Process command line args; save results in _SETTINGS
-    option_parser = utils._create_option_parser()
-    options, args = option_parser.parse_args()
-    utils.process_command_line_args(options)
-
-    # Process import dir or dirs
-    paths_map = []
-    if not _SETTINGS['paths']:
-        paths_map.append(':'.join([utils._clean_path(args[0]),
-            _SETTINGS['path']]))
-    else:
-        paths_map = _SETTINGS['paths'].split(',')
-
     # Run parse2plone
-    for entry in paths_map:
-        import_dir, path = entry.split(':')
-        files = utils._get_files(import_dir)
-        num_parts = len(import_dir.split('/'))
-        app = utils._setup_app(kwargs['app'], _SETTINGS['user'])
-        if utils._check_exists_path(app, path):
+    import_dir = sys.argv[1]
+    path = '/Plone'
+    files = utils._get_files(import_dir)
+    num_parts = len(import_dir.split('/'))
+    app = utils._setup_app(kwargs['app'], _SETTINGS['user'])
+    if utils._check_exists_path(app, path):
+        parent = utils._update_parent(app, path)
+    else:
+        if _SETTINGS['force']:
+            parse2plone.create_parts(app, utils._get_parts(path),
+                import_dir, _collapse_map, _rename_map, _replace_types_map)
             parent = utils._update_parent(app, path)
         else:
-            if _SETTINGS['force']:
-                parse2plone.create_parts(app, utils._get_parts(path),
-                    import_dir, _collapse_map, _rename_map, _replace_types_map)
-                parent = utils._update_parent(app, path)
-            else:
-                msg = "object in path '%s' does not exist, use --force"
-                msg += " to create"
-                _LOG.error(msg % path)
-                exit(1)
-        object_paths = utils._remove_base(files, num_parts, import_dir)
-        if _SETTINGS['match']:
-            object_paths = match_files(object_paths, import_dir,
-                _SETTINGS['match'])
-        if _SETTINGS['collapse']:
-            _collapse_map = collapse_parts(object_paths, _collapse_map,
-            import_dir)
-        if _SETTINGS['rename']:
-            _rename_map = rename_parts(object_paths, _rename_map, import_dir,
-            _SETTINGS['rename'])
-        if _SETTINGS['replacetypes']:
-            try:
-                replace_types(_SETTINGS['replacetypes'], _replace_types_map)
-            except ValueError:
-                _LOG.error("Can't replace unknown type")
-                exit(1)
-        results = parse2plone.import_files(parent, object_paths, import_dir,
-            _collapse_map, _rename_map, _replace_types_map)
+            msg = "object in path '%s' does not exist, use --force"
+            msg += " to create"
+            _LOG.error(msg % path)
+            exit(1)
+    object_paths = utils._remove_base(files, num_parts, import_dir)
+    if _SETTINGS['match']:
+        object_paths = match_files(object_paths, import_dir,
+            _SETTINGS['match'])
+    if _SETTINGS['collapse']:
+        _collapse_map = collapse_parts(object_paths, _collapse_map,
+        import_dir)
+    if _SETTINGS['rename']:
+        _rename_map = rename_parts(object_paths, _rename_map, import_dir,
+        _SETTINGS['rename'])
+    if _SETTINGS['replacetypes']:
+        try:
+            replace_types(_SETTINGS['replacetypes'], _replace_types_map)
+        except ValueError:
+            _LOG.error("Can't replace unknown type")
+            exit(1)
+    results = parse2plone.import_files(parent, object_paths, import_dir,
+        _collapse_map, _rename_map, _replace_types_map)
 
     # Print results
-    msg = "Imported %s folders, %s images, %s pages, and %s files from:"
-    msg += " %s to %s."
-    results.append(utils._get_results(paths_map, 0))
-    results.append(utils._get_results(paths_map, 1))
-    _LOG.info(msg % tuple(results))
+    msg = "Imported %s folders, %s images, %s pages, and %s files." 
+    _LOG.info(msg) 
     exit(0)

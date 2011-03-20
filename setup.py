@@ -2,8 +2,8 @@
 from setuptools import setup, find_packages
 
 name = 'charm'
-description = 'Easily import static websites on the file system into Plone'
-version = '1.0'
+description = 'Import static websites on the file system into Plone.'
+version = '1.0a6'
 
 
 def read(file):
