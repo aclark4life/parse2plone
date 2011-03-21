@@ -27,8 +27,6 @@ get content from static websites on the file system into Plone.
 Getting started
 ---------------
 
-Caveats:
-
 * A ``Plone`` site object must exist in the ``Zope2`` instance database. By
   default, charm assumes the site object is named "Plone".
 

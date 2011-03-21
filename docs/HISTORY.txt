@@ -2,15 +2,20 @@
 History
 -------
 
-1.0 (03/20/2011)
-~~~~~~~~~~~~~~~~
+1.0b1 (03/21/2011)
+~~~~~~~~~~~~~~~~~~
 
 * Rename ``mr.importer`` to ``charm``
 
-  * ``mr.importer`` was not that clever, and author likes flat namespace
+  * ``mr.importer`` was not that clever, and the author missed flat namespace
 
 * Get rid of all buildout options, support command line args only
-* Doc fixes
+* Make _setup_app optionally accept user, else use system user
+* Fix broken tests; remove unneccessary; now at 34% coverage
+
+  * 619    34%   charm   (/Users/aclark/Developer/charm/charm.py)
+
+* Doc fixes; clean up / scale down
 
 1.0a5 (02/05/2011)
 ~~~~~~~~~~~~~~~~~~
