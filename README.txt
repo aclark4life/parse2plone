@@ -7,6 +7,8 @@ Import static websites on the file system into Plone via::
 
     $ bin/plone run bin/charm /path/to/files
 
+Works like a charm!
+
 Introduction
 ------------
 
