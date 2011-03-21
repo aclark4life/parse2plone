@@ -65,7 +65,6 @@ _SETTINGS = {
     'illegal_chars': ['_', '.', '+'],
     'illegal_words': ['id', 'start'],
     'illegal_expressions': ['[0-9]'],
-    'import_dir': './html',
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
     'match': None,
     'path': '/Plone',
@@ -827,14 +826,21 @@ def main(**kwargs):
     parse2plone = Parse2Plone()
     utils = Utils()
 
+    # Make sure we have import dir, at least
+    if len(sys.argv) >= 2:
+        _SETTINGS['import_dir'] = sys.argv[1]
+    else:
+        msg = "You must specify an import directory e.g. /path/to/files. "
+        msg += "See -h for more."
+        _LOG.error(msg)
+        exit(1)
+
     # Process command line args; save results in _SETTINGS
     option_parser = utils._create_option_parser()
     options, args = option_parser.parse_args()
     utils.process_command_line_args(options)
 
     # Run parse2plone
-    import_dir = _SETTINGS['import_dir']
-    path = _SETTINGS['path']
     files = utils._get_files(import_dir)
     num_parts = len(import_dir.split('/'))
     app = utils._setup_app(kwargs['app'], _SETTINGS['user'])
