@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 name = 'charm'
 description = 'Import static websites on the file system into Plone.'
-version = '1.0a6'
+version = '1.0b1'
 
 
 def read(file):
