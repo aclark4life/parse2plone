@@ -437,7 +437,8 @@ class Utils(object):
                     if self._is_legal(self._get_obj(path)):
                         results.append(os_path.join(path, f))
                     else:
-                        _LOG.info("path '%s' has illegal chars, skipping" % path)
+                        _LOG.info("path '%s' has illegal chars, skipping"
+                            % path)
                 else:
                     _LOG.info("file '%s' has illegal chars, skipping" % f)
 
@@ -703,13 +704,12 @@ class Parse2Plone(object):
                         _rename_map, _replace_types_map)
                 except:
                     # Keep going!
-                    _LOG.info("Keep going! Ignoring error '%s'" % sys.exc_info()[1])
+                    _LOG.info("Keep going! Ignoring error '%s'"
+                        % sys.exc_info()[1])
                     pass
             else:
                 self.create_parts(parent, parts, import_dir, _collapse_map,
                     _rename_map, _replace_types_map)
-        results = _COUNT.values()
-        return results
 
     def parse_root(self, results, root):
         utils = Utils()
@@ -865,7 +865,7 @@ def main(**kwargs):
         except ValueError:
             _LOG.error("Can't replace unknown type")
             exit(1)
-    results = parse2plone.import_files(parent, object_paths, import_dir,
+    parse2plone.import_files(parent, object_paths, import_dir,
         _collapse_map, _rename_map, _replace_types_map)
 
     # Print results
