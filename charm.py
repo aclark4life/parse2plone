@@ -551,14 +551,24 @@ class Utils(object):
     def _set_encoding(self, data):
         return data.decode(_SETTINGS['encoding'])
 
-    def _setup_app(self, app, user):
+    def _setup_app(self, app, user=None):
         # BBB Move imports here to avoid calling them on script installation,
         # makes parse2plone work with Plone 2.5 (non-egg release).
-        from AccessControl.SecurityManagement import newSecurityManager
-        from Testing.makerequest import makerequest
-        newSecurityManager(None, app.acl_users.getUser(user))
-        app = makerequest(app)
-        return app
+        if user == None:
+            from AccessControl.SecurityManagement import newSecurityManager
+            from AccessControl.SpecialUsers import system
+            from Testing.makerequest import makerequest
+            newSecurityManager(None, system)
+            app = makerequest(app)
+            return app
+        else:
+            from AccessControl.SecurityManagement import newSecurityManager
+            from Testing.makerequest import makerequest
+            user = app.acl_users.getUser(user)
+            user = user.__of__(app.acl_users)
+            newSecurityManager(None, user)
+            app = makerequest(app)
+            return app
 
     def _update_parent(self, current_parent, parent_path):
         updated_parent = current_parent.restrictedTraverse(parent_path)
@@ -848,7 +858,7 @@ def main(**kwargs):
     # Run parse2plone
     files = utils._get_files(_SETTINGS['import_dir'])
     num_parts = len(_SETTINGS['import_dir'].split('/'))
-    app = utils._setup_app(kwargs['app'], _SETTINGS['user'])
+    app = utils._setup_app(kwargs['app'], user=_SETTINGS['user'])
     if utils._check_exists_path(app, _SETTINGS['path']):
         parent = utils._update_parent(app, _SETTINGS['path'])
     else:

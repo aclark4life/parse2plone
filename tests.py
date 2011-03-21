@@ -28,7 +28,7 @@ class RenameOldNewTestCase(unittest.TestCase):
         self.recipe_input_line_2 = "\n/baz /qux"
         self.recipe_input_before = [self.recipe_input_line_1,
             self.recipe_input_line_2]
-        self.recipe_input_after = ['/foo:/bar', '/baz:/qux']
+        self.recipe_input_after = ['\n/foo,/bar', '\n/baz,/qux']
 
     def testRenameOldNew(self):
         import charm as parse2plone
@@ -225,7 +225,7 @@ class ConvertStrToCSVTestCase(unittest.TestCase):
         import charm as parse2plone
         self.utils = parse2plone.Utils()
         self.value_before = '\nfoo bar\nbaz qux'
-        self.value_after = 'foo:bar,baz:qux'
+        self.value_after = '\nfoo,bar\nbaz,qux'
 
     def testConvertStrToCSV(self):
         utils = self.utils
@@ -260,15 +260,10 @@ class RemoveBaseTestCase(unittest.TestCase):
     def setUp(self):
         import charm as parse2plone
         self.utils = parse2plone.Utils()
-        self.import_dir = 'sample'
+        self.import_dir = 'html'
         self.num_parts = len((self.import_dir).split('/'))
-        self.files = ['sample/index.html', 'sample/2000/01/01/foo/index.html',
-            'sample/_illegal_directory/index.html', 'sample/about/index.html',
-            'sample/baz/index.html', 'sample/foo/index.html']
-
-        self.results = {self.import_dir: ['index.html',
-            '2000/01/01/foo/index.html', '_illegal_directory/index.html',
-            'about/index.html', 'baz/index.html', 'foo/index.html']}
+        self.files = ['html/index.html']
+        self.results = {self.import_dir: ['index.html']}
 
     def testRemoveBase(self):
         utils = self.utils
@@ -293,28 +288,6 @@ class RemovePartsTestCase(unittest.TestCase):
         before = self.parts_before
         after = self.parts_after
         self.assertEqual(after, utils._remove_parts(before, 3))
-
-
-class GetFilesTestCase(unittest.TestCase):
-
-    def setUp(self):
-        import charm as parse2plone
-
-        self.utils = parse2plone.Utils()
-
-        # Tests run in parts/test
-        self.import_dir = '../../sample'
-
-        self.results = ['../../sample/index.html',
-            '../../sample/2000/01/01/foo/index.html',
-            '../../sample/about/index.html', '../../sample/baz/index.html',
-            '../../sample/foo/index.html']
-
-    def testRemoveBase(self):
-        utils = self.utils
-        import_dir = self.import_dir
-        results = self.results
-        self.assertEqual(results, utils._get_files(import_dir))
 
 
 class GetObjTestCase(unittest.TestCase):
