@@ -58,7 +58,7 @@ _SETTINGS = {
     'collapse': False,
     'create_spreadsheet': False,
     'encoding': 'utf8',
-    'file_extensions': ['mp3', 'xls'],
+    'file_extensions': ['doc', 'mp3', 'xls'],
     'force': False,
     'html_extensions': ['html'],
     'ignore_errors': False,
