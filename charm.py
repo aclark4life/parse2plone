@@ -841,29 +841,29 @@ def main(**kwargs):
     utils.process_command_line_args(options)
 
     # Run parse2plone
-    files = utils._get_files(import_dir)
-    num_parts = len(import_dir.split('/'))
+    files = utils._get_files(_SETTINGS['import_dir'])
+    num_parts = len(_SETTINGS['import_dir'].split('/'))
     app = utils._setup_app(kwargs['app'], _SETTINGS['user'])
-    if utils._check_exists_path(app, path):
-        parent = utils._update_parent(app, path)
+    if utils._check_exists_path(app, _SETTINGS['path']):
+        parent = utils._update_parent(app, _SETTINGS['path'])
     else:
         if _SETTINGS['force']:
-            parse2plone.create_parts(app, utils._get_parts(path),
-                import_dir, _collapse_map, _rename_map, _replace_types_map)
-            parent = utils._update_parent(app, path)
+            parse2plone.create_parts(app, utils._get_parts(_SETTINGS['path']),
+                _SETTINGS['import_dir'], _collapse_map, _rename_map, _replace_types_map)
+            parent = utils._update_parent(app, _SETTINGS['path'])
         else:
             msg = "object in path '%s' does not exist."
-            _LOG.error(msg % path)
+            _LOG.error(msg % _SETTINGS['path'])
             exit(1)
-    object_paths = utils._remove_base(files, num_parts, import_dir)
+    object_paths = utils._remove_base(files, num_parts, _SETTINGS['import_dir'])
     if _SETTINGS['match']:
-        object_paths = match_files(object_paths, import_dir,
+        object_paths = match_files(object_paths, _SETTINGS['import_dir'],
             _SETTINGS['match'])
     if _SETTINGS['collapse']:
         _collapse_map = collapse_parts(object_paths, _collapse_map,
-        import_dir)
+        _SETTINGS['import_dir'])
     if _SETTINGS['rename']:
-        _rename_map = rename_parts(object_paths, _rename_map, import_dir,
+        _rename_map = rename_parts(object_paths, _rename_map, _SETTINGS['import_dir'],
         _SETTINGS['rename'])
     if _SETTINGS['replacetypes']:
         try:
@@ -871,7 +871,7 @@ def main(**kwargs):
         except ValueError:
             _LOG.error("Can't replace unknown type")
             exit(1)
-    parse2plone.import_files(parent, object_paths, import_dir,
+    parse2plone.import_files(parent, object_paths, _SETTINGS['import_dir'],
         _collapse_map, _rename_map, _replace_types_map)
 
     # Print results
