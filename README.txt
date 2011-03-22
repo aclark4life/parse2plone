@@ -3,6 +3,8 @@
 charm
 =====
 
+*(Formerly mr.importer, formerly parse2plone.)*
+
 Import static websites on the file system into Plone via::
 
     $ bin/plone run bin/charm /path/to/files
@@ -14,7 +16,7 @@ Works like a charm!
     This is more of a "toy" project than a "real" data migrator. For any
     serious Plone migrations, you may want to consider a
     `collective.transmogrifier`_-based tool e.g. `mr.migrator`_. That is not
-    to say you will not find ``charm`` helpful as a sample migration script,
+    to say you will not find ``charm`` useful as a sample migration script,
     just that you should not expect it to scale to meet any complex needs;
     whereas that is exactly what transmogrifier-based tools are designed to do.
 
