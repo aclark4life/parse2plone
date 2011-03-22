@@ -379,6 +379,7 @@ class Utils(object):
             dest='create_spreadsheet',
             help='Import contents of spreadsheet (see create_spreadsheet())')
         option_parser.add_option('--ignore-errors',
+            action='store_true',
             default=_UNSET_OPTION,
             dest='ignore_errors',
             help='Ignore errors and keep going!')
