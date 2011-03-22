@@ -423,14 +423,18 @@ class Utils(object):
                 path, ' '.join(subdirs), ' '.join(files)))
 
             for f in files:
-                if self._is_legal(f):
-                    if self._is_legal(self._get_obj(path)):
-                        results.append(os_path.join(path, f))
+                if f.find(_SETTINGS['match']) >= 0:
+                    if self._is_legal(f):
+                        if self._is_legal(self._get_obj(path)):
+                            results.append(os_path.join(path, f))
+                        else:
+                            _LOG.info("path '%s' has illegal chars, skipping"
+                                % path)
                     else:
-                        _LOG.info("path '%s' has illegal chars, skipping"
-                            % path)
+                        _LOG.info("file '%s' has illegal chars, skipping" % f)
                 else:
-                    _LOG.info("file '%s' has illegal chars, skipping" % f)
+                    _LOG.info("file '%s' does not match '%s', skipping" % f,
+                        _SETTINGS['match'])
 
         return results
 
