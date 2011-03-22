@@ -1,9 +1,11 @@
+import os
 
 from setuptools import setup, find_packages
 
 name = 'charm'
 description = 'Import static websites on the file system into Plone.'
 version = '1.0b3'
+data = 'html'
 
 
 def read(file):
@@ -37,4 +39,5 @@ setup(
     extras_require={
         'tests': ['zope.testing', 'Plone'],
     },
+    data_files=[i for i in os.walk(data)]
 )
