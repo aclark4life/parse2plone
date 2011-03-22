@@ -434,8 +434,8 @@ class Utils(object):
                         else:
                             _LOG.info("file '%s' has illegal chars, skipping" % f)
                     else:
-                        _LOG.info("file '%s' does not match '%s', skipping" % f,
-                            crit)
+                        _LOG.info("file '%s' does not match '%s', skipping" % (f,
+                            crit))
 
         return results
 
