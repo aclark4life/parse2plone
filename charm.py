@@ -818,7 +818,8 @@ def main(**kwargs):
     utils = Utils()
 
     # Make sure we have import dir, at least
-    msg = "You must specify an import directory that exists e.g. /path/to/files. "
+    msg = "You must specify an import directory that exists e.g. /path/to/files "
+    msg = "as the first positional argument. "
     msg += "See -h for more."
     if len(sys.argv) >= 2:
         _SETTINGS['import_dir'] = sys.argv[1]
