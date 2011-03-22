@@ -767,7 +767,7 @@ class Parse2Plone(object):
             root = lxml.html.fromstring(data)
         except lxml.etree.XMLSyntaxError:
             msg = "unable to import data from '%s', "
-            msg = "make sure file contains HTML"
+            msg += "make sure file contains HTML."
             _LOG.error(msg % filename)
             exit(1)
         results = self.parse_root(results, root)
