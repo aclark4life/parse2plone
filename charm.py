@@ -66,7 +66,7 @@ _SETTINGS = {
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
     'match': None,
     'path': '/Plone',
-    'publish': True,
+    'publish': False,
     'rename': None,
     'replacetypes': None,
     'target_tags': ['a', 'abbr', 'acronym', 'address',
