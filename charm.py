@@ -63,8 +63,6 @@ _SETTINGS = {
     'html_extensions': ['html'],
     'ignore_errors': False,
     'illegal_chars': ['_', '.', '+'],
-    'illegal_words': ['id', 'start'],
-    'illegal_expressions': ['[0-9]'],
     'image_extensions': ['gif', 'jpg', 'jpeg', 'png'],
     'match': None,
     'path': '/Plone',
@@ -335,14 +333,6 @@ class Utils(object):
             default=_UNSET_OPTION,
             dest='illegal_chars',
             help='Specify characters to ignore')
-        option_parser.add_option('--illegal-words',
-            default=_UNSET_OPTION,
-            dest='illegal_words',
-            help='Specify words to ignore')
-        option_parser.add_option('--illegal-expressions',
-            default=_UNSET_OPTION,
-            dest='illegal_expressions',
-            help='Specify words to ignore')
         option_parser.add_option('--image-extensions',
             default=_UNSET_OPTION,
             dest='image_extensions',
@@ -470,17 +460,11 @@ class Utils(object):
             return False
 
     def _is_legal(self, obj):
-        results = True
         # XXX Only checking the first char
         if obj[:1] in _SETTINGS['illegal_chars']:
-            results = False
-        if obj in _SETTINGS['illegal_words']:
-            results = False
-        for expression in _SETTINGS['illegal_expressions']:
-            pattern = re.compile(expression)
-            if pattern.match(obj):
-                results = False
-        return results
+            return False
+        else:
+            return True
 
     def process_command_line_args(self, options):
         """
@@ -492,10 +476,6 @@ class Utils(object):
             _SETTINGS['path'] = self._clean_path(options.path)
         if options.illegal_chars is not _UNSET_OPTION:
             _SETTINGS['illegal_chars'] = options.illegal_chars
-        if options.illegal_words is not _UNSET_OPTION:
-            _SETTINGS['illegal_words'] = options.illegal_words
-        if options.illegal_expressions is not _UNSET_OPTION:
-            _SETTINGS['illegal_expressions'] = options.illegal_expressions
         if options.html_extensions is not _UNSET_OPTION:
             _SETTINGS['html_extensions'] = options.html_extensions
         if options.image_extensions is not _UNSET_OPTION:
