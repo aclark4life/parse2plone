@@ -364,7 +364,7 @@ class Utils(object):
             default=_UNSET_OPTION,
             dest='rename',
             help='Optionally rename content (see rename_parts())')
-        option_parser.add_option('--replacetypes',
+        option_parser.add_option('--replace-types',
             default=_UNSET_OPTION,
             dest='replacetypes',
             help='Optionally use custom content types (see replace types())')
