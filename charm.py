@@ -46,11 +46,11 @@ import lxml
 import lxml.html
 import optparse
 import os
+import pkg_resources
 import re
 import sys
 
 from os import path as os_path
-from pkg_resources import working_set
 from sys import executable
 from zc.buildout.easy_install import scripts as create_scripts
 
@@ -790,6 +790,8 @@ class Recipe(object):
     """zc.buildout recipe"""
     def __init__(self, buildout, name, options):
         self.buildout, self.name, self.options = buildout, name, options
+        self.options['location'] = pkg_resources.working_set.find(
+            pkg_resources.Requirement.parse('charm'))
 
     def install(self):
         """Installer"""
@@ -805,7 +807,8 @@ class Recipe(object):
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
         create_scripts([(self.name, 'charm', 'main')],
-            working_set, executable, bindir, arguments=arguments)
+            pkg_resources.working_set, executable, bindir,
+            arguments=arguments)
 
         return tuple((bindir + '/' + self.name,))
 
