@@ -2,7 +2,7 @@
 History
 -------
 
-1.0b1 (03/21/2011)
+1.0b1 (03/22/2011)
 ~~~~~~~~~~~~~~~~~~
 
 * Rename ``mr.importer`` to ``charm``
@@ -16,6 +16,8 @@ History
   * 619    34%   charm   (/Users/aclark/Developer/charm/charm.py)
 
 * Doc fixes; clean up / scale down
+
+* Many bug fixes
 
 1.0a5 (02/05/2011)
 ~~~~~~~~~~~~~~~~~~

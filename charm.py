@@ -827,12 +827,16 @@ def main(**kwargs):
     msg = "as the first positional argument. "
     msg += "See -h for more."
     if len(sys.argv) >= 2:
-        _SETTINGS['import_dir'] = sys.argv[1]
-        try:
-            os.stat(_SETTINGS['import_dir'])
-        except OSError:
-            _LOG.error(msg)
-            exit(1)
+        if sys.argv[1] == '-h' or sys.argv[1] == '--help':
+            # let optparse do its thing
+            pass
+        else:
+            _SETTINGS['import_dir'] = sys.argv[1]
+            try:
+                os.stat(_SETTINGS['import_dir'])
+            except OSError:
+                _LOG.error(msg)
+                exit(1)
     else:
         _LOG.error(msg)
         exit(1)
