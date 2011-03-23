@@ -423,19 +423,29 @@ class Utils(object):
                 path, ' '.join(subdirs), ' '.join(files)))
 
             for f in files:
-                for crit in _SETTINGS['match']:
-                    if f.find(crit) >= 0:
-                        if self._is_legal(f):
-                            if self._is_legal(self._get_obj(path)):
-                                results.append(os_path.join(path, f))
+                if _SETTINGS['match'] is not None:
+                    for crit in _SETTINGS['match']:
+                        if f.find(crit) >= 0:
+                            if self._is_legal(f):
+                                if self._is_legal(self._get_obj(path)):
+                                    results.append(os_path.join(path, f))
+                                else:
+                                    _LOG.info("path '%s' has illegal chars, skipping"
+                                        % path)
                             else:
-                                _LOG.info("path '%s' has illegal chars, skipping"
-                                    % path)
+                                _LOG.info("file '%s' has illegal chars, skipping" % f)
                         else:
-                            _LOG.info("file '%s' has illegal chars, skipping" % f)
+                            _LOG.info("file '%s' does not match '%s', skipping" % (f,
+                                crit))
+                else:
+                    if self._is_legal(f):
+                        if self._is_legal(self._get_obj(path)):
+                            results.append(os_path.join(path, f))
+                        else:
+                            _LOG.info("path '%s' has illegal chars, skipping"
+                                % path)
                     else:
-                        _LOG.info("file '%s' does not match '%s', skipping" % (f,
-                            crit))
+                        _LOG.info("file '%s' has illegal chars, skipping" % f)
 
         return results
 
@@ -829,7 +839,7 @@ def main(**kwargs):
 
     # Make sure we have import dir, at least
     msg = "You must specify an import directory that exists e.g. /path/to/files "
-    msg = "as the first positional argument. "
+    msg += "as the first positional argument. "
     msg += "See -h for more."
     if len(sys.argv) >= 2:
         if sys.argv[1] == '-h' or sys.argv[1] == '--help':

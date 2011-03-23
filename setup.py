@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 name = 'charm'
 description = 'Import static websites on the file system into Plone.'
-version = '1.0b3'
+version = '1.0b4'
 
 
 def read(file):
@@ -66,5 +66,7 @@ setup(
         ('html/risus', ['html/risus/index.html']),
         ('html', ['html/sample.doc']),
         ('html', ['html/sample.xls'])
-    ]
+    ],
+    packages = find_packages('.'),  # include all packages under src
+    package_dir = {'':'.'},   # tell distutils packages are under src
 )
