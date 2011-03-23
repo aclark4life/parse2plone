@@ -39,5 +39,7 @@ setup(
     extras_require={
         'tests': ['zope.testing', 'Plone'],
     },
-    data_files=[i for i in os.walk(data)]
+    packages=['charm'],
+    package_dir = {'': 'charm'},
+    package_data={'charm': ['html']},
 )
