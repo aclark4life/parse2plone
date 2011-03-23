@@ -18,7 +18,7 @@ setup(
     version=version,
     description=description,
     long_description=read('README.txt') + read('docs/CONTRIBUTORS.txt') + read('docs/HISTORY.txt'),
-    url='https://github.com/aclark4life/charm',
+    url='https://github.com/collective/charm',
     author='Alex Clark',
     author_email='aclark@aclark.net',
     entry_points={
