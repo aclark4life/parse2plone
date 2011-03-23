@@ -40,6 +40,6 @@ setup(
         'tests': ['zope.testing', 'Plone'],
     },
     packages=['charm'],
-    package_dir = {'': 'charm'},
+    package_dir = {'charm': ''},
     package_data={'charm': ['html']},
 )
