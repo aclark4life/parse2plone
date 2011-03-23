@@ -38,5 +38,5 @@ setup(
     extras_require={
         'tests': ['zope.testing', 'Plone'],
     },
-    data_files=[('html', ['html/2011'])]
+    data_files=[('html/2011', ['01'])]
 )
