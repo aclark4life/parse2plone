@@ -38,5 +38,33 @@ setup(
     extras_require={
         'tests': ['zope.testing', 'Plone'],
     },
-    data_files=[('html/2011/01/01/test-collapse', ['html/2011/01/01/test-collapse/index.html'])]
+    data_files=[
+        ('html/2011/01/01/test-collapse', ['html/2011/01/01/test-collapse/index.html']),
+        ('html/_sample', ['html/_sample/index.html']),
+        ('html/a', ['html/a/index.html']),
+        ('html/ac', ['html/ac/index.html']),
+        ('html/condimentum', ['html/condimentum/index.html']),
+        ('html/cursus', ['html/cursus/index.html']),
+        ('html/dis', ['html/dis/index.html']),
+        ('html/fames', ['html/fames/index.html']),
+        ('html/gravida', ['html/gravida/index.html']),
+        ('html/id', ['html/id/index.html']),
+        ('html', ['html/index.html']),
+        ('html/integer', ['html/integer/index.html']),
+        ('html/libero', ['html/libero/index.html']),
+        ('html/mi', ['html/mi/index.html']),
+        ('html/mollis', ['html/mollis/index.html']),
+        ('html/nec', ['html/nec/index.html']),
+        ('html/nulla', ['html/nulla/index.html']),
+        ('html/nullam', ['html/nullam/index.html']),
+        ('html/pede', ['html/pede/index.html']),
+        ('html/phasellus', ['html/phasellus/index.html']),
+        ('html/platea', ['html/platea/index.html']),
+        ('html', ['html/plone-logo-128-white-bg.png']),
+        ('html/porta', ['html/porta/index.html']),
+        ('html', ['html/README.txt']),
+        ('html/risus', ['html/risus/index.html']),
+        ('html', ['html/sample.doc']),
+        ('html', ['html/sample.xls'])
+    ]
 )
