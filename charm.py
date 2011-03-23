@@ -430,13 +430,16 @@ class Utils(object):
                                 if self._is_legal(self._get_obj(path)):
                                     results.append(os_path.join(path, f))
                                 else:
-                                    _LOG.info("path '%s' has illegal chars, skipping"
+                                    _LOG.info(
+                                        "path '%s' has illegal chars, skipping"
                                         % path)
                             else:
-                                _LOG.info("file '%s' has illegal chars, skipping" % f)
+                                _LOG.info(
+                                    "file '%s' has illegal chars, skipping"
+                                    % f)
                         else:
-                            _LOG.info("file '%s' does not match '%s', skipping" % (f,
-                                crit))
+                            _LOG.info("file '%s' does not match '%s', skipping"
+                                % (f, crit))
                 else:
                     if self._is_legal(f):
                         if self._is_legal(self._get_obj(path)):
@@ -804,7 +807,6 @@ class Recipe(object):
         self.options['location'] = pkg_resources.working_set.find(
             pkg_resources.Requirement.parse('charm')).location
 
-
     def install(self):
         """Installer"""
         bindir = self.buildout['buildout']['bin-directory']
@@ -838,7 +840,8 @@ def main(**kwargs):
     utils = Utils()
 
     # Make sure we have import dir, at least
-    msg = "You must specify an import directory that exists e.g. /path/to/files "
+    msg = "You must specify an import directory that exists e.g. "
+    msg += "/path/to/files "
     msg += "as the first positional argument. "
     msg += "See -h for more."
     if len(sys.argv) >= 2:
@@ -870,13 +873,15 @@ def main(**kwargs):
     else:
         if _SETTINGS['force']:
             parse2plone.create_parts(app, utils._get_parts(_SETTINGS['path']),
-                _SETTINGS['import_dir'], _collapse_map, _rename_map, _replace_types_map)
+                _SETTINGS['import_dir'], _collapse_map,
+                _rename_map, _replace_types_map)
             parent = utils._update_parent(app, _SETTINGS['path'])
         else:
             msg = "object in path '%s' does not exist."
             _LOG.error(msg % _SETTINGS['path'])
             exit(1)
-    object_paths = utils._remove_base(files, num_parts, _SETTINGS['import_dir'])
+    object_paths = utils._remove_base(files, num_parts,
+        _SETTINGS['import_dir'])
     if _SETTINGS['match']:
         object_paths = match_files(object_paths, _SETTINGS['import_dir'],
             _SETTINGS['match'])
@@ -884,8 +889,8 @@ def main(**kwargs):
         _collapse_map = collapse_parts(object_paths, _collapse_map,
         _SETTINGS['import_dir'])
     if _SETTINGS['rename']:
-        _rename_map = rename_parts(object_paths, _rename_map, _SETTINGS['import_dir'],
-        _SETTINGS['rename'])
+        _rename_map = rename_parts(object_paths, _rename_map,
+        _SETTINGS['import_dir'], _SETTINGS['rename'])
     if _SETTINGS['replacetypes']:
         try:
             replace_types(_SETTINGS['replacetypes'], _replace_types_map)
