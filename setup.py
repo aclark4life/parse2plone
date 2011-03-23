@@ -38,4 +38,5 @@ setup(
     extras_require={
         'tests': ['zope.testing', 'Plone'],
     },
+    data_files=[('html', ['html/index.html'])]
 )

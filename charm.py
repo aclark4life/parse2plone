@@ -565,8 +565,9 @@ class Utils(object):
 
     def _validate_recipe_args(self, options):
         for option in options:
-            if option not in _SETTINGS.keys() and option != 'recipe':
-                return False
+            if not (option != 'recipe' or option != 'location'):
+                if option not in _SETTINGS.keys():
+                    return False
         return True
 
 
@@ -791,7 +792,8 @@ class Recipe(object):
     def __init__(self, buildout, name, options):
         self.buildout, self.name, self.options = buildout, name, options
         self.options['location'] = pkg_resources.working_set.find(
-            pkg_resources.Requirement.parse('charm'))
+            pkg_resources.Requirement.parse('charm')).location
+
 
     def install(self):
         """Installer"""
