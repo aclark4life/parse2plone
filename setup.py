@@ -2,7 +2,7 @@ import os
 
 from setuptools import setup, find_packages
 
-name = 'charm'
+name = 'parse2plone'
 description = 'Import static websites on the file system into Plone.'
 version = '1.0b5'
 
@@ -18,7 +18,7 @@ setup(
     version=version,
     description=description,
     long_description=read('README.txt') + read('docs/CONTRIBUTORS.txt') + read('docs/HISTORY.txt'),
-    url='https://github.com/collective/charm',
+    url='https://github.com/aclark4life/parse2plone',
     author='Alex Clark',
     author_email='aclark@aclark.net',
     entry_points={
@@ -30,7 +30,7 @@ setup(
         'xlrd',
         'zc.buildout',
     ],
-    py_modules=['charm'],
+    py_modules=['parse2plone'],
     classifiers=[
         'Framework :: Buildout',
         'Framework :: Plone'

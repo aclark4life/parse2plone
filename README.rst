@@ -1,29 +1,29 @@
 .. contents:: :depth: 2
 
-charm
+parse2plone
 =====
 
-*(Formerly mr.importer, formerly parse2plone.)*
+*(Formerly parse2plone, Formerly mr.importer, formerly parse2plone.)*
 
 Import static websites on the file system into Plone via::
 
-    $ bin/plone run bin/charm /path/to/files
+    $ bin/plone run bin/parse2plone /path/to/files
 
-Works like a charm!
+Works like a parse2plone!
 
 .. Warning::
 
     This is more of a "toy" project than a "real" data migrator. For any
     serious Plone migrations, you may want to consider a
     `collective.transmogrifier`_-based tool e.g. `mr.migrator`_. That is not
-    to say you will not find ``charm`` useful as a sample migration script,
+    to say you will not find ``parse2plone`` useful as a sample migration script,
     just that you should not expect it to scale to meet any complex needs;
     whereas that is exactly what transmogrifier-based tools are designed to do.
 
 Introduction
 ------------
 
-``charm`` is a Buildout recipe that creates a script for you to
+``parse2plone`` is a Buildout recipe that creates a script for you to
 get content from static websites on the file system into Plone.
 
 .. Note::
@@ -32,59 +32,59 @@ get content from static websites on the file system into Plone.
     don't know what Plone is, please see: http://plone.org. If you don't know
     what Buildout is, please see: http://www.buildout.org/.
 
-``charm`` relies on the "run" argument of scripts created by
+``parse2plone`` relies on the "run" argument of scripts created by
 `plone.recipe.zope2instance`_ to mount and modify the Plone database.
 
 Getting started
 ---------------
 
 * A ``Plone`` site object must exist in the ``Zope2`` instance database. By
-  default, charm assumes the site object is named "Plone".
+  default, parse2plone assumes the site object is named "Plone".
 
 * A user must exist in the ``Zope2`` instance database (or Plone site). By
-  default, charm assumes the user is named "admin".
+  default, parse2plone assumes the user is named "admin".
 
 .. Note::
     This recipe creates a script that is **not** intended to be run directly.
     Due to technical limitations, the author was not able to implement a user
-    friendly error message. So if you run ``bin/charm`` directly you will see
+    friendly error message. So if you run ``bin/parse2plone`` directly you will see
     this::
 
-        $ bin/charm
+        $ bin/parse2plone
         Traceback (most recent call last):
-          File "bin/charm", line 117, in <module>
-            charm.main(app=app)
+          File "bin/parse2plone", line 117, in <module>
+            parse2plone.main(app=app)
         NameError: name 'app' is not defined
 
     To avoid this, run the script as intended::
 
-        $ bin/plone run bin/charm /path/to/files
+        $ bin/plone run bin/parse2plone /path/to/files
 
     See the `execution`_ section below for more information.
 
 Installation
 ------------
 
-You can install ``charm`` by editing your ``buildout.cfg`` file like
+You can install ``parse2plone`` by editing your ``buildout.cfg`` file like
 so::
 
     [buildout]
     ...
     parts =
         ...
-        charm
+        parse2plone
 
-    [charm]
-    recipe = charm
+    [parse2plone]
+    recipe = parse2plone
 
 Now run ``bin/buildout`` as usual.
 
 Execution
 ---------
 
-Now you can run ``charm`` like this::
+Now you can run ``parse2plone`` like this::
 
-    $ bin/plone run bin/charm /path/to/files
+    $ bin/plone run bin/parse2plone /path/to/files
 
 .. Note:: 
     In the example above and examples below, ``bin/plone`` refers to a *Zope 2
@@ -105,7 +105,7 @@ If you have a site in /var/www/html that contains the following::
 
 You should run::
 
-    $ bin/plone run bin/charm /var/www/html
+    $ bin/plone run bin/parse2plone /var/www/html
 
 And the following will be created:
 
@@ -120,7 +120,7 @@ Here are some trouble-shooting comments/tips.
 Compiling lxml
 ~~~~~~~~~~~~~~
 
-``charm`` requires ``lxml`` which in turn requires ``libxml2`` and
+``parse2plone`` requires ``lxml`` which in turn requires ``libxml2`` and
 ``libxslt``. If you do not have ``lxml`` installed "globally" (i.e. in your
 system Python's site-packages directory) then Buildout will try to install it
 for you. At this point ``lxml`` will look for the libxml2/libxslt2 development
@@ -130,8 +130,8 @@ already *your mileage may vary* (i.e. Buildout will fail).
 Database access
 ~~~~~~~~~~~~~~~
 
-Before running ``charm``, you must either stop your Plone site or
-use ZEO. Otherwise ``charm`` will not be able to access the
+Before running ``parse2plone``, you must either stop your Plone site or
+use ZEO. Otherwise ``parse2plone`` will not be able to access the
 database.
 
 Contact

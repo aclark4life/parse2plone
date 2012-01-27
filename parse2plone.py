@@ -1,8 +1,8 @@
 ###############################################################################
 #                                                                             #
-# charm - Import static website content from the file system into Plone.      #
+# parse2plone - Import static website content from the file system into Plone.#
 #                                                                             #
-# Copyright (C) 2011 Alex Clark                                               #
+# Copyright (C) 2011-2012 Alex Clark                                          #
 #                                                                             #
 # This program is free software; you can redistribute it and/or               #
 # modify it under the terms of the GNU General Public License                 #
@@ -21,7 +21,7 @@
 #                                                                             #
 # Usage:                                                                      #
 #                                                                             #
-# $ bin/plone run bin/charm /path/to/files                                    #
+# $ bin/plone run bin/parse2plone /path/to/files                              #
 #                                                                             #
 # Where:                                                                      #
 #                                                                             #
@@ -31,7 +31,7 @@
 #                                                                             #
 # * `run` is a command line option of `bin/plone` to execute a script         #
 #                                                                             #
-# * `bin/charm` is a script created by parse2plone (after you run             #
+# * `bin/parse2plone` is a script created by parse2plone (after you run       #
 # Buildout)                                                                   #
 #                                                                             #
 # * `/path/to/files` is the file system path to your website files e.g.       #
@@ -89,10 +89,10 @@ _SETTINGS = {
 
 def _setup_logger():
     # log levels: debug, info, warn, error, critical
-    logger = logging.getLogger("charm")
+    logger = logging.getLogger("parse2plone")
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
-    outfile = logging.FileHandler(filename='charm.log')
+    outfile = logging.FileHandler(filename='parse2plone.log')
     handler.setLevel(logging.INFO)
     outfile.setLevel(logging.INFO)
     formatter = logging.Formatter(
@@ -805,7 +805,7 @@ class Recipe(object):
     def __init__(self, buildout, name, options):
         self.buildout, self.name, self.options = buildout, name, options
         self.options['location'] = pkg_resources.working_set.find(
-            pkg_resources.Requirement.parse('charm')).location
+            pkg_resources.Requirement.parse('parse2plone')).location
 
     def install(self):
         """Installer"""
@@ -820,7 +820,7 @@ class Recipe(object):
         arguments = utils.process_config_params(self.options)
 
         # http://pypi.python.org/pypi/zc.buildout#the-scripts-function
-        create_scripts([(self.name, 'charm', 'main')],
+        create_scripts([(self.name, 'parse2plone', 'main')],
             pkg_resources.working_set, executable, bindir,
             arguments=arguments)
 

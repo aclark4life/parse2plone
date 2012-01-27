@@ -31,7 +31,7 @@ class RenameOldNewTestCase(unittest.TestCase):
         self.recipe_input_after = ['\n/foo,/bar', '\n/baz,/qux']
 
     def testRenameOldNew(self):
-        import charm as parse2plone
+        import parse2plone
         rename_map_before = self.rename_map_before
         rename_map_after = self.rename_map_after
         files = self.files
@@ -42,7 +42,7 @@ class RenameOldNewTestCase(unittest.TestCase):
             files, rename_map_before, base, rename))
 
     def testConvertRecipeInputToCSV(self):
-        import charm as parse2plone
+        import parse2plone
         utils = parse2plone.Utils()
         results = []
         recipe_input_before = self.recipe_input_before
@@ -68,7 +68,7 @@ class MatchFilesTestCase(unittest.TestCase):
         ]}
 
     def testMatchFiles(self):
-        import charm as parse2plone
+        import parse2plone
         base = self.base
         files_before = self.files_before
         files_after = self.files_after
@@ -91,7 +91,7 @@ class ReplaceTypesTestCase(unittest.TestCase):
         }
 
     def testReplaceTypes(self):
-        import charm as parse2plone
+        import parse2plone
         map_before = self._replace_types_map_before
         map_after = self._replace_types_map_after
         types = self.replacetypes
@@ -114,7 +114,7 @@ class CollapseTestCase(unittest.TestCase):
         self.object_paths = {self.base: ['2000/01/01/foo/index.html']}
 
     def testCollapse(self):
-        import charm as parse2plone
+        import parse2plone
         self.assertEqual(self.collapse_map_after,
             parse2plone.collapse_parts(
                 self.object_paths,
@@ -140,7 +140,7 @@ class LoggerTestCase(unittest.TestCase):
         self.test_logger.addHandler(outfile)
 
     def testLogger(self):
-        import charm as parse2plone
+        import parse2plone
         logger = parse2plone._setup_logger()
         self.assertTrue(isinstance(logger, self.test_logger.__class__))
 
@@ -149,7 +149,7 @@ class LoggerTestCase(unittest.TestCase):
 class FakeLiteralEvalTestCase(unittest.TestCase):
 
     def setUp(self):
-        import charm as parse2plone
+        import parse2plone
         self.utils = parse2plone.Utils()
 
     def testFakeLiteralEvalTrue(self):
@@ -173,7 +173,7 @@ class FakeLiteralEvalTestCase(unittest.TestCase):
 class CleanPathTestCase(unittest.TestCase):
 
     def setUp(self):
-        import charm as parse2plone
+        import parse2plone
         self.utils = parse2plone.Utils()
 
     def testCleanPath(self):
@@ -185,7 +185,7 @@ class CleanPathTestCase(unittest.TestCase):
 class CheckExistsObjTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
-        import charm as parse2plone
+        import parse2plone
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SpecialUsers import system
         from Testing.makerequest import makerequest
@@ -204,7 +204,7 @@ class CheckExistsObjTestCase(PloneTestCase.PloneTestCase):
 class CheckExistsPathTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
-        import charm as parse2plone
+        import parse2plone
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SpecialUsers import system
         from Testing.makerequest import makerequest
@@ -222,7 +222,7 @@ class CheckExistsPathTestCase(PloneTestCase.PloneTestCase):
 class ConvertStrToCSVTestCase(unittest.TestCase):
 
     def setUp(self):
-        import charm as parse2plone
+        import parse2plone
         self.utils = parse2plone.Utils()
         self.value_before = '\nfoo bar\nbaz qux'
         self.value_after = '\nfoo,bar\nbaz,qux'
@@ -237,7 +237,7 @@ class ConvertStrToCSVTestCase(unittest.TestCase):
 class ConvertObjToPathTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
-        import charm as parse2plone
+        import parse2plone
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SpecialUsers import system
         from Testing.makerequest import makerequest
@@ -258,7 +258,7 @@ class ConvertObjToPathTestCase(PloneTestCase.PloneTestCase):
 class RemoveBaseTestCase(unittest.TestCase):
 
     def setUp(self):
-        import charm as parse2plone
+        import parse2plone
         self.utils = parse2plone.Utils()
         self.import_dir = 'html'
         self.num_parts = len((self.import_dir).split('/'))
@@ -278,7 +278,7 @@ class RemoveBaseTestCase(unittest.TestCase):
 class RemovePartsTestCase(unittest.TestCase):
 
     def setUp(self):
-        import charm as parse2plone
+        import parse2plone
         self.utils = parse2plone.Utils()
         self.parts_before = ['/var/www/html/foo']
         self.parts_after = [['foo']]
@@ -293,7 +293,7 @@ class RemovePartsTestCase(unittest.TestCase):
 class GetObjTestCase(unittest.TestCase):
 
     def setUp(self):
-        import charm as parse2plone
+        import parse2plone
         self.path = '../../sample/foo'
         self.obj = 'foo'
         self.utils = parse2plone.Utils()
@@ -308,7 +308,7 @@ class GetObjTestCase(unittest.TestCase):
 class UpdateParentTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
-        import charm as parse2plone
+        import parse2plone
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SpecialUsers import system
         from Testing.makerequest import makerequest
@@ -329,7 +329,7 @@ class UpdateParentTestCase(PloneTestCase.PloneTestCase):
 class GetPartsTestCase(unittest.TestCase):
 
     def setUp(self):
-        import charm as parse2plone
+        import parse2plone
         self.utils = parse2plone.Utils()
         self.path = '/foo/bar/baz'
         self.results = ['foo', 'bar', 'baz']
@@ -344,7 +344,7 @@ class GetPartsTestCase(unittest.TestCase):
 class GetParentPartsTestCase(unittest.TestCase):
 
     def setUp(self):
-        import charm as parse2plone
+        import parse2plone
         self.utils = parse2plone.Utils()
         self.path = 'foo/bar/baz'
         self.parent_parts = ['foo', 'bar']
@@ -359,7 +359,7 @@ class GetParentPartsTestCase(unittest.TestCase):
 class IsFileTestCase(unittest.TestCase):
 
     def setUp(self):
-        import charm as parse2plone
+        import parse2plone
         self.utils = parse2plone.Utils()
         self.html_file = 'index.html'
         self.image_file = 'foo.png'
@@ -390,7 +390,7 @@ class IsFileTestCase(unittest.TestCase):
 class IsFolderTestCase(unittest.TestCase):
 
     def setUp(self):
-        import charm as parse2plone
+        import parse2plone
         self.utils = parse2plone.Utils()
         self.folder_good = 'foo'
         self.folder_bad = 'foo.bar'
@@ -409,7 +409,7 @@ class IsFolderTestCase(unittest.TestCase):
 class IsLegalTestCase(unittest.TestCase):
 
     def setUp(self):
-        import charm as parse2plone
+        import parse2plone
         self.utils = parse2plone.Utils()
         self.obj_good = 'foo'
         self.obj_bad = '_foo'
@@ -428,7 +428,7 @@ class IsLegalTestCase(unittest.TestCase):
 class SetupAppTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
-        import charm as parse2plone
+        import parse2plone
         self.utils = parse2plone.Utils()
 
     def testSetupApp(self):
@@ -445,7 +445,7 @@ class SetupAppTestCase(PloneTestCase.PloneTestCase):
 class ValidateRecipeArgsTestCase(unittest.TestCase):
 
     def setUp(self):
-        import charm as parse2plone
+        import parse2plone
         self.utils = parse2plone.Utils()
         self.options_good = ['path']
         self.options_bad = ['foo']
