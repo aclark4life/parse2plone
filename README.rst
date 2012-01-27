@@ -3,7 +3,7 @@
 parse2plone
 =====
 
-*(Formerly parse2plone, Formerly mr.importer, formerly parse2plone.)*
+*(Formerly charm, Formerly mr.importer, formerly parse2plone.)*
 
 Import static websites on the file system into Plone via::
 
