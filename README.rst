@@ -11,7 +11,7 @@ Import static websites on the file system into Plone via::
 
 .. Warning::
 
-    This is more of a "toy" project than a "real" data migrator. For any
+    This is more of a "toy project" than a "real data migrator". For any
     serious Plone migrations, you may want to consider a
     `collective.transmogrifier`_-based tool e.g. `mr.migrator`_. That is not
     to say you will not find ``parse2plone`` useful as a sample migration script,
