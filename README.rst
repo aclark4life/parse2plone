@@ -9,8 +9,6 @@ Import static websites on the file system into Plone via::
 
     $ bin/plone run bin/parse2plone /path/to/files
 
-Works like a parse2plone!
-
 .. Warning::
 
     This is more of a "toy" project than a "real" data migrator. For any
