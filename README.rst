@@ -1,7 +1,7 @@
 .. contents:: :depth: 2
 
 parse2plone
-=====
+===========
 
 *(Formerly charm, Formerly mr.importer, formerly parse2plone.)*
 
