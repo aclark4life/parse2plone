@@ -7,17 +7,11 @@ description = 'Import static websites on the file system into Plone.'
 version = '1.0b5'
 
 
-def read(file):
-    file = open(file)
-    data = file.read()
-    file.close()
-    return data
-
 setup(
     name=name,
     version=version,
     description=description,
-    long_description=read('README.rst') + read('docs/CONTRIBUTORS.txt') + read('docs/HISTORY.txt'),
+    long_description=open('README.rst').read(),
     url='https://github.com/aclark4life/parse2plone',
     author='Alex Clark',
     author_email='aclark@aclark.net',
