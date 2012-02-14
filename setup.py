@@ -17,7 +17,7 @@ setup(
     name=name,
     version=version,
     description=description,
-    long_description=read('README.txt') + read('docs/CONTRIBUTORS.txt') + read('docs/HISTORY.txt'),
+    long_description=read('README.rst') + read('docs/CONTRIBUTORS.txt') + read('docs/HISTORY.txt'),
     url='https://github.com/aclark4life/parse2plone',
     author='Alex Clark',
     author_email='aclark@aclark.net',
