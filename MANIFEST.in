@@ -1,0 +1,3 @@
+include *.cfg *.py *.rst
+recursive-include docs *.txt
+recursive-include html *.html *.png *.doc *.xls
